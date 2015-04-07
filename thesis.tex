@@ -15,6 +15,8 @@
 \usepackage{amsmath}
 \usepackage{amssymb}
 
+\usepackage[svgnames]{xcolor} % Required to specify font color
+
 \usepackage[document]{ragged2e} % left alignment (ragged right) instead of justified
 \setlength{\RaggedRightParindent}{.5in} % 1/2 inch paragraph indentation
 \usepackage{indentfirst} % indent first paragraphs after \section{} and friends
@@ -37,12 +39,29 @@
 
 \DeclareMathOperator*{\argmax}{arg\,max}
 
+\newcommand*{\titleGM}{\begingroup % Create the command for including the title page in the document
+\hbox{ % Horizontal box
+\hspace*{0.2\textwidth} % Whitespace to the left of the title page
+\rule{1pt}{\textheight} % Vertical line
+\hspace*{0.05\textwidth} % Whitespace between the vertical line and title page text
+\parbox[b]{0.75\textwidth}{ % Paragraph box which restricts text to less than the width of the page
+
+\singlespacing
+{\noindent\Huge\bfseries Quantitative Methods \\ \noindent \LARGE for Historical Social Scientific Inquiry}\\[2\baselineskip] % Title
+{\large \textit{with Bayesian Semiparametric \\ Structured Additive Regression Models}}\\[4\baselineskip] % Tagline or further description
+{\Large \textsc{Jonah Sol Gabry}} % Author name
+
+\textsc{Advisor: Gregory J. Wawro}
+
+\vspace{0.5\textheight} % Whitespace between the title block and the publisher
+{\noindent Quantitative Methods in the Social Sciences \\ \noindent Columbia University \\ \noindent New York, New York}\\[\baselineskip] % Publisher and logo
+}}
+\endgroup}
+
 \begin{document}
 
-\title{Bayesian Semiparametric Structured Additive Regression Models for Quantitative Historical Social Scientific Inquiry}
-\author{Jonah Gabry}
-\date \today
-\maketitle
+\titleGM % This command includes the title page
+
 \thispagestyle{empty}
 \bigskip
 \tableofcontents
