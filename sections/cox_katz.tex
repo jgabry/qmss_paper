@@ -219,7 +219,7 @@ Stan is a probabilistic modeling language, MCMC sampler, and optimizer. The part
 
 Several characteristics of HMC, and in particular Stan's implementation of HMC, make it a more appealing choice than traditional Metropolis-Hastings (M-H) and Gibbs samplers in many cases. Both M-H and Gibbs samplers suffer from random walk behavior that leads to inefficient exploration of the parameter space. Using gradient information, HMC can find posterior modes much more efficiently, greatly reducing the number of iterations required to obtain a sufficient number of effective draws from the posterior. 
 
-M-H samplers in particular also require a great deal of tuning from the user. Although HMC itself does not overcome this problem, Stan's automatically takes care of the tuning during a warmup period before sampling. Gibbs sampling has an advantage over MH in that it does not require tuning, but a serious drawback is that Gibbs sampling requires the full conditional distributions of all parameters. Except in a limited number of cases, full conditionals are difficult or impossible to derive, which results in a small number of prior distributions that are feasible to use with Gibbs samplers. In particular, conjugate priors are often used even when more believable priors are available. On the other hand, there is no advantage to conjugacy when using Stan. Users are free to specify priors that more accurately reflect their prior knowledge. 
+M-H samplers in particular also require a great deal of tuning from the user. Although HMC itself does not overcome this problem, Stan's automatically takes care of the tuning during a warmup period before sampling. Gibbs sampling has an advantage over M-H in that it does not require tuning, but a serious drawback is that Gibbs sampling requires the full conditional distributions of all parameters. Except in a limited number of cases, full conditionals are difficult or impossible to derive, which results in a small number of prior distributions that are feasible to use with Gibbs samplers. In particular, conjugate priors are often used even when more believable priors are available. On the other hand, there is no advantage to conjugacy when using Stan. Users are free to specify priors that more accurately reflect their prior knowledge. 
 
 For a more thorough introduction to Stan see \citeA{stan_development_team_stan_2015} and \citeA{gelman_bayesian_2013}. 
 
@@ -276,7 +276,7 @@ parameters {
 \end{singlespacing}
 
 
-\noindent Parameter names with the suffix ${\tt \_noise}$ denote variables to be given standard normal priors. Stan tends to work best if the target posterior distribution is marginally standard normal and uncorrelated and parameters on a  similar scale. This means that it can help improve efficiency and convergence if variables defined in {\tt parameters} are given standard normal priors when possible and then transformed in {\tt transformed parameters} to have the desired distribution.\footnote{This is an extremely oversimplified description and a thorough examination of this issue is beyond the scope of this thesis. See \citeA{betancourt_hamiltonian_2013}.} 
+\noindent Parameter names with the suffix ${\tt \_noise}$ denote variables to be given standard normal priors. Stan tends to work best if the target posterior distribution is marginally standard normal and uncorrelated and parameters on a  similar scale. This means that it can help improve efficiency and convergence if variables defined in {\tt parameters} are given standard normal priors when possible and then transformed in {\tt transformed parameters} to have the desired distribution.\footnote{This is an extremely oversimplified description and a thorough examination of the issue is beyond the scope of this thesis. See \citeA{betancourt_hamiltonian_2013} and \citeA{stan_development_team_stan_2015}.} 
 
 In the {\tt transformed parameters} block below both ${\tt tau\_sq\_noise}$ parameters are transformed using the inverse-CDF method such that ${\tt tau\_sq\_bias}$ and ${\tt tau\_sq\_resp}$ have half-Cauchy distributions.\footnote{The inverse-CDF of the Cauchy distribution with location $\ell$ and scale $s$ is $F^{-1}(p, \ell,s)  = \ell + s \tan{\{ \pi (p - 0.5)\}}$. Thus if $z \sim \mathcal{N}(0,1)$ with CDF $\Phi$ then $\ell + s \tan{\{ \pi (\Phi(z) - 0.5)\}}$ is distributed Cauchy$(\ell, s)$. The transformations above therefore result in half-Cauchy$({\tt tau\_loc}, {\tt tau\_scale})$ distributions due to the constraints that ${\tt tau\_sq_bias\_noise}$ and ${\tt tau\_sq\_resp\_noise}$ be positive.} \citeA{gelman_prior_2006} recommends the half-Cauchy as a good default choice for a weakly informative prior on scale parameters.\footnote{The Cauchy prior can be considered weakly informative in that, while most of the mass is concentrated near the median, the tails are fat enough to allow for considerable variation. In fact, the variance of a Cauchy distribution is infinite.}
 
@@ -365,14 +365,14 @@ model {
 %
 \noindent but constructing {\tt alpha} and {\tt beta} in the loop and then using the vectorized version of the BetaBinomial is much faster. 
 
-Note also that in the {\tt model} block the prior distributions are placed only on variables declared in {\tt parameters}  and not those defined in {\tt transformed parameters}. This is not a requirement, but assigning distributions to parameters declared in {\tt transformed parameters} requires the additional -- and potentially onerous -- step of accounting for changes in curvature due to the change of variables. For scalar parameters this entails calculating the log absolute derivative of the the transform and incrementing the log probability by this value. For multivariate changes of variables the log probability must be incremented by the log absolute determinant of the corresponding Jacobian matrix.\footnote{This is explained in greater detail and with examples in \citeA{stan_development_team_stan_2015}. In brief, this adjustment is required to account for how the scale of the variable obtained by the transformation varies with respect to the original variable.}
+Note also that in the {\tt model} block the prior distributions are placed only on variables declared in {\tt parameters}  and not those defined in {\tt transformed parameters}. This is not a requirement, but assigning distributions to parameters declared in {\tt transformed parameters} requires the additional -- and potentially onerous -- step of accounting for changes in curvature due to the change of variables. For scalar parameters this entails calculating the log absolute derivative of the transform and incrementing the log probability by this value. For multivariate changes of variables the log probability must be incremented by the log absolute determinant of the corresponding Jacobian matrix.\footnote{This is explained in greater detail and with examples in \citeA{stan_development_team_stan_2015}. In brief, this adjustment is required to account for how the scale of the variable obtained by the transformation varies with respect to the original variable.}
 
 
 
 
 \subsubsection{Generated quantities}
 
-The {\tt generated quantities} block allows for the computation of distributions of quantities of interest without affecting the log posterior specified in the model block. In this case we compute bias towards the majority party in each congress, which can be calculated as $-0.5$ plus the inverse-logit of the {\tt b\_bias} parameter. For model checking we also simulate data from the posterior predictive distribution, which is discussed in further detail in the Results and Model Checking section.\footnote{The random number generating functions are not currently vectorized in Stan, which is why the call to ${\tt beta\_binomial\_rng}$ is inside the loop in the {\tt generated quantities} block unlike the call to ${\tt beta\_binomial\_log}$ in the {\tt model} block.} 
+The {\tt generated quantities} block allows for the computation of distributions of quantities of interest without affecting the log posterior specified in the model block. In this case we compute bias towards the majority party in each congress, which can be calculated as $-0.5$ plus the inverse-logit of the {\tt b\_bias} parameter. For model checking we also simulate data from the posterior predictive distribution, which is discussed in further detail below in \ref{subsection_model_checking}.\footnote{The random number generating functions are not currently vectorized in Stan, which is why the call to ${\tt beta\_binomial\_rng}$ is inside the loop in the {\tt generated quantities} block unlike the call to ${\tt beta\_binomial\_log}$ in the {\tt model} block.} 
 
 \begin{singlespacing}
 \small
@@ -398,7 +398,7 @@ generated quantities {
 \end{singlespacing}
 
 
-\section{Results, diagnostics and model checking}
+\section{Results, convergence monitoring, and model checking}
 
 
 \subsection{Results}
@@ -414,19 +414,8 @@ generated quantities {
 Figure~\ref{fig:ck_bias} (page~\pageref{fig:ck_bias}) shows the estimates of bias towards the majority party over time from Cox and Katz's analysis and the reanalysis conducted here. Immediately noticeable is the fact that the new estimates have greater uncertainties, which is to be expected due to the potential for Cox and Katz's method to produce overly precise estimates, as discussed in \ref{subsection_methods}. Furthermore, while the new results provide some support for the hypothesis of bias during the post-Czar and post-Packing periods, the evidence is much weaker than that found by Cox and Katz. 
 
 
-\subsection{Convergence diagnostics}
+\subsection{Convergence monitoring}
 \label{subsection_convergence}
-
-When inferences are made using posterior simulations generated by an MCMC algorithm it is essential to check for evidence of convergence to the target distribution. Although this process is not an exact science, there is no shortage of literature on the topic of monitoring convergence for MCMC and other iterative simulation algorithms. For this analysis, the recommendations in \citeA{gelman_handbook_2011} and \citeA{stan_development_team_stan_2015} are followed.\footnote{The various convergence diagnostics used here are introduced informally. More formal definitions and computational details can be found in \citeA{stan_development_team_stan_2015}, \citeA{gelman_handbook_2011}, and \citeA{gelman_bayesian_2013}.}
-
-Six randomly initialized chains of 500 iterations (including 250 discarded warmup iterations) were simulated.\footnote{People new to HMC, NUTS, and Stan are often surprised by how few iterations are typically required, as it is not uncommon for Gibbs (and poorly tuned M-H) samplers to require hundreds of thousands of iterations to achieve convergence.} Figure~\ref{fig:ck_diagnostics} shows the distributions of three quantities calculated from the posterior sample. On the left is the distribution of the ratio of effective sample size to the number of iterations ($n_{\it eff}/N$). Roughly speaking, $n_{\it eff}$ is an estimate of the number of {\it independent} draws from the posterior distribution that would have the same expected variance as the the $N$ {\it dependent} draws actually obtained from the Markov chains. In this case $n_{\it eff}/N$ for all parameters is close to the ideal value of one, a reflection of Stan's efficiency. 
-
-The distribution on the right in Figure~\ref{fig:ck_diagnostics} is the potential scale reduction statistic $\hat{R}$  \shortcite{gelman_rhat_1992}. The $\hat{R}$ statistic is a comparison of the variance of the simulations within individual chains to that of the simulations when chains are pooled. Here, the distribution of $\hat{R}$ shows that for all parameters the value is approximately one, indicating that little would be gained by running longer chains. 
-
-
-
-\subsection{Model checking}
-\label{subsection_model_checking}
 
 \begin{figure}
 \centering
@@ -434,6 +423,19 @@ The distribution on the right in Figure~\ref{fig:ck_diagnostics} is the potentia
 \caption{Diagnostics}
 \label{fig:ck_diagnostics}
 \end{figure}
+
+When inferences are made using posterior simulations generated by an MCMC algorithm it is essential to check for evidence of convergence to the target distribution. Although this process is not an exact science, there is no shortage of literature on the topic of monitoring convergence for MCMC and other iterative simulation algorithms. The various convergence diagnostics used below are introduced informally. Formal definitions, computational details and recommended best practices can be found in \citeA{gelman_handbook_2011}, \citeA{gelman_bayesian_2013}, and \citeA{stan_development_team_stan_2015}, all of whose recommendations are followed here. 
+
+Six randomly initialized chains of 500 iterations (including 250 discarded warmup iterations) were simulated.\footnote{People new to HMC, NUTS, and Stan are often surprised by how few iterations are typically required, as it is not uncommon for Gibbs (and poorly tuned M-H) samplers to require hundreds of thousands of iterations to achieve convergence.} Figure~\ref{fig:ck_diagnostics} shows the distributions of three quantities calculated from the posterior sample. On the left is the distribution of the ratio of effective sample size to the number of iterations ($n_{\it eff}/N$). Roughly speaking, $n_{\it eff}$ is an estimate of the number of {\it independent} draws from the posterior distribution that would have the same expected variance as the $N$ {\it dependent} draws actually obtained from the Markov chains. In this case $n_{\it eff}/N$ for all parameters is close to the ideal value of one, a reflection of Stan's efficiency. 
+
+The central plot in Figure~\ref{fig:ck_diagnostics} shows the distribution of the ratio of Monte Carlo error to the estimated standard deviation ($mcse/sd$) for each parameter in the model. Monte Carlo error is a measure of imprecision due to approximating the posterior distribution by the MCMC simulations. As the number of iterations increases $mcse$ goes to zero and the standard deviation of the draws converges to the posterior standard deviation. With values of $mcse/sd$ as small as those in Figure~\ref{fig:ck_diagnostics} the Monte Carlo error is not a concern. 
+
+On the right in Figure~\ref{fig:ck_diagnostics} is the distribution of the estimates of the potential scale reduction statistic $\hat{R}$  \shortcite{gelman_rhat_1992}. The $\hat{R}$ statistic is a comparison of the variance of the simulations within individual chains to that of the simulations when chains are pooled. Here, the distribution of $\hat{R}$ shows that for all parameters the value is approximately one, indicating that little would be gained by running longer chains. 
+
+Trace plots for all parameters were also examined as well as additional quantities specific to HMC and NUTS.\footnote{For example, checking that the tree depth used by NUTS is well below the user-specified maximum, ensuring that there are no post-warmup leapfrog iterations with diverging error, etc.}
+
+\subsection{Model checking}
+\label{subsection_model_checking}
 
 
 
