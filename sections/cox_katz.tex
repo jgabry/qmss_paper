@@ -127,7 +127,7 @@ Cox and Katz's strategy is to estimate what they call ``a sort of running averag
 
 Although Cox and Katz do not acknowledge this potential for exaggerated precision, they do call attention to another important concern. To obtain reasonable estimates, their method requires a nontrivial amount of variation in average vote share ($v^{RATIO}$) between the seven Congresses that comprise each set $C_\tau$. 
 
-The analysis proposed in thesis overcomes both of these concerns by employing a hierarchical Bayesian framework with partial pooling. Following Cox and Katz, a BetaBinomial likelihood is used, however the linear predictor is replaced by the structured additive predictor $\eta$
+The analysis proposed in thesis overcomes both of these concerns by employing a hierarchical Bayesian framework with partial pooling. Following Cox and Katz, a BetaBinomial likelihood is used, however the linear predictor is replaced by the structured additive predictor $\eta$. The data model with logit link function is 
 
 $$w_t^{MAJ} | n_t, \alpha_t, \beta_t \sim {\rm BetaBinomial}(n_t, \alpha_t, \beta_t),$$
 $$ \alpha_t = \theta_t \phi, \qquad \beta_t = \theta_t (1 - \phi),$$
@@ -202,14 +202,14 @@ For notational convenience, let $y$ denote the outcome $w^{MAJ}$ and $X$ denote 
 
 {\singlespacing
 \begin{align*}
-p(\lambda, \rho, \tau_\lambda, \tau_\rho, \phi | y, X) & \propto p(\lambda, \rho, \tau_\lambda, \tau_\rho, \phi) p(y | \lambda, \rho, \tau_\lambda, \tau_\rho, \phi,  X)  \\
-& = p(\phi) p(\tau_\lambda) p(\tau_\rho)  p(\lambda | \tau_\lambda) p(\rho | \tau_\rho) \prod_i p(y_i | \eta_i, X_i) 
+p(\lambda, \rho, \tau^2_\lambda, \tau^2_\rho, \phi | y, X) & \propto p(\lambda, \rho, \tau^2_\lambda, \tau^2_\rho, \phi) p(y | \lambda, \rho, \tau^2_\lambda, \tau^2_\rho, \phi,  X)  \\
+& = p(\phi) p(\tau^2_\lambda) p(\tau^2_\rho)  p(\lambda | \tau^2_\lambda) p(\rho | \tau^2_\rho) \prod_i p(y_i | \eta_i, X_i) 
 \end{align*}
 }
 %
-\noindent where the second line follows from assumptions conditional independence.\footnote{In particular we assume that hyperparameters are mutually independent in their priors, $p(\lambda | \tau_\lambda)$ and $p(\rho | \tau_\rho)$ are conditionally independent, and the observations $y_i$ are independent conditional on parameters and predictors.}\footnote{The absence of the previously mentioned parameters $\alpha$, $\beta$, and $\theta$ from the expression for the posterior distribution is due to the fact that their values are determined by the other parameters.} 
+\noindent where the second line follows from assumptions conditional independence.\footnote{In particular we assume that hyperparameters are mutually independent in their priors, $p(\lambda | \tau^2_\lambda)$ and $p(\rho | \tau^2_\rho)$ are conditionally independent, and the observations $y_i$ are independent conditional on parameters and predictors.}\footnote{The absence of the previously mentioned parameters $\alpha$, $\beta$, and $\theta$ from the expression for the posterior distribution is due to the fact that their values are determined by the other parameters.} 
 
-Estimation is performed numerically by Markov chain Monte Carlo (MCMC) methods and implemented via RStan, the R interface to the probabilistic programming language and C++ library Stan \shortcite{rstan_software:2015}.\footnote{All relevant R and Stan code will be made publicly available in a repository on GitHub.} Estimating the parameters of the STAR model with GMRF priors is not easy. Since this is the first attempt to estimate these models in Stan that we are aware of, the next section is a description of the estimation strategy and the code required to carry it out in Stan.
+Estimation is performed numerically by Markov chain Monte Carlo (MCMC) methods and implemented via RStan, the R interface to the probabilistic programming language and C++ library Stan \shortcite{rstan_software:2015}.\footnote{All relevant R and Stan code will be made publicly available in a repository on GitHub.} Since this is the first attempt to estimate these models in Stan that we are aware of, the next section is a description of the estimation strategy and the code required to carry it out in Stan.
 
 
 \subsection{Stan} 
@@ -268,16 +268,16 @@ parameters {
   real<lower=0>         phi ;
   vector[C]             bias_noise ;
   vector[C]             resp_noise ;
-  real<lower=0>         tau_bias_noise ;
-  real<lower=0>         tau_resp_noise ;
+  real<lower=0>         tau_sq_bias_noise ;
+  real<lower=0>         tau_sq_resp_noise ;
 }
 \end{verbatim}
 \end{singlespacing}
 
 
-\noindent Parameter names with the suffix {\tt \_noise} denote variables to be given standard normal priors. Stan tends to work best if the target posterior distribution is marginally standard normal and uncorrelated and parameters on a  similar scale. This means that it can help improve efficiency and convergence if variables defined in {\tt parameters} are given standard normal priors when possible and then transformed in {\tt transformed parameters} to have the desired distribution.\footnote{This is an extremely oversimplified description and a thorough examination of this issue is beyond the scope of this thesis. See \citeA{betancourt_hamiltonian_2013}.} 
+\noindent Parameter names with the suffix ${\tt \_noise}$ denote variables to be given standard normal priors. Stan tends to work best if the target posterior distribution is marginally standard normal and uncorrelated and parameters on a  similar scale. This means that it can help improve efficiency and convergence if variables defined in {\tt parameters} are given standard normal priors when possible and then transformed in {\tt transformed parameters} to have the desired distribution.\footnote{This is an extremely oversimplified description and a thorough examination of this issue is beyond the scope of this thesis. See \citeA{betancourt_hamiltonian_2013}.} 
 
-In the {\tt transformed parameters} block below both {\tt tau\_noise} parameters are transformed using the inverse-CDF method such that {\tt tau\_bias} and {\tt tau\_resp} have half-Cauchy distributions.\footnote{The inverse-CDF of the Cauchy distribution with location $\ell$ and scale $s$ is $F^{-1}(p, \ell,s)  = \ell + s \tan{\{ \pi (p - 0.5)\}}$. Thus if $z \sim \mathcal{N}(0,1)$ with CDF $\Phi$ then $\ell + s \tan{\{ \pi (\Phi(z) - 0.5)\}}$ is distributed Cauchy$(\ell, s)$. The transformations above therefore result in half-Cauchy$({\tt tau\_loc}, {\tt tau\_scale})$ distributions due to the constraints that {\tt tau\_b\_noise} and {\tt tau\_r\_noise} be positive.} \citeA{gelman_prior_2006} recommends the half-Cauchy as a good default choice for a weakly informative prior on scale parameters.\footnote{The Cauchy prior can be considered weakly informative in that, while most of the mass is concentrated near the median, the tails are fat enough to allow for considerable variation. In fact, the variance of a Cauchy distribution is infinite.}
+In the {\tt transformed parameters} block below both ${\tt tau\_sq\_noise}$ parameters are transformed using the inverse-CDF method such that ${\tt tau\_sq\_bias}$ and ${\tt tau\_sq\_resp}$ have half-Cauchy distributions.\footnote{The inverse-CDF of the Cauchy distribution with location $\ell$ and scale $s$ is $F^{-1}(p, \ell,s)  = \ell + s \tan{\{ \pi (p - 0.5)\}}$. Thus if $z \sim \mathcal{N}(0,1)$ with CDF $\Phi$ then $\ell + s \tan{\{ \pi (\Phi(z) - 0.5)\}}$ is distributed Cauchy$(\ell, s)$. The transformations above therefore result in half-Cauchy$({\tt tau\_loc}, {\tt tau\_scale})$ distributions due to the constraints that ${\tt tau\_sq_bias\_noise}$ and ${\tt tau\_sq\_resp\_noise}$ be positive.} \citeA{gelman_prior_2006} recommends the half-Cauchy as a good default choice for a weakly informative prior on scale parameters.\footnote{The Cauchy prior can be considered weakly informative in that, while most of the mass is concentrated near the median, the tails are fat enough to allow for considerable variation. In fact, the variance of a Cauchy distribution is infinite.}
 
 The transformations of {\tt bias\_noise} and {\tt resp\_noise} lead to the multivariate normal distributions required for the GMRF priors. 
 
@@ -290,11 +290,11 @@ transformed parameters {
   real<lower=0>         tau_bias ;
   real<lower=0>         tau_resp ;
 
-  tau_bias <- tau_loc + tau_scale * tan(pi() * (Phi_approx(tau_bias_noise) - 0.5)) ;
-  tau_resp <- tau_loc + tau_scale * tan(pi() * (Phi_approx(tau_resp_noise) - 0.5)) ;
+  tau_sq_bias <- tau_loc + tau_scale * tan(pi() * (Phi_approx(tau_sq_bias_noise) - 0.5)) ;
+  tau_sq_resp <- tau_loc + tau_scale * tan(pi() * (Phi_approx(tau_sq_resp_noise) - 0.5)) ;
 
-  b_bias  <- (tau_bias * cholPinverse) * bias_noise ;
-  b_resp  <- (tau_resp * cholPinverse) * resp_noise ;
+  b_bias  <- (tau_sq_bias * cholPinverse) * bias_noise ;
+  b_resp  <- (tau_sq_resp * cholPinverse) * resp_noise ;
 }
 \end{verbatim}
 \end{singlespacing}
@@ -304,8 +304,8 @@ transformed parameters {
 \begin{singlespacing}
 \small
 \begin{verbatim}
-b_bias  <- (tau_bias * cholPinverse) * bias_noise ; 
-b_resp  <- (tau_resp * cholPinverse) * resp_noise ; 
+b_bias  <- (tau_sq_bias * cholPinverse) * bias_noise ; 
+b_resp  <- (tau_sq_resp * cholPinverse) * resp_noise ; 
 \end{verbatim}
 \end{singlespacing}
 
@@ -329,8 +329,8 @@ model {
   // priors
   logPrior <- (
     gamma_log(phi, 0.0001, 0.0001) +
-    normal_log(tau_bias_noise, 0, 1) +
-    normal_log(tau_resp_noise, 0, 1) +
+    normal_log(tau_sq_bias_noise, 0, 1) +
+    normal_log(tau_sq_resp_noise, 0, 1) +
     normal_log(bias_noise, 0, 1) +  	// vectorized
     normal_log(resp_noise, 0, 1)  	  // vectorized
   ) ;
@@ -362,7 +362,11 @@ model {
 \end{verbatim}
 \end{singlespacing}
 %
-\noindent but constructing {\tt alpha} and {\tt beta} in the loop and then using the vectorized version of the BetaBinomial is much faster.
+\noindent but constructing {\tt alpha} and {\tt beta} in the loop and then using the vectorized version of the BetaBinomial is much faster. 
+
+Note also that in the {\tt model} block prior distributions are placed only on variables declared in {\tt parameters} block and not those defined in {\tt transformed parameters}. This is not a requirement, but assigning distributions to parameters declared in {\tt transformed parameters} requires the additional and potentially onerous step of accounting for changes in curvature due to the change of variables. For scalar parameters this entails calculating the log absolute derivative of the the transform and incrementing the log probability by this value. For multivariate changes of variables the log probability must be incremented by the log absolute determinant of the corresponding Jacobian matrix.\footnote{This is explained in greater detail and with examples in \citeA{stan_development_team_stan_2015}. In brief, this adjustment is required to account for how the scale of the variable obtained by the transformation varies with respect to the original variable.}
+
+
 
 
 \subsubsection{Generated quantities}
