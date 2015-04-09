@@ -124,7 +124,7 @@ $$
 %
 \noindent which is the familiar logistic function. 
 
-Cox and Katz's strategy is to estimate what they call ``a sort of running average" of bias across time (p. 116). To do this they take as their estimate of $\lambda_t$ the average estimate of $\lambda$ over the seven congresses centered at $t$, the set $\{C_\tau, t-3 \leq \tau \leq t+3\}$. The authors attempt to account for temporal dependence in $\lambda$ but their approach requires reusing the data to estimate models for each Congress and the observations for each Congress are used up to seven times.  \citeA{goodrich_designing_2012} point out that recycling data in this fashion can lead to overly precise parameter estimates. 
+Cox and Katz's strategy is to estimate what they call ``a sort of running average" of bias across time (p. 116). To do this they take as their estimate of $\lambda_t$ the average estimate of $\lambda$ over the seven congresses centered at $t$, the set $\{C_\tau, t-3 \leq \tau \leq t+3\}$. However, this approach to modeling temporal dependence in $\lambda$ requires reusing the data to estimate models for each Congress (the observations for each Congress are used up to seven times).  \citeA{goodrich_designing_2012} point out that such recycling data can lead to overly precise parameter estimates. 
 
 Although Cox and Katz do not acknowledge this potential for exaggerated precision, they do call attention to another important concern. To obtain reasonable estimates, their method requires a nontrivial amount of variation in average vote share ($v^{RATIO}$) between the seven Congresses that comprise each set $C_\tau$. 
 
@@ -210,12 +210,14 @@ p(\lambda, \rho, \tau^2_\lambda, \tau^2_\rho, \phi | y, X) & \propto p(\lambda, 
 \end{align*}
 }
 %
-\noindent where the second line follows from assumptions conditional independence.\footnote{In particular we assume that hyperparameters are mutually independent in their priors, $p(\lambda | \tau^2_\lambda)$ and $p(\rho | \tau^2_\rho)$ are conditionally independent, and the observations $y_i$ are independent conditional on parameters and predictors.}
+\noindent where the second line follows from assumptions of conditional independence.\footnote{In particular we assume that hyperparameters are mutually independent in their priors, $p(\lambda | \tau^2_\lambda)$ and $p(\rho | \tau^2_\rho)$ are conditionally independent, and the observations $y_i$ are independent conditional on parameters and predictors.}
 %\footnote{The absence of the previously mentioned parameters $\alpha$, $\beta$, and $\theta$ from the expression for the posterior distribution is due to the fact that their values are determined by the other parameters.} 
 
-Estimation is performed numerically by Markov chain Monte Carlo (MCMC) methods and implemented via RStan, the R interface to the probabilistic programming language and C++ library Stan \shortcite{rstan_software:2015}.\footnote{All relevant R and Stan code will be made publicly available in a repository on GitHub.} Since this is the first attempt to estimate these models in Stan that we are aware of, the next section is a description of the estimation strategy and the code required to carry it out in Stan.
+Estimation is performed numerically by Markov chain Monte Carlo (MCMC) methods and implemented via RStan, the R interface to the probabilistic programming language and C++ library Stan \shortcite{rstan_software:2015}.\footnote{All relevant R and Stan code will be made publicly available in a repository on GitHub.} Although other existing software including BayesX, JAGS, and OpenBugs can sometimes be used to fit similar models, each has important limitations that Stan overcomes. Several of the many advantages to using Stan are discussed in the next section. Since there are no publicly available examples of fitting these models in Stan that we are aware of, the next section also provides a description of how the model is coded and estimated. 
 
-Stan is a probabilistic modeling language, MCMC sampler, and optimizer. The particular MCMC algorithm implemented in Stan is a variant of Hamiltonian Monte Carlo (HMC) called the no-U-turn sampler (NUTS) \shortcite{hoffman_2012}. Borrowing from physics the concepts and mathematics behind Hamiltonian dynamics, HMC treats the vector of unknown parameters as the position of a particle. In Hamiltonian dynamics, momentum and position change continuously over time, with the gradient of the particle's potential energy function --  which corresponds to the negative log posterior -- responsible for changes in momentum and momentum governing changes in position. Stan works by simulating a discretization of this process, making necessary corrections to preserve detailed balance (i.e., to ensure that the resulting Markov chains are reversible). 
+\subsubsection{Brief introduction to Stan}
+
+Stan is a probabilistic modeling language, MCMC sampler, and optimizer. The particular MCMC algorithm implemented in Stan is a variant of Hamiltonian Monte Carlo (HMC) called the no-U-turn sampler (NUTS) \shortcite{hoffman_2012}. Borrowing from physics the concepts and mathematics behind Hamiltonian dynamics, HMC treats the vector of unknown parameters as the position of a particle. In Hamiltonian dynamics, momentum and position change continuously over time, with the gradient of the particle's potential energy function --  which corresponds to the negative log posterior -- responsible for changes in momentum and momentum governing changes in position. Stan works by simulating a discretization of this process, making necessary corrections to preserve detailed balance (that is, to ensure that the resulting Markov chains are reversible). 
 
 Several characteristics of HMC, and in particular Stan's implementation of HMC, make it a more appealing choice than traditional Metropolis-Hastings (M-H) and Gibbs samplers in many cases. Both M-H and Gibbs samplers suffer from random walk behavior that leads to inefficient exploration of the parameter space. Using gradient information, HMC can find posterior modes much more efficiently, greatly reducing the number of iterations required to obtain a sufficient number of effective draws from the posterior. 
 
@@ -223,12 +225,13 @@ M-H samplers in particular also require a great deal of tuning from the user. Al
 
 For a more thorough introduction to Stan see \citeA{stan_development_team_stan_2015} and \citeA{gelman_bayesian_2013}. 
 
+
 \subsubsection{Data}
 
-In the {\tt data} block of a Stan model we declare the data that will be passed to Stan, in this case from R. The {\tt transformed data} block contains transformations of the variables declared in the {\tt data} block. The declarations below are all straightforward, except for the matrix {\tt P\_inv}. This is the inverse of the difference of the degree and adjacency matrices, which is precomputed and passed to Stan as data. In {\tt transformed data} we compute the Cholesky decomposition of {\tt Pinverse}, which will be used for a more efficient implementation of the multivariate normal distributions required for the GMRF priors. Values for the location and scale parameters of the Cauchy distribution are also set in {\tt transformed data}. 
+In the {\tt data} block of a Stan model we declare the data that will be passed to Stan, in this case from R. The {\tt transformed data} block contains transformations of the variables declared in the {\tt data} block. The declarations below are all straightforward, except for the matrix {\tt Pinverse}. This is the inverse of the difference of the degree and adjacency matrices, which is precomputed and passed to Stan as data. In {\tt transformed data} the Cholesky decomposition of {\tt Pinverse} is computed; it will be used for a more efficient implementation of the multivariate normal distributions required for the GMRF priors. Values for the location and scale parameters of the Cauchy distribution are also set in {\tt transformed data}. 
 
 
-\begin{singlespacing}
+{\singlespacing
 \small 
 \begin{verbatim}
 data {
@@ -255,14 +258,14 @@ transformed data {
   cholPinverse <- cholesky_decompose(Pinverse) ;
 }
 \end{verbatim}
-\end{singlespacing}
+}
 
 
 \subsubsection{Parameters}
 
 In the {\tt parameters} and {\tt transformed parameters} blocks we declare model parameters and deterministic transformations of the declared parameters. 
 
-\begin{singlespacing}
+{\singlespacing
 \small
 \begin{verbatim}
 parameters {
@@ -273,9 +276,8 @@ parameters {
   real<lower=0>         tau_sq_resp_noise ;
 }
 \end{verbatim}
-\end{singlespacing}
-
-
+}
+%
 \noindent Parameter names with the suffix ${\tt \_noise}$ denote variables to be given standard normal priors. Stan tends to work best if the target posterior distribution is marginally standard normal and uncorrelated and parameters on a  similar scale. This means that it can help improve efficiency and convergence if variables defined in {\tt parameters} are given standard normal priors when possible and then transformed in {\tt transformed parameters} to have the desired distribution.\footnote{This is an extremely oversimplified description and a thorough examination of the issue is beyond the scope of this thesis. See \citeA{betancourt_hamiltonian_2013} and \citeA{stan_development_team_stan_2015}.} 
 
 
@@ -303,17 +305,7 @@ transformed parameters {
 \end{verbatim}
 \end{singlespacing}
 
-\noindent The lines
-%
-\begin{singlespacing}
-\small
-\begin{verbatim}
-b_bias  <- (tau_sq_bias * cholPinverse) * bias_noise ; 
-b_resp  <- (tau_sq_resp * cholPinverse) * resp_noise ; 
-\end{verbatim}
-\end{singlespacing}
-
-\noindent come from the fact that if $z$ is a $K$-vector of iid standard normal random variables $z_k \sim \mathcal{N}(0,1)$ and $\theta = \mu + L z$, where $LL' = \boldsymbol{\Sigma}$, then $\theta \sim \mathcal{N}_K (\mu, \boldsymbol{\Sigma})$. This is analogous to the univariate case where $\theta = \mu + \sigma z$ and $z \sim \mathcal{N}(0,1)$ implies that $\theta \sim \mathcal{N}(\mu, \sigma^2)$. The advantage to this approach is twofold. For one, directly specifying a multivariate normal distribution for $\theta$ would require repeated computation of the inverse matrix $\Sigma^{-1}$. Additionally, unlike the elements of $\theta$, the elements of $z$ are independent which can lead to large gains in efficiency for MCMC algorithms in terms of effective sample size \shortcite{stan_development_team_stan_2015}. 
+\noindent The last two lines make use of the fact that if $z$ is a $K$-vector of iid standard normal random variables $z_k \sim \mathcal{N}(0,1)$ and $\theta = \mu + L z$, where $LL' = \boldsymbol{\Sigma}$, then $\theta \sim \mathcal{N}_K (\mu, \boldsymbol{\Sigma})$. This is analogous to the univariate case where $\theta = \mu + \sigma z$ and $z \sim \mathcal{N}(0,1)$ implies that $\theta \sim \mathcal{N}(\mu, \sigma^2)$. The advantage to this approach is twofold. For one, directly specifying a multivariate normal distribution for $\theta$ would require repeated computation of the inverse matrix $\Sigma^{-1}$. Additionally, unlike the elements of $\theta$, the elements of $z$ are independent which can lead to large gains in efficiency for MCMC algorithms in terms of effective sample size \shortcite{stan_development_team_stan_2015}. 
 
 \subsubsection{Model}
 
@@ -424,60 +416,63 @@ Figure~\ref{fig:ck_bias} (page~\pageref{fig:ck_bias}) shows the estimates of bia
 
 When inferences are made using posterior simulations generated by an MCMC algorithm it is essential to check for evidence of convergence to the target distribution. Although this process is not an exact science, there is no shortage of literature on the topic of monitoring convergence for MCMC and other iterative simulation algorithms. The various convergence diagnostics used below are introduced informally. Formal definitions, computational details and recommended best practices can be found in \citeA{gelman_handbook_2011}, \citeA{gelman_bayesian_2013}, and \citeA{stan_development_team_stan_2015}.
 
-Six randomly initialized chains of 500 iterations (including 250 discarded warmup iterations) were simulated.\footnote{People new to HMC, NUTS, and Stan are often surprised by how few iterations are typically required, as it is not uncommon for Gibbs (and poorly tuned M-H) samplers to require hundreds of thousands of iterations to achieve convergence.} Figure~\ref{fig:ck_diagnostics} shows the distributions of three diagnostics calculated from the posterior sample. 
+Eight randomly initialized chains of 1000 iterations (including 500 discarded warmup iterations) were simulated.\footnote{People new to HMC, NUTS, and Stan are often surprised by how few iterations are typically required, as it is not uncommon for Gibbs (and poorly tuned M-H) samplers to require hundreds of thousands of iterations to achieve convergence.} The distributions of three diagnostics calculated from the posterior sample are shown in Figure~\ref{fig:ck_diagnostics}. 
 
 \begin{figure}[h]
 \centering
 	\includegraphics[scale=0.7]{sections/figs/rhat}
 	\includegraphics[scale=0.7]{sections/figs/neff}
 	\includegraphics[scale=0.7]{sections/figs/mcse}
-\caption{Distributions of diagnostics computed from the MCMC draws. From left to right: $\hat{R}$ statistic,  ratio of effective sample size to total sample size ($n_{\it eff}/N$), and ratio of Monte Carlo error to posterior standard deviation ($mcse/sd$).}
+\caption{Distributions of diagnostics computed from the MCMC draws. From left to right: ({\bf\ref{fig:ck_diagnostics}a}) $\hat{R}$ statistic,  ({\bf\ref{fig:ck_diagnostics}b}) ratio of effective sample size to total sample size ($n_{\it eff}/N$), and ({\bf\ref{fig:ck_diagnostics}c}) ratio of Monte Carlo error to posterior standard deviation ($mcse/sd$).}
 \label{fig:ck_diagnostics}
 \end{figure}
 
-On the left is the distribution of the estimates of the potential scale reduction statistic $\hat{R}$  \shortcite{gelman_rhat_1992}. The $\hat{R}$ statistic is a comparison of the variance of the simulations within individual chains to that of the simulations when chains are pooled. Here, the distribution of $\hat{R}$ shows that for all parameters the value is approximately one, indicating that little would be gained by running longer chains. 
+Figure~{\ref{fig:ck_diagnostics}a} shows the distribution of the estimates of the potential scale reduction statistic $\hat{R}$  \shortcite{gelman_rhat_1992}. The $\hat{R}$ statistic is a comparison of the variance of the simulations within individual chains to that of the simulations when chains are pooled. Here, the distribution of $\hat{R}$ shows that for all parameters the value is approximately one, indicating that little would be gained by running longer chains \shortcite{gelman_handbook_2011}. 
 
-The middle plot in Figure~\ref{fig:ck_diagnostics} shows the distribution of the ratio of effective sample size to the number of iterations ($n_{\it eff}/N$). Roughly speaking, $n_{\it eff}$ is an estimate of the number of {\it independent} draws from the posterior distribution that would have the same expected variance as the $N$ {\it dependent} draws actually obtained from the Markov chains. In this case $n_{\it eff}/N$ for all parameters is close to the ideal value of one, a reflection of Stan's efficiency. 
+Figure~{\ref{fig:ck_diagnostics}b} shows the distribution of the ratio of effective sample size to the number of iterations ($n_{\it eff}/N$). Roughly speaking, $n_{\it eff}$ is an estimate of the number of {\it independent} draws from the posterior distribution that would have the same expected variance as the $N$ {\it dependent} draws actually obtained from the Markov chains. In this case $n_{\it eff}/N$ for all parameters is close to the ideal value of one, a reflection of Stan's efficiency. 
 
 
-The leftmost plot in Figure~\ref{fig:ck_diagnostics} shows the distribution of the ratio of Monte Carlo error to the estimated standard deviation ($mcse/sd$) for each parameter in the model. Monte Carlo error is a measure of imprecision due to approximating the posterior distribution by the MCMC simulations. As the number of iterations increases $mcse$ goes to zero and the standard deviation of the draws converges to the posterior standard deviation. The distribution in Figure~\ref{fig:ck_diagnostics} shows that for all parameters the relative error $mcse/sd$ is less than five percent, which, for the inferential goals of this analysis is negligible. For instance, Figure~\ref{fig:ck_example_posterior} shows the estimated posterior density for the parameter corresponding to bias towards the majority party in the 79th congress.\footnote{There is nothing special about the 79th congress for this purpose. A single congress was chosen at random to use as an example.} The posterior is approximately normal, with mean and standard deviation estimates of roughly $0.0487$ and $0.0352$, respectively. The estimated $mcse$ is $0.0009$, which is inconsequential when compared to the uncertainty about the parameter in the posterior distribution.   
-
+Figure~{\ref{fig:ck_diagnostics}c} shows the distribution of the ratio of Monte Carlo error to the estimated standard deviation ($mcse/sd$). Monte Carlo error is a measure of imprecision due to approximating the posterior distribution by the MCMC simulations. As the number of iterations increases $mcse$ goes to zero and the standard deviation of the draws converges to the posterior standard deviation. The distribution in Figure~\ref{fig:ck_diagnostics} shows that for all parameters the relative error $mcse/sd$ is less than five percent, which, for the inferential goals of this analysis is negligible. For instance, Figure~\ref{fig:ck_example_posterior} shows the estimated posterior density for the parameter corresponding to bias towards the majority party in the 79th congress.\footnote{There is nothing special about the 79th congress for this purpose. A single congress was chosen at random to use as an example.} 
+%
 \begin{figure}[h]
 \centering
 	\includegraphics[scale=0.75]{sections/figs/example_posterior}
 \caption{Posterior kernel density estimate for bias towards the majority party in the 79th congress. Normal density curve in blue.}
 \label{fig:ck_example_posterior}
 \end{figure}
-
-
+%
+\noindent The posterior is approximately normal, with mean and standard deviation estimates of roughly $0.0487$ and $0.0352$, respectively. The estimated $mcse$ is $0.0009$, which is inconsequential when compared to the uncertainty about the parameter in the posterior distribution.   
 
 
 Trace plots for all parameters were also examined as well as additional quantities specific to HMC and NUTS.\footnote{For example, checking that the tree depth used by NUTS is well below the user-specified maximum, ensuring that there are no post-warmup leapfrog iterations with diverging error, etc.}
 
+
+
+
 \subsection{Model checking}
 \label{subsection_model_checking}
 
-
+% Should probably do pp checks after aggregating over the sub periods for each congress.  
 
 \begin{figure}
 \centering
-	\includegraphics[scale=0.25]{sections/figs/ck_pp_hists}
+	\includegraphics[scale=0.7]{sections/figs/ck_pp_y_vs_yrep_hists}
 \caption{Replications from posterior predictive distribution vs. observed data}
 \label{fig:ck_pp_hists}
 \end{figure}
 
 \begin{figure}
 \centering
-	\includegraphics[scale=0.25]{sections/figs/ck_pp_test_statistics_mean}
-	\includegraphics[scale=0.25]{sections/figs/ck_pp_test_statistics_sd}
-\caption{Distributions of test statistics $T(y_{rep})$ vs observed values $T(y)$}
+	\includegraphics[scale=0.75]{sections/figs/test_stats_mean}
+	\includegraphics[scale=0.75]{sections/figs/test_stats_sd}
+\caption{Distributions of test statistics $T(y_{rep})$. The vertical bar is the observed value $T(y)$.}
 \label{fig:ck_pp_test_statistics}
 \end{figure}
 
 \begin{figure}
 \centering
-	\includegraphics[scale=0.75]{sections/figs/ck_pp_nWins_hists}
-\caption{Replications from posterior predictive distribution vs. observed data (blue lines)}
+	\includegraphics[scale=0.8]{sections/figs/ck_pp_nWins_hists}
+\caption{Random sample of replicated data sets from posterior predictive distribution $p(y^{\it rep} | y)$ vs. observed data $y$ (vertical line) by Congress.}
 \label{fig:ck_pp_nWins_hists}
 \end{figure}
 
