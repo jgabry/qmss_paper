@@ -104,8 +104,8 @@ One method of identifying bias toward or against the majority party is to estima
 FIGURE
 \vskip1cm
 
-\section{Methods of Analysis}
-\subsection{Methods}
+\section{Statistical and computational methods}
+\subsection{Description of statistical model}
 \label{subsection_methods}
 
 One of the analyses conducted by Cox and Katz concerns the estimation of parameters  $\lambda = (\lambda_t : t = 46, \dots, 106)$ representing bias (on the logit scale) toward the majority party in each $C_t$ (Congress $t$), which is done by maximum likelihood estimation of grouped logit models with linear predictor
@@ -128,7 +128,7 @@ Cox and Katz's strategy is to estimate what they call ``a sort of running averag
 
 Although Cox and Katz do not acknowledge this potential for exaggerated precision, they do call attention to another important concern. To obtain reasonable estimates, their method requires a nontrivial amount of variation in average vote share ($v^{RATIO}$) between the seven Congresses that comprise each set $C_\tau$. 
 
-The analysis proposed in thesis overcomes both of these concerns by employing a hierarchical Bayesian framework with partial pooling. Following Cox and Katz, a BetaBinomial likelihood is used, however the linear predictor is replaced by the structured additive predictor $\eta$. The data model with logit link function is 
+The reanalysis presented here overcomes both of these concerns by employing a hierarchical Bayesian framework with partial pooling. Following Cox and Katz, a BetaBinomial likelihood is used, however the linear predictor is replaced by the structured additive predictor $\eta$. The data model with logit link function is 
 
 $$w_t^{MAJ} | n_t, \alpha_t, \beta_t \sim {\rm BetaBinomial}(n_t, \alpha_t, \beta_t),$$
 $$ \alpha_t = \theta_t \phi, \qquad \beta_t = \theta_t (1 - \phi),$$
@@ -148,13 +148,13 @@ $$
 %
 \noindent of the parameter vectors $\lambda$ and $\rho$ of length 61 (the number of Congresses in the data) and  $N \times 61$ design matrices  $\mathbf{M}_\lambda$ and  $\mathbf{M}_\rho$ (where $N$ is the total number of observations in the data).   
 
-The the structured additive predictor $\eta$ can be written compactly in vector notation as 
+The predictor $\eta$ can be written compactly in vector notation as 
 
 {\singlespacing
 $$ \eta = f_\lambda(\lambda) +  f_\rho(\log{(v^{RATIO})}) = \lambda \mathbf{M}_\lambda + \rho \mathbf{M}_\rho.$$
 }
 %
-The matrices $\mathbf{M}_\lambda$ and $\mathbf{M}_\rho$ are identical in structure but not content. Since $\lambda$ plays the role of an intercept -- that is, the parameters in $\lambda$ are not coefficients -- the elements of $\mathbf{M}_\lambda$ are zeros and ones indicating the Congress to which each observation pertains. For $\mathbf{M}_\rho$ each element is either a zero or the appropriate value of $\log{(v^{RATIO})}$. 
+Matrices $\mathbf{M}_\lambda$ and $\mathbf{M}_\rho$ are identical in structure but not content. Since $\lambda$ plays the role of an intercept -- that is, the parameters in $\lambda$ are not coefficients -- the elements of $\mathbf{M}_\lambda$ are zeros and ones indicating the Congress to which each observation pertains. For $\mathbf{M}_\rho$ each element is either a zero or the appropriate value of $\log{(v^{RATIO})}$. 
 
 % Discuss challenges with sparse matrices? Either here or in the lit review section
 
@@ -168,7 +168,9 @@ p(\rho | \tau_\rho^2) \propto \exp{\left(-\frac{1}{2\tau_\rho^2} \: \rho' \, \ma
  $$
 }
 %
-\noindent where the penalty matrix $\mathbf{P}$ encodes assumptions about the temporal dependence between Congresses.\footnote{The impropriety of this prior stems from the fact that the matrix  $\mathbf{P}$ is not full rank.  The computational challenges this presents can be overcome by coding the model in a statistically equivalent but less intuitive form.} To model temporal dependence such that the set of Congresses $\partial_t = \{C_{t-2}, C_{t-1}, C_{t+1}, C_{t + 2} \}$ provides information about $C_t$, the undirected $RW_2$ prior discussed earlier is used to penalize deviations from this hypothesized trend. This corresponds to constructing $\mathbf{P}$ from the adjacency matrix $\mathbf{A}$ with $a_{ij} = 1$ if $C_j \in \partial_i$ and 0 otherwise.
+\noindent where the penalty matrix $\mathbf{P}$ encodes assumptions about the temporal dependence between Congresses. %
+%\footnote{The impropriety of this prior stems from the fact that the matrix  $\mathbf{P}$ is not full rank.  The computational challenges this presents can be overcome by coding the model in a statistically equivalent but less intuitive form.} 
+To model temporal dependence such that the set of Congresses $\partial_t = \{C_{t-2}, C_{t-1}, C_{t+1}, C_{t + 2} \}$ provides information about $C_t$, the undirected $RW_2$ prior discussed earlier is used to penalize deviations from this hypothesized trend. This corresponds to constructing $\mathbf{P}$ from the adjacency matrix $\mathbf{A}$ with $a_{ij} = 1$ if $C_j \in \partial_i$ and 0 otherwise.
 
 
 %As alluded to above, modeling the temporal dependence between Congresses is accomplished via the choice of penalty matrix $\mathbf{P}$. To model temporal dependence such that the set of Congresses $\partial_t = \{C_{t-2}, C_{t-1}, C_{t+1}, C_{t + 2} \}$ provides information about $C_t$, an undirected form of a second order random walk or autoregressive prior is used to penalize deviations from this hypothesized trend. This corresponds to setting $\mathbf{P} = \mathbf{D} - \mathbf{A}$, where $\mathbf{A}$ is a symmetric matrix with $a_{ij} = 1$ if $C_j \in \partial_i$ and 0 otherwise, and $\mathbf{D}$ is a diagonal matrix such that $\forall i = j, \: d_{ij} = \sum_j a_{ij}$. It can be useful to conceptualize the neighbor relations described by each set $\partial_t$ as an undirected graph $G$ with vertices $V=\{C_t: t=46,\dots,106\}$ and edges connecting the vertices corresponding to neighboring Congresses.\footnote{Note that here the term ``neighbor" is not reserved only for adjacent Congresses, but rather any Congress in $\partial_t$ is considered a neighbor of Congress $t$.} The penalty matrix $\mathbf{P}$ then has a zero for each missing edge and the resulting multivariate normal distribution is a GMRF with respect to $G$.
@@ -197,7 +199,7 @@ p(\rho | \tau_\rho^2) \propto \exp{\left(-\frac{1}{2\tau_\rho^2} \: \rho' \, \ma
 
 
 
-\subsection{Estimation}
+\subsection{Estimation using Stan}
 
 For notational convenience, let $y$ denote the outcome $w^{MAJ}$ and $X$ denote the observed data $n$ and $v^{RATIO}$. We require the joint posterior distribution
 
@@ -208,12 +210,10 @@ p(\lambda, \rho, \tau^2_\lambda, \tau^2_\rho, \phi | y, X) & \propto p(\lambda, 
 \end{align*}
 }
 %
-\noindent where the second line follows from assumptions conditional independence.\footnote{In particular we assume that hyperparameters are mutually independent in their priors, $p(\lambda | \tau^2_\lambda)$ and $p(\rho | \tau^2_\rho)$ are conditionally independent, and the observations $y_i$ are independent conditional on parameters and predictors.}\footnote{The absence of the previously mentioned parameters $\alpha$, $\beta$, and $\theta$ from the expression for the posterior distribution is due to the fact that their values are determined by the other parameters.} 
+\noindent where the second line follows from assumptions conditional independence.\footnote{In particular we assume that hyperparameters are mutually independent in their priors, $p(\lambda | \tau^2_\lambda)$ and $p(\rho | \tau^2_\rho)$ are conditionally independent, and the observations $y_i$ are independent conditional on parameters and predictors.}
+%\footnote{The absence of the previously mentioned parameters $\alpha$, $\beta$, and $\theta$ from the expression for the posterior distribution is due to the fact that their values are determined by the other parameters.} 
 
 Estimation is performed numerically by Markov chain Monte Carlo (MCMC) methods and implemented via RStan, the R interface to the probabilistic programming language and C++ library Stan \shortcite{rstan_software:2015}.\footnote{All relevant R and Stan code will be made publicly available in a repository on GitHub.} Since this is the first attempt to estimate these models in Stan that we are aware of, the next section is a description of the estimation strategy and the code required to carry it out in Stan.
-
-
-\subsection{Stan} 
 
 Stan is a probabilistic modeling language, MCMC sampler, and optimizer. The particular MCMC algorithm implemented in Stan is a variant of Hamiltonian Monte Carlo (HMC) called the no-U-turn sampler (NUTS) \shortcite{hoffman_2012}. Borrowing from physics the concepts and mathematics behind Hamiltonian dynamics, HMC treats the vector of unknown parameters as the position of a particle. In Hamiltonian dynamics, momentum and position change continuously over time, with the gradient of the particle's potential energy function --  which corresponds to the negative log posterior -- responsible for changes in momentum and momentum governing changes in position. Stan works by simulating a discretization of this process, making necessary corrections to preserve detailed balance (i.e., to ensure that the resulting Markov chains are reversible). 
 
@@ -277,6 +277,9 @@ parameters {
 
 
 \noindent Parameter names with the suffix ${\tt \_noise}$ denote variables to be given standard normal priors. Stan tends to work best if the target posterior distribution is marginally standard normal and uncorrelated and parameters on a  similar scale. This means that it can help improve efficiency and convergence if variables defined in {\tt parameters} are given standard normal priors when possible and then transformed in {\tt transformed parameters} to have the desired distribution.\footnote{This is an extremely oversimplified description and a thorough examination of the issue is beyond the scope of this thesis. See \citeA{betancourt_hamiltonian_2013} and \citeA{stan_development_team_stan_2015}.} 
+
+
+\subsubsection{Transformed parameters}
 
 In the {\tt transformed parameters} block below both ${\tt tau\_sq\_noise}$ parameters are transformed using the inverse-CDF method such that ${\tt tau\_sq\_bias}$ and ${\tt tau\_sq\_resp}$ have half-Cauchy distributions.\footnote{The inverse-CDF of the Cauchy distribution with location $\ell$ and scale $s$ is $F^{-1}(p, \ell,s)  = \ell + s \tan{\{ \pi (p - 0.5)\}}$. Thus if $z \sim \mathcal{N}(0,1)$ with CDF $\Phi$ then $\ell + s \tan{\{ \pi (\Phi(z) - 0.5)\}}$ is distributed Cauchy$(\ell, s)$. The transformations above therefore result in half-Cauchy$({\tt tau\_loc}, {\tt tau\_scale})$ distributions due to the constraints that ${\tt tau\_sq_bias\_noise}$ and ${\tt tau\_sq\_resp\_noise}$ be positive.} \citeA{gelman_prior_2006} recommends the half-Cauchy as a good default choice for a weakly informative prior on scale parameters.\footnote{The Cauchy prior can be considered weakly informative in that, while most of the mass is concentrated near the median, the tails are fat enough to allow for considerable variation. In fact, the variance of a Cauchy distribution is infinite.}
 
