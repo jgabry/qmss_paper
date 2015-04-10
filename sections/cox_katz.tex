@@ -151,19 +151,15 @@ FIGURE
 \subsection{Description of statistical model}
 \label{subsection_methods}
 
-\citeA{cox_gerrymandering_2007} propose two methods for checking their hypothesis of bias towards the majority party during the czar rule and post-packing eras. One strategy is to estimate separate models for four historical time periods of interest. \citeA{goodrich_designing_2012} point out that this ``imposes a particular periodization scheme that, while consistent with received wisdom, may or may not be the correct one" (p. 16). Cox and Katz's second approach is more promising in that it allows for greater parameter heterogeneity and makes fewer a priori assumptions about the underlying data generating process.\footnote{It is worth noting that making assumptions about the data generating process is in general not only unavoidable but also extremely important. The problem with the assumptions required for Cox and Katz's first method is not that they are implausible, but rather that periodization schemes per se are convenient abstractions that, in the context of quantitative historical analysis, can enforce a theoretically motivated but not empirically justified structure that should be learned rather than imposed.} However, as demonstrated below, there are major concerns with their strategy that be overcome by following the guidelines for quantitative historical inquiry set forth in \citeA{wawro_designing_2014}. 
+\citeA{cox_gerrymandering_2007} propose two methods for checking their hypothesis of bias towards the majority party during the czar rule and post-packing eras. One strategy is to estimate separate models for four historical time periods of interest. \citeA{goodrich_designing_2012} point out that this ``imposes a particular periodization scheme that, while consistent with received wisdom, may or may not be the correct one" (p. 16). Cox and Katz's second approach is more promising in that it allows for greater parameter heterogeneity and makes fewer a priori assumptions about the underlying data generating process.\footnote{It is worth noting that making assumptions about the data generating process is in general not only unavoidable but also extremely important. The problem with the assumptions required for Cox and Katz's first method is not that they are implausible, but rather that periodization schemes per se are convenient abstractions that, in the context of quantitative historical analysis, can enforce a theoretically motivated but not empirically justified structure that should be learned rather than imposed.} However, as demonstrated below, there are other drawbacks to their design that can be overcome by following the guidelines for quantitative historical inquiry set forth in \citeA{wawro_designing_2014}. 
 
-The analyses conducted by Cox and Katz concerns the estimation of parameters  $\lambda = (\lambda_t : t = 46, \dots, 106)$ representing bias (on the logit scale) toward the majority party in each $C_t$ (Congress $t$), which is done by maximum likelihood estimation of grouped logit models with linear predictor
+The analyses conducted by Cox and Katz concerns the estimation of parameters  $\lambda = (\lambda_t : t = 46, \dots, 106)$ representing bias (on the logit scale) toward the majority party in each $C_t$ (Congress $t$), which is done by maximum likelihood estimation of grouped logit models with linear predictor $ \lambda_t + \rho_t \log{\left(v_t^{RATIO} \right)}$. Here the parameter $\rho$ represents responsiveness, as defined above. 
 
-{\singlespacing
-$$ \lambda_t + \rho_t \log{\left(v_t^{RATIO} \right)}. $$
-}
-%
-Here the parameter $\rho$ represents responsiveness, as defined above. The estimation of $\lambda$ and $\rho$ by grouped logit models follows naturally from solving the seats-votes equation for the average seat share, which in the legislative context of Cox and Katz's example is $p^{DEM}$, the expected roll-call win share for the Democrats 
+The estimation of $\lambda$ and $\rho$ by grouped logit models follows naturally from solving the seats-votes equation for the average seat share, which in the legislative context of Cox and Katz's example is $p^{DEM}$, the expected roll-call win share for the Democrats 
 
 {\singlespacing
 $$  
-  E(p^{DEM}_t)  = \left(1 + \exp{\left\{- \lambda_t - \rho_t \log{\left( v_t^{RATIO}  \right)}\right\}}\right)^{-1},
+  E(p^{DEM}_t)  = \left(1 + \exp{\left\{- \lambda_t - \rho_t \log{\left( v_t^{DEM}/v_t^{REP}  \right)}\right\}}\right)^{-1},
 $$
 }
 %
@@ -171,9 +167,9 @@ $$
 
 Cox and Katz's strategy is to estimate what they call ``a sort of running average" of bias across time (p. 116). To do this they take as their estimate of $\lambda_t$ the average estimate of $\lambda$ over the seven congresses centered at $t$, the set $\{C_\tau, t-3 \leq \tau \leq t+3\}$. However, this approach to modeling temporal dependence in $\lambda$ requires reusing the data to estimate models for each Congress (the observations for each Congress are used up to seven times).  \citeA{goodrich_designing_2012} point out that such recycling data can lead to overly precise parameter estimates. 
 
-Although Cox and Katz do not acknowledge this potential for exaggerated precision, they do call attention to another important concern. To obtain reasonable estimates, their method requires a nontrivial amount of variation in average vote share ($v^{RATIO}$) between the seven Congresses that comprise each set $C_\tau$. 
+Although Cox and Katz do not acknowledge this potential for exaggerated precision, they do call attention to another important concern. To obtain reasonable estimates, their method requires a nontrivial amount of variation in average vote share between the seven Congresses that comprise each set $C_\tau$. 
 
-The reanalysis presented here overcomes both of these concerns by employing a hierarchical Bayesian framework with partial pooling. Following Cox and Katz, a BetaBinomial likelihood is used, however the linear predictor is replaced by the structured additive predictor $\eta$. The data model with logit link function is 
+The alternative analysis presented below overcomes both of these concerns by employing a hierarchical Bayesian framework with partial pooling. Following Cox and Katz, a BetaBinomial likelihood is used, however the linear predictor is replaced by the structured additive predictor $\eta$. The data model with logit link function is 
 
 $$w_t^{MAJ} | n_t, \alpha_t, \beta_t \sim {\rm BetaBinomial}(n_t, \alpha_t, \beta_t),$$
 $$ \alpha_t = \theta_t \phi, \qquad \beta_t = \theta_t (1 - \phi),$$
