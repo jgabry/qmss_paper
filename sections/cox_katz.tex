@@ -62,30 +62,73 @@ $$
 %
 Here, the Democratic position refers to the outcome preferred by the majority of Democrats.  The definition is analogous for the Republican position.
 
-The outcomes of interest are the number of wins ($w_t^{DEM}$) and proportion of wins ($p_t^{DEM}$) for the Democratic position in each Congress $t$
+%The outcomes of interest are the number of wins ($w_t^{DEM}$) and proportion of wins ($p_t^{DEM}$) for the Democratic position in each Congress $t$
+%
+%$$ w_t^{DEM} = \sum_{i=1}^{n_t} RC_{it}, \qquad p_t^{DEM} = w_t^{DEM} / n_t.\footnote{The superscript {\it MAJ} (e.g. $w_t^{MAJ}$) will be used later in the thesis as a general way of referring to the majority party in a specific time period. While the data is organized and more naturally described in terms of $w_t^{DEM}$ and $w_t^{REP}$ (which is just $n_t-w_t^{DEM}$), the proposed statistical model is more straightforward to implement in terms of $w_t^{MAJ.}$}$$
+%
+%Here $n_t$ is the number of roll-call votes in Congress $t$, which ranges from a minimum of 33 votes in the 70th Congress (1927-1929) to a maximum of 836 votes in the 104th Congress (1995-1997). The median number is 143 votes.  
+%
+%
+%The sole predictor of interest is $v^{RATIO}$, the ratio of the average vote share earned by the Democratic position to the average vote share earned by the Republican position in each Congress.  For each Congress the average is taken over all roll-call votes.  For vote $i$ in Congress $t$, let $\pi_{it}^{DEM}$ be the proportion of representatives who cast their vote in favor of the Democratic position.  Then the mean vote shares for the Democratic and Republican positions in Congress t is
+%
+%{\singlespacing
+%$$v_t^{DEM} = \frac{1}{n_t} \sum_{i=1}^{n_t} \pi_{it}^{DEM}, \qquad v_t^{REP} = 1 - v_t^{DEM}$$
+%}
+%%
+%\noindent and the ratio of Democratic to Republican vote shares is simply $v_t^{RATIO} = v_t^{DEM} / v_t^{REP}$. Figure~\ref{fig:log_vratio_vs_ptdem} shows $\log{(v^{RATIO} )}$ plotted against $p^{DEM}$. The shape of the curve is similar to the standard seats-votes curve used in analyses of bias and responsiveness in electoral contexts. The curve is analogous in the legislative context of Cox and Katz's example, although we are not concerned with seat shares in a given Congress but rather roll-call vote shares ($p_t^{DEM}$ and $p_t^{REP}$). This is discussed further in the Methods section. 
+%
+%The trends of $\log{(v^{RATIO} )}$ and $p^{DEM}$ over time are shown in the visual summary of the data set in Figure~\ref{fig:data_summary}.
+%
+%%FIGURE
+%\begin{figure}
+%\centering
+%	\includegraphics[scale=0.75]{sections/figs/logvratio_vs_pdem}
+%\caption{$\log{(v^{RATIO} )}$  vs. $p^{DEM}$}
+%\label{fig:log_vratio_vs_ptdem}
+%\end{figure}
+%%
+%
 
-$$ w_t^{DEM} = \sum_{i=1}^{n_t} RC_{it}, \qquad p_t^{DEM} = w_t^{DEM} / n_t.\footnote{The superscript {\it MAJ} (e.g. $w_t^{MAJ}$) will be used later in the thesis as a general way of referring to the majority party in a specific time period. While the data is organized and more naturally described in terms of $w_t^{DEM}$ and $w_t^{REP}$ (which is just $n_t-w_t^{DEM}$), the proposed statistical model is more straightforward to implement in terms of $w_t^{MAJ.}$}$$
 
-Here $n_t$ is the number of roll-call votes in Congress $t$, which ranges from a minimum of 33 votes in the 70th Congress (1927-1929) to a maximum of 836 votes in the 104th Congress (1995-1997). The median number is 143 votes.  
 
-The sole predictor of interest is $v^{RATIO}$, the ratio of the average vote share earned by the Democratic position to the average vote share earned by the Republican position in each Congress.  For each Congress the average is taken over all roll-call votes.  For vote $i$ in Congress $t$, let $\pi_{it}^{DEM}$ be the proportion of representatives who cast their vote in favor of the Democratic position.  Then the mean vote shares for the Democratic and Republican positions in Congress t is
+The outcomes of interest are the number of wins ($w_t^{MAJ}$) and proportion of wins ($p_t^{MAJ}$) for the majority party position in each Congress $t$. Let $n_t$ denote the number of roll-call votes in Congress $t$.\footnote{In the data $n_t$ ranges from a minimum of 33 votes in the 70th Congress (1927-1929) to a maximum of 836 votes in the 104th Congress (1995-1997). The median number is 143 votes.}  Then
+
+$$w_t^{MAJ} =
+\begin{cases} \sum_{i=1}^{n_t} RC_{it}, & \text{ if Democrats hold majority} \\
+n_t - \sum_{i=1}^{n_t} RC_{it}, & \text{ if Republicans hold majority} \\
+\end{cases}
+ $$
+ 
+\noindent and $p_t^{MAJ} = w_t^{MAJ} / n_t$.
+
+The sole predictor of interest is $v^{RATIO}$, the ratio of the average vote share earned by the majority party position to the average vote share earned by the minority party position in each Congress.  For each Congress the average is taken over all roll-call votes.  For vote $i$ in Congress $t$, let $\pi_{it}^{DEM}$ be the proportion of representatives who cast their vote in favor of the Democratic position.  Then the mean vote shares for the Democratic and Republican positions in Congress t are
 
 {\singlespacing
-$$v_t^{DEM} = \frac{1}{n_t} \sum_{i=1}^{n_t} \pi_{it}^{DEM}, \qquad v_t^{REP} = 1 - v_t^{DEM}$$
+$$v_t^{DEM} = \frac{1}{n_t} \sum_{i=1}^{n_t} \pi_{it}^{DEM}, \qquad v_t^{REP} = 1 - v_t^{DEM},$$
 }
 %
-\noindent and the ratio of Democratic to Republican vote shares is simply $v_t^{RATIO} = v_t^{DEM} / v_t^{REP}$. Figure~\ref{fig:log_vratio_vs_ptdem} shows $\log{(v^{RATIO} )}$ plotted against $p^{DEM}$. The shape of the curve is similar to the standard seats-votes curve used in analyses of bias and responsiveness in electoral contexts. The curve is analogous in the legislative context of Cox and Katz's example, although we are not concerned with seat shares in a given Congress but rather roll-call vote shares ($p_t^{DEM}$ and $p_t^{REP}$). This is discussed further in the Methods section. 
+\noindent and the ratio of Democratic to Republican vote shares is simply $v_t^{DEM} / v_t^{REP}$. The notation $v^{RATIO}$ will be used as shorthand for the ratio $v_t^{MAJ} / v_t^{MIN}$, that is 
 
-The trends of $\log{(v^{RATIO} )}$ and $p^{DEM}$ over time are shown in the visual summary of the data set in Figure~\ref{fig:data_summary}.
+$$ v^{RATIO} = 
+\begin{cases} 
+v_t^{DEM} / v_t^{REP}, & \text{ if Democrats hold the majority,} \\
+v_t^{REP} / v_t^{DEM}, & \text{ if Republicans hold the majority.} \\
+\end{cases}$$
+
+Figure~\ref{fig:log_vratio_vs_ptdem} shows $\log{(v_t^{DEM} / v_t^{REP} )}$ plotted against $p^{DEM}$. The shape of the curve is similar to the standard seats-votes curve used in analyses of bias and responsiveness in electoral contexts. The curve is analogous in the legislative context of Cox and Katz's example, although we are not concerned with seat shares in a given Congress but rather roll-call vote shares ($p_t^{DEM}$ and $p_t^{REP}$). This is discussed further in the Methods section. 
+
+The trends of $\log{(v_t^{DEM} / v_t^{REP} )}$ and $p^{DEM}$ over time are shown in the visual summary of the data set in Figure~\ref{fig:data_summary}.
 
 %FIGURE
 \begin{figure}
 \centering
 	\includegraphics[scale=0.75]{sections/figs/logvratio_vs_pdem}
-\caption{$\log{(v^{RATIO} )}$  vs. $p^{DEM}$}
+\caption{$\log{(v_t^{DEM} / v_t^{REP} )}$  vs. $p^{DEM}$}
 \label{fig:log_vratio_vs_ptdem}
 \end{figure}
 %
+
+
 
 
 
@@ -108,7 +151,9 @@ FIGURE
 \subsection{Description of statistical model}
 \label{subsection_methods}
 
-One of the analyses conducted by Cox and Katz concerns the estimation of parameters  $\lambda = (\lambda_t : t = 46, \dots, 106)$ representing bias (on the logit scale) toward the majority party in each $C_t$ (Congress $t$), which is done by maximum likelihood estimation of grouped logit models with linear predictor
+\citeA{cox_gerrymandering_2007} propose two methods for checking their hypothesis of bias towards the majority party during the czar rule and post-packing eras. One strategy is to estimate separate models for four historical time periods of interest. \citeA{goodrich_designing_2012} point out that this ``imposes a particular periodization scheme that, while consistent with received wisdom, may or may not be the correct one" (p. 16). Cox and Katz's second approach is more promising in that it allows for greater parameter heterogeneity and makes fewer a priori assumptions about the underlying data generating process.\footnote{It is worth noting that making assumptions about the data generating process is in general not only unavoidable but also extremely important. The problem with the assumptions required for Cox and Katz's first method is not that they are implausible, but rather that periodization schemes per se are convenient abstractions that, in the context of quantitative historical analysis, can enforce a theoretically motivated but not empirically justified structure that should be learned rather than imposed.} However, as demonstrated below, there are major concerns with their strategy that be overcome by following the guidelines for quantitative historical inquiry set forth in \citeA{wawro_designing_2014}. 
+
+The analyses conducted by Cox and Katz concerns the estimation of parameters  $\lambda = (\lambda_t : t = 46, \dots, 106)$ representing bias (on the logit scale) toward the majority party in each $C_t$ (Congress $t$), which is done by maximum likelihood estimation of grouped logit models with linear predictor
 
 {\singlespacing
 $$ \lambda_t + \rho_t \log{\left(v_t^{RATIO} \right)}. $$
