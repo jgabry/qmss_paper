@@ -355,7 +355,7 @@ model {
   real                logPrior ;  # log prior
   vector<lower=0>[N]  alphas ;    # shape1 for beta_binomial 
   vector<lower=0>[N]  betas ;     # shape2 for beta_binomial
-  matrix[C,C]         L[2] ;      # cholesky of covariance matrix
+  matrix[C,C]         L[2] ;      # cholesky of covmat
   
   L[1] <- diag_matrix(rep_vector(tau_sq_lambda, C)) * cholPinverse ;
   L[2] <- diag_matrix(rep_vector(tau_sq_rho, C)) * cholPinverse ;
@@ -380,22 +380,26 @@ model {
     alphas[n] <- theta_n * phi ;
     betas[n]  <- (1 - theta_n) * phi ;
   }
-  logLik <- beta_binomial_log(nWins, nVotes, alphas, betas) ; // vectorized likelihood
+  // vectorized BetaBinomial
+  logLik <- beta_binomial_log(nWins, nVotes, alphas, betas) ; 
   
   increment_log_prob(logPrior + logLik) ; 
 }
 \end{lstlisting}
 
-\noindent Expressing the likelihood in this way is perhaps less intuitive than incrementing the likelihood within the loop
+\noindent Expressing the likelihood in this way is perhaps less intuitive than incrementing the likelihood within the loop (and without creating the temporary {\tt alpha} and {\tt beta} variables)
 
 \begin{lstlisting}[language=Stan]
+  logLik <- 0.0 ;
   for (n in 1:N) {
    ...
-   logLik <- logLik + beta_binomial_log(nWins[n], nVotes[n], alpha[n], beta[n]) ;
+   logLik <- logLik +
+   		beta_binomial_log(nWins[n], nVotes[n], 
+   				  theta_n * phi, (1-theta_n) * phi) ;
   }
 \end{lstlisting}
 %
-\noindent but constructing {\tt alpha} and {\tt beta} in the loop and then using the vectorized version of the BetaBinomial is much faster. 
+\noindent but filling in the elements of {\tt alpha} and {\tt beta} inside the loop and then using the vectorized version of the BetaBinomial is much faster. 
 
 Note also that in the {\tt model} block the prior distributions are placed only on variables declared in {\tt parameters}  and not those defined in {\tt transformed parameters}. This is not a requirement, but assigning distributions to parameters declared in {\tt transformed parameters} requires the additional -- and potentially onerous -- step of accounting for changes in curvature due to the change of variables. For scalar parameters this entails calculating the log absolute derivative of the transform and incrementing the log probability by this value. For multivariate changes of variables the log probability must be incremented by the log absolute determinant of the corresponding Jacobian matrix.\footnote{This is explained in greater detail and with examples in \citeA{stan_development_team_stan_2015}. In brief, this adjustment is required to account for how the scale of the variable obtained by the transformation varies with respect to the original variable.}
 
