@@ -273,52 +273,55 @@ For a more thorough introduction to Stan see \citeA{stan_development_team_stan_2
 In the {\tt data} block of a Stan model we declare the data that will be passed to Stan, in this case from R. The {\tt transformed data} block contains transformations of the variables declared in the {\tt data} block. The declarations below are all straightforward, except for the matrix {\tt Pinverse}. This is the inverse of the difference of the degree and adjacency matrices, which is precomputed and passed to Stan as data. In {\tt transformed data} the Cholesky decomposition of {\tt Pinverse} is computed; it will be used for a more efficient implementation of the multivariate normal distributions required for the GMRF priors. Values for the location and scale parameters of the Cauchy distribution are also set in {\tt transformed data}. 
 
 
-{\singlespacing
-\small 
-\begin{verbatim}
+
+\begin{lstlisting}[language=Stan]
 data {
-  // dimensions
-  int<lower=1>              N ; # number of observations
-  int<lower=1>              C ; # number of congresses (time periods)
-
-  // variables
-  int<lower=1,upper=C>      cong[N] ;   # maps between observations & congresses
-  int<lower=1,upper=56>     nVotes[N] ; # numerber of votes
-  int<lower=0,upper=55>     nWins[N] ;  # number of majority party victories
-  real                      vRatio[N] ; # vRatio
-
-  // inverse of penalty matrix for GMRF prior
-  matrix[C,C]               Pinverse ;
+  // dimensions 
+  int<lower=1>          N ; # number of observations 
+  int<lower=1>          C ; # number of congresses (time periods)
+  
+  // arrays of variables 
+  int<lower=1,upper=C>  cong[N] ;     # maps between observations & congresses
+  int<lower=1,upper=56> nVotes[N] ;   # number of votes
+  int<lower=0,upper=55> nWins[N] ;    # number of majority party victories
+  real                  lvRatio[N] ;  # log(vRatio)
+  
+  // inverse of penalty matrix 
+  matrix[C,C]           Pinverse ; # for GMRF prior
 }
 transformed data {
-  real<lower=0> tau_scale ;   # scale for Cauchy priors on taus
-  real<lower=0> tau_loc ;     # location for Cauchy priors on taus
-  matrix[C,C] cholPinverse ;  # Cholesky decomposition of Pinverse
-
-  tau_loc <- 0.0 ;
-  tau_scale <- 2.5 ;
+  real<lower=0> phi_scale ;     # scale for prior on phi
+  real<lower=0> phi_loc ;       # location for prior on phi
+  real<lower=0> tau_scale ;     # scale for priors on taus
+  real<lower=0> tau_loc ;       # location for priors on taus
+  matrix[C,C]   cholPinverse ;  # Cholesky decomposition 
+  
+  phi_loc <- 0 ;
+  phi_scale <- 10 ;
+  tau_loc <- 0 ;
+  tau_scale <- 1 ;
   cholPinverse <- cholesky_decompose(Pinverse) ;
 }
-\end{verbatim}
-}
+\end{lstlisting}
+
+
 
 
 \subsubsection{Parameters}
 
 In the {\tt parameters} and {\tt transformed parameters} blocks we declare model parameters and deterministic transformations of the declared parameters. 
 
-{\singlespacing
-\small
-\begin{verbatim}
+\begin{lstlisting}[language=Stan]
 parameters {
-  real<lower=0>         phi ;
-  vector[C]             bias_noise ;
-  vector[C]             resp_noise ;
-  real<lower=0>         tau_sq_bias_noise ;
-  real<lower=0>         tau_sq_resp_noise ;
+  real          lambda_bar ;  # prior mean 
+  real<lower=0> rho_bar ;     # prior mean 
+  vector[C]     lambda ;      
+  vector[C]     rho ;
+  real<lower=0> phi_noise ;    
+  real<lower=0> tau_sq_lambda ;  
+  real<lower=0> tau_sq_rho ;
 }
-\end{verbatim}
-}
+\end{lstlisting}
 %
 \noindent Parameter names with the suffix ${\tt \_noise}$ denote variables to be given standard normal priors. Stan tends to work best if the target posterior distribution is marginally standard normal and uncorrelated and parameters on a  similar scale. This means that it can help improve efficiency and convergence if variables defined in {\tt parameters} are given standard normal priors when possible and then transformed in {\tt transformed parameters} to have the desired distribution.\footnote{This is an extremely oversimplified description and a thorough examination of the issue is beyond the scope of this thesis. See \citeA{betancourt_hamiltonian_2013} and \citeA{stan_development_team_stan_2015}.} 
 
@@ -329,23 +332,14 @@ In the {\tt transformed parameters} block below both ${\tt tau\_sq\_noise}$ para
 
 The transformations of {\tt bias\_noise} and {\tt resp\_noise} lead to the multivariate normal distributions required for the GMRF priors. 
 
-\begin{singlespacing}
-\small
-\begin{verbatim}
+\begin{lstlisting}[language=Stan]
 transformed parameters {
-  vector[C]             b_bias ;
-  vector[C]             b_resp ;
-  real<lower=0>         tau_bias ;
-  real<lower=0>         tau_resp ;
-
-  tau_sq_bias <- tau_loc + tau_scale * tan(pi() * (Phi_approx(tau_sq_bias_noise) - 0.5)) ;
-  tau_sq_resp <- tau_loc + tau_scale * tan(pi() * (Phi_approx(tau_sq_resp_noise) - 0.5)) ;
-
-  b_bias  <- (tau_sq_bias * cholPinverse) * bias_noise ;
-  b_resp  <- (tau_sq_resp * cholPinverse) * resp_noise ;
+  real<lower=0> phi ;
+  
+  // inverse CDF method, from standard normal to (half) Cauchy
+  phi <- phi_loc + phi_scale * tan(pi() * (Phi_approx(phi_noise) - 0.5)) ;
 }
-\end{verbatim}
-\end{singlespacing}
+\end{lstlisting}
 
 \noindent The last two lines make use of the fact that if $z$ is a $K$-vector of iid standard normal random variables $z_k \sim \mathcal{N}(0,1)$ and $\theta = \mu + L z$, where $LL' = \boldsymbol{\Sigma}$, then $\theta \sim \mathcal{N}_K (\mu, \boldsymbol{\Sigma})$. This is analogous to the univariate case where $\theta = \mu + \sigma z$ and $z \sim \mathcal{N}(0,1)$ implies that $\theta \sim \mathcal{N}(\mu, \sigma^2)$. The advantage to this approach is twofold. For one, directly specifying a multivariate normal distribution for $\theta$ would require repeated computation of the inverse matrix $\Sigma^{-1}$. Additionally, unlike the elements of $\theta$, the elements of $z$ are independent which can lead to large gains in efficiency for MCMC algorithms in terms of effective sample size \shortcite{stan_development_team_stan_2015}. 
 
@@ -354,51 +348,52 @@ transformed parameters {
 In the {\tt model} block the likelihood and priors are specified. More specifically, Stan uses the log-likelihood and log-priors, the sum of which equals the log-posterior up to an additive constant.\footnote{Stan works on the log scale for the same reason as most other statistical software. Logarithms help avoid the loss of the numerical precision in addition to greatly simplifying expressions for complicated probability distributions.}
 The priors are the standard normals required for the transformations described above as well as a gamma distribution for {\tt phi}.\footnote{Various priors for $\phi$ were tested. Differences in the resulting estimates were negligible.}\footnote{The function names in the {\tt model} block ending in ${\tt\_log}$ return the logarithm of the density function (e.g. ${\tt normal\_log(theta,0,1)}$ returns the logarithm of the normal density of ${\tt theta}$  with location 0 and scale 1). While Stan does support the familiar sampling statement notation (e.g. ${\tt theta \sim normal(0,1)}$), it is not used here because such notation is somewhat misleading. Using a sampling statement like ${\tt theta \sim normal(0,1)}$ does {\it not} mean that ${\tt theta}$ will be drawn from the standard normal distribution; it means that the logarithm of the standard normal density (up to a constant) evaluated at ${\tt theta}$ will be added to the total log probability accumulator. This can be expressed explicitly using the ${\tt increment\_log\_prob}$ and ${\tt normal\_log}$ functions; the statement ${\tt increment\_log\_prob(normal\_log(theta,0,1))}$ more accurately reflects Stan's execution under the hood. The only non-cosmetic difference between sampling statements and directly incrementing the log probability is that the former drops all constant terms. For a more detailed explanation see \citeA{stan_development_team_stan_2015}.} Two vectors {\tt alpha} and {\tt beta} are also declared and will be filled in while looping over observations. This allows for the BetaBinomial likelihood to be vectorized for faster computation.
 
-\begin{singlespacing}
-\small
-\begin{verbatim}
+\begin{lstlisting}[language=Stan]
 model {
-  // local variables
+  // local/temporary variables
   real                logLik ;    # log likelihood
   real                logPrior ;  # log prior
-  vector<lower=0>[N]  alphas ;
-  vector<lower=0>[N]  betas ;
-
+  vector<lower=0>[N]  alphas ;    # shape1 for beta_binomial 
+  vector<lower=0>[N]  betas ;     # shape2 for beta_binomial
+  matrix[C,C]         L[2] ;      # cholesky of covariance matrix
+  
+  L[1] <- diag_matrix(rep_vector(tau_sq_lambda, C)) * cholPinverse ;
+  L[2] <- diag_matrix(rep_vector(tau_sq_rho, C)) * cholPinverse ;
+  
   // priors
   logPrior <- (
-    gamma_log(phi, 0.0001, 0.0001) +
-    normal_log(tau_sq_bias_noise, 0, 1) +
-    normal_log(tau_sq_resp_noise, 0, 1) +
-    normal_log(bias_noise, 0, 1) +  	// vectorized
-    normal_log(resp_noise, 0, 1)  	  // vectorized
+    normal_log(lambda_bar, 0, 1) + 
+    normal_log(rho_bar, 4, 2) + 
+    normal_log(phi_noise, 0, 1) +
+    normal_log(tau_sq_lambda, tau_loc, tau_scale) +
+    normal_log(tau_sq_rho, tau_loc, tau_scale) +
+    multi_normal_cholesky_log(lambda, rep_vector(lambda_bar, C), L[1]) +
+    multi_normal_cholesky_log(rho, rep_vector(rho_bar, C), L[2]) 
   ) ;
-
+  
   // likelihood
   for (n in 1:N) {
+    real eta_n ;
     real theta_n ;
-    theta_n   <- inv_logit(b_bias[cong[n]] + b_resp[cong[n]] * vRatio[n]) ;
+    eta_n <- lambda[cong[n]] + rho[cong[n]] * lvRatio[n] ;
+    theta_n   <- inv_logit(eta_n) ;    
     alphas[n] <- theta_n * phi ;
     betas[n]  <- (1 - theta_n) * phi ;
   }
+  logLik <- beta_binomial_log(nWins, nVotes, alphas, betas) ; // vectorized likelihood
   
-  logLik <- beta_binomial_log(nWins, nVotes, alphas, betas) ; // vectorized
-
   increment_log_prob(logPrior + logLik) ; 
 }
-\end{verbatim}
-\end{singlespacing}
+\end{lstlisting}
 
 \noindent Expressing the likelihood in this way is perhaps less intuitive than incrementing the likelihood within the loop
 
-\begin{singlespacing}
-\small
-\begin{verbatim}
+\begin{lstlisting}[language=Stan]
   for (n in 1:N) {
    ...
    logLik <- logLik + beta_binomial_log(nWins[n], nVotes[n], alpha[n], beta[n]) ;
   }
-\end{verbatim}
-\end{singlespacing}
+\end{lstlisting}
 %
 \noindent but constructing {\tt alpha} and {\tt beta} in the loop and then using the vectorized version of the BetaBinomial is much faster. 
 
@@ -411,28 +406,27 @@ Note also that in the {\tt model} block the prior distributions are placed only 
 
 The {\tt generated quantities} block allows for the computation of distributions of quantities of interest without affecting the log posterior specified in the model block. In this case we compute bias towards the majority party in each congress, which can be calculated as $-0.5$ plus the inverse-logit of the {\tt b\_bias} parameter. For model checking we also simulate data from the posterior predictive distribution, which is discussed in further detail below in \ref{subsection_model_checking}.\footnote{The random number generating functions are not currently vectorized in Stan, which is why the call to ${\tt beta\_binomial\_rng}$ is inside the loop in the {\tt generated quantities} block unlike the call to ${\tt beta\_binomial\_log}$ in the {\tt model} block.} 
 
-\begin{singlespacing}
-\small
-\begin{verbatim}
+\begin{lstlisting}[language=Stan]
 generated quantities {
-  real        bias[C] ; # bias toward majority
-  int         nWins_rep[N] ; # posterior predictive simulations
-
-  for (c in 1:C)
-    bias[c] <- inv_logit(b_bias[c]) - 0.5 ;
-
+  real        bias[C] ;
+  int         y_rep[N] ; 
+  
+  for (c in 1:C) 
+    bias[c] <- inv_logit(lambda[c]) - 0.5 ;
+  
   for (n in 1:N) {
-    real theta_n ; 
+    real eta_n ;
+    real theta_n ;
     real alpha_n ;
     real beta_n ;
-    theta_n   <- inv_logit(b_bias[cong[n]] + b_resp[cong[n]] * vRatio[n]) ;
-    alpha_n   <- phi * theta_n ;
-    beta_n    <- phi * (1 - theta_n) ;
-    nWins_rep[n]  <- beta_binomial_rng(nVotes[n], alpha_n, beta_n) ;
+    eta_n <- lambda[cong[n]] + rho[cong[n]] * lvRatio[n] ;
+    theta_n <- inv_logit(eta_n) ;    
+    alpha_n <- phi * theta_n ;
+    beta_n  <- phi * (1 - theta_n) ;
+    y_rep[n] <- beta_binomial_rng(nVotes[n], alpha_n, beta_n) ;
   }
 }
-\end{verbatim}
-\end{singlespacing}
+\end{lstlisting}
 
 
 \section{Results, convergence monitoring, and model checking}
