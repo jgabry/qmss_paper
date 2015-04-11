@@ -3,7 +3,7 @@
 \renewcommand{\baselinestretch}{2} %double space, safe for fancy headers
 \usepackage{setspace}
 \usepackage{pslatex} %Times font
-\usepackage{apacite} %apa citation style
+\usepackage[bibnewpage]{apacite} %apa citation style
 \bibliographystyle{apacite}
 %\usepackage[pdfborder={0 0 0}]{hyperref}%for hyperlinks without ugly boxes
 \usepackage{graphicx} %for figures
@@ -79,9 +79,13 @@
 \include{sections/cox_katz}
 %\include{sections/farhang_katznelson}
 
-\pagebreak
+
 \nocite{r_software}
-\singlespacing
-\bibliography{bibliography.bib}
+
+\begingroup
+    \setstretch{1}
+    \setlength\bibitemsep{1\baselineskip}
+    \bibliography{bibliography.bib}
+\endgroup
 
 \end{document}
