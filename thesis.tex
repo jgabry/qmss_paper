@@ -35,13 +35,19 @@
     \fancyfoot[R]{\thepage}%
 }
 
-\usepackage[font={footnotesize,sf},format=hang,justification=justified,labelsep=space,labelfont=bf,up]{caption}
+\usepackage[font={small},format=hang,justification=justified,labelsep=space,labelfont={small,bf,up}]{caption}
 
 
 \usepackage{lstBUGS} % for pretty source code (https://github.com/jrnold/lstBUGS)
 \lstset{
 basicstyle=\footnotesize\singlespacing,
-commentstyle=\color{gray}
+keywordstyle=\color{DarkSlateGray}\bfseries,
+keywordstyle=[2]{\color{Black!80}},
+commentstyle=\color{DimGrey},
+frameround=fttt,
+backgroundcolor=\color{AliceBlue!80},
+xleftmargin=2em,
+xrightmargin=2em
 }
 
 
