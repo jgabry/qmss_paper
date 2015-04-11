@@ -3,6 +3,9 @@
 thesis.pdf
 *.rtf
 
+*.docx
+
+
 ### LaTeX ###
 *.acn
 *.acr
