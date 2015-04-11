@@ -188,15 +188,13 @@ $$
 $$
 }
 %
-\noindent of the parameter vectors $\lambda$ and $\rho$ of length 61 (the number of Congresses in the data) and  $N \times 61$ design matrices  $\mathbf{M}_\lambda$ and  $\mathbf{M}_\rho$ (where $N$ is the total number of observations in the data).   
-
-The predictor $\eta$ can be written compactly in vector notation as 
+\noindent of the parameter vectors $\lambda$ and $\rho$ of length 61 (the number of Congresses in the data) and  $N \times 61$ design matrices  $\mathbf{M}_\lambda$ and  $\mathbf{M}_\rho$ (where $N$ is the total number of observations in the data). The predictor $\eta$ can be written compactly in vector notation as 
 
 {\singlespacing
 $$ \eta = f_\lambda(\lambda) +  f_\rho(\log{(v^{RATIO})}) = \lambda \mathbf{M}_\lambda + \rho \mathbf{M}_\rho.$$
 }
 %
-Matrices $\mathbf{M}_\lambda$ and $\mathbf{M}_\rho$ are identical in structure but not content. Since $\lambda$ plays the role of an intercept -- that is, the parameters in $\lambda$ are not coefficients -- the elements of $\mathbf{M}_\lambda$ are zeros and ones indicating the Congress to which each observation pertains. For $\mathbf{M}_\rho$ each element is either a zero or the appropriate value of $\log{(v^{RATIO})}$. 
+\indent The matrices $\mathbf{M}_\lambda$ and $\mathbf{M}_\rho$ are identical in structure but not content. Since $\lambda$ plays the role of an intercept -- that is, the parameters in $\lambda$ are not coefficients -- the elements of $\mathbf{M}_\lambda$ are zeros and ones indicating the Congress to which each observation pertains. For $\mathbf{M}_\rho$ each element is either a zero or the appropriate value of $\log{(v^{RATIO})}$. 
 
 % Discuss challenges with sparse matrices? Either here or in the lit review section
 
@@ -263,17 +261,11 @@ Stan is a probabilistic modeling language, MCMC sampler, and optimizer. The part
 
 Several characteristics of HMC, and in particular Stan's implementation of HMC, make it a more appealing choice than traditional Metropolis-Hastings (M-H) and Gibbs samplers in many cases. Both M-H and Gibbs samplers suffer from random walk behavior that leads to inefficient exploration of the parameter space. Using gradient information, HMC can find posterior modes much more efficiently, greatly reducing the number of iterations required to obtain a sufficient number of effective draws from the posterior. 
 
-M-H samplers in particular also require a great deal of tuning from the user. Although HMC itself does not overcome this problem, Stan's automatically takes care of the tuning during a warmup period before sampling. Gibbs sampling has an advantage over M-H in that it does not require tuning, but a serious drawback is that Gibbs sampling requires the full conditional distributions of all parameters. Except in a limited number of cases, full conditionals are difficult or impossible to derive, which results in a small number of prior distributions that are feasible to use with Gibbs samplers. In particular, conjugate priors are often used even when more believable priors are available. On the other hand, there is no advantage to conjugacy when using Stan. Users are free to specify priors that more accurately reflect their prior knowledge. 
+M-H samplers in particular also require a great deal of tuning from the user. Although HMC itself does not overcome this problem, Stan's automatically takes care of the tuning during a warmup period before sampling. Gibbs sampling has an advantage over M-H in that it does not require tuning, but a serious drawback is that Gibbs sampling requires the full conditional distributions of all parameters. Except in a limited number of cases, full conditionals are difficult or impossible to derive, which results in a small number of prior distributions that are feasible to use with Gibbs samplers. In particular, conjugate priors are often used even when more believable priors are available. On the other hand, there is no advantage to conjugacy when using Stan. Users are free to specify priors that more accurately reflect their prior knowledge. For a more thorough introduction to Stan see \citeA{stan_development_team_stan_2015} and \citeA{gelman_bayesian_2013}.
 
-For a more thorough introduction to Stan see \citeA{stan_development_team_stan_2015} and \citeA{gelman_bayesian_2013}. 
+\subsubsection{Data and transformed data}
 
-
-\subsubsection{Data}
-
-In the {\tt data} block of a Stan model (Figure~\ref{stan_data}, p.~\pageref{stan_data}) we declare the data that will be passed to Stan, in this case from R. The {\tt transformed data} block (Figure~\ref{stan_transformed_data}, p.~\pageref{stan_transformed_data}) contains transformations of the variables declared in the {\tt data} block. The declarations below are all straightforward, except for the matrix {\tt Pinverse}. This is the inverse of the difference of the degree and adjacency matrices, which is precomputed and passed to Stan as data. In {\tt transformed data} the Cholesky decomposition of {\tt Pinverse} is computed; it will be used for a more efficient implementation of the multivariate normal distributions required for the GMRF priors. Values for the location and scale parameters of the Cauchy and normal distributions (to be used for priors) are also set in {\tt transformed data}. 
-
-
-\begin{figure}
+\begin{figure}[h]
 \begin{lstlisting}[language=Stan, frame=trBL]
 data {
   // dimensions 
@@ -294,7 +286,9 @@ data {
 \label{stan_data}
 \end{figure}
 
-\begin{figure}
+In the {\tt data} block of a Stan model (Figure~\ref{stan_data}) we declare the data that will be passed to Stan. The declarations below are all straightforward, except for the matrix {\tt Pinverse}, which is the inverse of the difference of the degree and adjacency matrices, which is precomputed and passed in as data. 
+
+\begin{figure}[h]
 \begin{lstlisting}[language=Stan, frame=trBL]
 transformed data {
   real<lower=0> phi_scale ;     # scale for prior on phi
@@ -315,13 +309,16 @@ transformed data {
 \end{figure}
 
 
+The {\tt transformed data} block (Figure~\ref{stan_transformed_data}) contains transformations of the variables declared in the {\tt data} block. In {\tt transformed data} the Cholesky decomposition of {\tt Pinverse} is computed; it will be used for a more efficient implementation of the multivariate normal distributions required for the GMRF priors. Values for the location and scale parameters of the Cauchy and normal distributions (to be used for priors) are also set in {\tt transformed data}. 
 
 
-\subsubsection{Parameters}
 
-In the {\tt parameters} and {\tt transformed parameters} blocks (Figures \ref{stan_parameters}, \ref{stan_transformed_parameters}) we declare model parameters and deterministic transformations of the declared parameters. 
 
-\begin{figure}
+
+
+\subsubsection{Parameters and transformed parameters}
+
+\begin{figure}[h]
 \begin{lstlisting}[language=Stan, frame=trBL]
 parameters {
   real          lambda_bar ;  # prior mean 
@@ -336,15 +333,14 @@ parameters {
 \caption{Stan: {\tt parameters} block}
 \label{stan_parameters}
 \end{figure}
+
+In the {\tt parameters} and {\tt transformed parameters} blocks (Figures \ref{stan_parameters}, \ref{stan_transformed_parameters}) we declare model parameters and deterministic transformations of the declared parameters. 
+
+
 %
 \noindent Parameter names with the suffix ${\tt \_noise}$ denote variables to be given standard normal priors. Stan tends to work best if the target posterior distribution is marginally standard normal and uncorrelated and parameters on a  similar scale. This means that it can help improve efficiency and convergence if variables defined in {\tt parameters} are given standard normal priors when possible and then transformed in {\tt transformed parameters} to have the desired distribution.\footnote{This is an extremely oversimplified description and a thorough examination of the issue is beyond the scope of this thesis. See \citeA{betancourt_hamiltonian_2013} and \citeA{stan_development_team_stan_2015}.} 
 
-
-\subsubsection{Transformed parameters}
-
-In the {\tt transformed parameters} block below ${\tt phi\_noise}$ is transformed using the inverse-CDF method such that ${\tt phi}$ has a half-Cauchy distribution.\footnote{The inverse-CDF of the Cauchy distribution with location $\ell$ and scale $s$ is $F^{-1}(p, \ell,s)  = \ell + s \tan{\{ \pi (p - 0.5)\}}$. Thus if $z \sim \mathcal{N}(0,1)$ with CDF $\Phi$ then $\ell + s \tan{\{ \pi (\Phi(z) - 0.5)\}}$ is distributed Cauchy$(\ell, s)$. The transformation above therefore results in a half-Cauchy$({\tt phi\_loc}, {\tt phi\_scale})$ distribution due to the constraints that ${\tt phi\_noise}$ and ${\tt phi}$ be positive.}\footnote{The Cauchy prior can be considered weakly informative in that, while most of the mass is concentrated near the median, the tails are fat enough to allow for considerable variation. In fact, the variance of a Cauchy distribution is infinite.}
-
-\begin{figure}
+\begin{figure}[h]
 \begin{lstlisting}[language=Stan, frame=trBL]
 transformed parameters {
   real<lower=0> phi ;
@@ -356,6 +352,10 @@ transformed parameters {
 \caption{Stan: {\tt transformed parameters} block}
 \label{stan_transformed_parameters}
 \end{figure}
+
+In the {\tt transformed parameters} block, ${\tt phi\_noise}$ is transformed using the inverse-CDF method such that ${\tt phi}$ has a half-Cauchy distribution.\footnote{The inverse-CDF of the Cauchy distribution with location $\ell$ and scale $s$ is $F^{-1}(p, \ell,s)  = \ell + s \tan{\{ \pi (p - 0.5)\}}$. Thus if $z \sim \mathcal{N}(0,1)$ with CDF $\Phi$ then $\ell + s \tan{\{ \pi (\Phi(z) - 0.5)\}}$ is distributed Cauchy$(\ell, s)$. The transformation above therefore results in a half-Cauchy$({\tt phi\_loc}, {\tt phi\_scale})$ distribution due to the constraints that ${\tt phi\_noise}$ and ${\tt phi}$ be positive.}\footnote{The Cauchy prior can be considered weakly informative in that, while most of the mass is concentrated near the median, the tails are fat enough to allow for considerable variation. In fact, the variance of a Cauchy distribution is infinite.}
+
+
 
 \subsubsection{Model}
 
@@ -428,9 +428,7 @@ Note also that in the {\tt model} block the prior distributions are placed only 
 
 \subsubsection{Generated quantities}
 
-The {\tt generated quantities} block allows for the computation of distributions of quantities of interest without affecting the log posterior specified in the model block. In this case we compute bias towards the majority party in each congress, which can be calculated as $-0.5$ plus the inverse-logit of the {\tt b\_bias} parameter. For model checking we also simulate data from the posterior predictive distribution, which is discussed in further detail below in \ref{subsection_model_checking}.\footnote{The random number generating functions are not currently vectorized in Stan, which is why the call to ${\tt beta\_binomial\_rng}$ is inside the loop in the {\tt generated quantities} block unlike the call to ${\tt beta\_binomial\_log}$ in the {\tt model} block.} 
-
-\begin{figure}
+\begin{figure}[h]
 \begin{lstlisting}[language=Stan, frame=trBL]
 generated quantities {
   real        bias[C] ;  # bias toward majority party
@@ -456,6 +454,10 @@ generated quantities {
 \caption{Stan: {\tt generated quantities} block}
 \label{stan_generated_quantities}
 \end{figure}
+
+The {\tt generated quantities} block allows for the computation of distributions of quantities of interest without affecting the log posterior specified in the model block. In this case we compute bias towards the majority party in each congress, which can be calculated as $-0.5$ plus the inverse-logit of the {\tt b\_bias} parameter. For model checking we also simulate data from the posterior predictive distribution, which is discussed in further detail below in \ref{subsection_model_checking}.\footnote{The random number generating functions are not currently vectorized in Stan, which is why the call to ${\tt beta\_binomial\_rng}$ is inside the loop in the {\tt generated quantities} block unlike the call to ${\tt beta\_binomial\_log}$ in the {\tt model} block.} 
+
+
 
 
 \section{Results, convergence monitoring, and model checking}
