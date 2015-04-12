@@ -198,15 +198,14 @@ $$ \eta = f_\lambda(\lambda) +  f_\rho(\log{(v^{RATIO})}) = \lambda \mathbf{M}_\
 
 % Discuss challenges with sparse matrices? Either here or in the lit review section
 
-The GMRF priors for $f_{\lambda}$ and $f_{\rho}$ are expressed as prior distributions for the parameter vectors $\lambda$ and $\rho$ as 
-
-{\singlespacing
+The priors for $f_{\lambda}$ and $f_{\rho}$ are expressed as distributions over the vectors $\lambda$ and $\rho$ as 
+%
 $$ 
-p(\lambda | \tau_\lambda^2) \propto \exp{\left(-\frac{1}{2\tau_\lambda^2} \: \lambda' \, \mathbf{P}  \, \lambda \right)}, 
+p(\lambda | \tau_\lambda^2) \propto \exp{\left\{-\frac{1}{2\tau_\lambda^2} \: (\lambda - \bar{\lambda})^T \, \mathbf{P}  \, (\lambda - \bar{\lambda}) \right\}}, 
 \qquad
-p(\rho | \tau_\rho^2) \propto \exp{\left(-\frac{1}{2\tau_\rho^2} \: \rho' \, \mathbf{P} \, \rho \right)}
+p(\rho | \tau_\rho^2) \propto \exp{\left\{-\frac{1}{2\tau_\rho^2} \: (\rho - \bar{\rho})^T \, \mathbf{P} \, (\rho-\bar{\rho}) \right\}}
  $$
-}
+
 %
 \noindent where the penalty matrix $\mathbf{P}$ encodes assumptions about the temporal dependence between Congresses. %
 %\footnote{The impropriety of this prior stems from the fact that the matrix  $\mathbf{P}$ is not full rank.  The computational challenges this presents can be overcome by coding the model in a statistically equivalent but less intuitive form.} 
@@ -261,7 +260,7 @@ Stan is a probabilistic modeling language, MCMC sampler, and optimizer. The part
 
 Several characteristics of HMC, and in particular Stan's implementation of HMC, make it a more appealing choice than traditional Metropolis-Hastings (M-H) and Gibbs samplers in many cases. Both M-H and Gibbs samplers suffer from random walk behavior that leads to inefficient exploration of the parameter space. Using gradient information, HMC can find posterior modes much more efficiently, greatly reducing the number of iterations required to obtain a sufficient number of effective draws from the posterior. 
 
-M-H samplers in particular also require a great deal of tuning from the user. Although HMC itself does not overcome this problem, Stan's automatically takes care of the tuning during a warmup period before sampling. Gibbs sampling has an advantage over M-H in that it does not require tuning, but a serious drawback is that Gibbs sampling requires the full conditional distributions of all parameters. Except in a limited number of cases, full conditionals are difficult or impossible to derive, which results in a small number of prior distributions that are feasible to use with Gibbs samplers. In particular, conjugate priors are often used even when more believable priors are available. On the other hand, there is no advantage to conjugacy when using Stan. Users are free to specify priors that more accurately reflect their prior knowledge. For a more thorough introduction to Stan see \citeA{stan_development_team_stan_2015} and \citeA{gelman_bayesian_2013}.
+M-H samplers in particular also require a great deal of tuning from the user. Although HMC itself does not overcome this problem, Stan automatically takes care of the tuning during a warmup period before sampling.\footnote{Users can also manually set tuning parameters, although this is rarely needed.} Gibbs sampling has an advantage over M-H in that it does not require tuning, but a serious drawback is that Gibbs sampling requires the full conditional distributions of all parameters. Except in a limited number of cases, full conditionals are difficult or impossible to derive, which results in a small number of prior distributions that are feasible to use with Gibbs samplers. In particular, conjugate priors are often used even when more believable priors are available. On the other hand, there is no advantage to conjugacy when using Stan. Users are free to specify priors that more accurately reflect their prior knowledge. For a more thorough introduction to Stan see \citeA{stan_development_team_stan_2015} and \citeA{gelman_bayesian_2013}.
 
 \subsubsection{Data and transformed data}
 
@@ -359,7 +358,7 @@ In the {\tt transformed parameters} block, ${\tt phi\_noise}$ is transformed usi
 
 \subsubsection{Model}
 
-In the {\tt model} block the likelihood and priors are specified. More specifically, Stan uses the log-likelihood and log-priors, the sum of which equals the log-posterior up to an additive constant.\footnote{Stan works on the log scale for the same reason as most other statistical software. Logarithms help avoid the loss of the numerical precision in addition to greatly simplifying expressions for complicated probability distributions.}
+In the {\tt model} block the likelihood and priors are specified. More precisely, Stan requires the log-likelihood and log-priors, the sum of which equals the log-posterior up to an additive constant.\footnote{Stan works on the log scale for the same reason as most other statistical software. Logarithms help avoid the loss of the numerical precision in addition to greatly simplifying expressions for complicated probability distributions.}
 The priors include the standard normal on ${\tt phi\_noise}$ discussed above, normal priors for ${\tt lambda\_bar}$, ${\tt rho\_bar}$, ${\tt tau\_sq\_lambda}$, and ${\tt tau\_sq\_rho}$, and multivariate normal priors on ${\tt lambda}$ and ${\tt rho}$.\footnote{The function names in the {\tt model} block ending in ${\tt\_log}$ return the logarithm of the density function (e.g. ${\tt normal\_log(theta,0,1)}$ returns the logarithm of the normal density of ${\tt theta}$  with location 0 and scale 1). While Stan does support the familiar sampling statement notation (e.g. ${\tt theta \sim normal(0,1)}$), it is not used here because such notation is somewhat misleading. Using a sampling statement like ${\tt theta \sim normal(0,1)}$ does {\it not} mean that ${\tt theta}$ will be drawn from the standard normal distribution; it means that the logarithm of the standard normal density (up to a constant) evaluated at ${\tt theta}$ will be added to the total log probability accumulator. This can be expressed explicitly using the ${\tt increment\_log\_prob}$ and ${\tt normal\_log}$ functions; the statement ${\tt increment\_log\_prob(normal\_log(theta,0,1))}$ more accurately reflects Stan's execution under the hood. The only non-cosmetic difference between sampling statements and directly incrementing the log probability is that the former drops all constant terms. For a more detailed explanation see \citeA{stan_development_team_stan_2015}.} The Cholesky parameterization of the multivariate normal distribution is used for computational efficiency.\footnote{Instead of using {\tt multi\_normal\_cholesky} in the {\tt model} block, we could also specify the desired multivariate normal distribution in {\tt transformed parameters} by defining ${\tt lambda}$ (and analogously for ${\tt rho}$) to be  ${\tt lambda\_bar + (tau\_sq\_lambda * cholPinverse) * lambda\_noise}$, where ${\tt lambda\_noise}$ is a vector of iid standard normals. This follows from the fact that if $z$ is a $K$-vector of iid $N(0,1)$ variables and $\theta = \mu + L z$, where $LL' = \boldsymbol{\Sigma}$, then $\theta \sim \mathcal{N}_K (\mu, \boldsymbol{\Sigma})$. This is analogous to the univariate case where $\theta = \mu + \sigma z$ and $z \sim \mathcal{N}(0,1)$ implies that $\theta \sim \mathcal{N}(\mu, \sigma^2)$. Unlike the elements of $\theta$, the elements of $z$ are independent which can lead to large gains in efficiency for MCMC algorithms in terms of effective sample size \shortcite{stan_development_team_stan_2015}. This strategy did not end up being necessary for this model, but it is worth considering if effective sample sizes are low.} 
 
 At the top of the {\tt model} block two vectors, {\tt alpha} and {\tt beta}, are also declared and will be filled in while looping over observations. This allows for the BetaBinomial likelihood to be vectorized for faster computation.
@@ -490,7 +489,7 @@ Eight randomly initialized chains of 1000 iterations (including 500 discarded wa
 	\includegraphics[scale=0.7]{sections/figs/rhat}
 	\includegraphics[scale=0.7]{sections/figs/neff}
 	\includegraphics[scale=0.7]{sections/figs/mcse}
-\caption{Distributions of diagnostics computed from the MCMC draws. From left to right: ({\bf\ref{fig:ck_diagnostics}a}) $\hat{R}$ statistic,  ({\bf\ref{fig:ck_diagnostics}b}) ratio of effective sample size to total sample size ($n_{\it eff}/N$), and ({\bf\ref{fig:ck_diagnostics}c}) ratio of Monte Carlo error to posterior standard deviation ($mcse/sd$).}
+\caption{Distributions of diagnostics computed from the MCMC draws. From left to right: \newline ({\bf a}) Potential scale reduction factor $\hat{R}$ \newline ({\bf b}) Ratio of effective sample size to total sample size ($n_{\it eff}/N$) \newline ({\bf c}) Ratio of Monte Carlo error to posterior standard deviation ($mcse/sd$)}
 \label{fig:ck_diagnostics}
 \end{figure}
 
