@@ -141,13 +141,11 @@ The trends of $\log{(v_t^{DEM} / v_t^{REP} )}$ and $p^{DEM}$ over time are shown
 
 The analysis conducted by Cox and Katz concerns the estimation of parameters  $\lambda = (\lambda_t : t = 46, \dots, 106)$ representing bias (on the logit scale) toward the majority party in each $C_t$ (Congress $t$), which is done by maximum likelihood estimation of grouped logit models with linear predictor $ \lambda_t + \rho_t \log{\left(v_t^{RATIO} \right)}$. Here the parameter $\rho$ represents responsiveness, as defined above. 
 
-The estimation of $\lambda$ and $\rho$ by grouped logit models follows naturally from solving the seats-votes equation for the average seat share, which in the legislative context of Cox and Katz's example is $p^{DEM}$, the expected roll-call win share for the Democrats 
+The estimation of $\lambda$ and $\rho$ by grouped logit models follows naturally from solving the seats-votes equation for the average seat share, which in the legislative context of Cox and Katz's example is the expected roll-call win share for the majority 
 
-{\singlespacing
-$$  
-  E(p^{DEM}_t)  = \left(1 + \exp{\left\{- \lambda_t - \rho_t \log{\left( v_t^{DEM}/v_t^{REP}  \right)}\right\}}\right)^{-1},
-$$
-}
+\begin{equation*}
+  E(p_t)  = \left(1 + \exp{\left\{- \lambda_t - \rho_t \log{\left( v_t^{RATIO}  \right)}\right\}}\right)^{-1},
+\end{equation*}
 %
 \noindent which is the familiar logistic function. 
 
@@ -165,36 +163,33 @@ The ${\rm BetaBinomial}(\alpha,\beta)$ distribution can be thought of as a compo
 
 Instead of Cox and Katz's ``sort of running average" approach, the hierarchical Bayesian STAR model entails estimating the unknown functions $f_\lambda$ and $f_\rho$. As we've seen, the vector of evaluations of the unknown functions can be conveniently expressed as the products 
 
-{\singlespacing
-$$
+\begin{equation*}
 \mathbf{f}^{eval}_\lambda = \lambda \mathbf{M}_\lambda, 
 \qquad 
 \mathbf{f}^{eval}_\rho = \rho \mathbf{M}_\rho, 
-$$
-}
+\end{equation*}
 %
 \noindent of the parameter vectors $\lambda$ and $\rho$ of length 61 (the number of Congresses in the data) and  $N \times 61$ design matrices  $\mathbf{M}_\lambda$ and  $\mathbf{M}_\rho$ (where $N$ is the total number of observations in the data). The predictor $\eta$ can be written compactly in vector notation as 
 
-{\singlespacing
-$$ \eta = f_\lambda(\lambda) +  f_\rho(\log{(v^{RATIO})}) = \lambda \mathbf{M}_\lambda + \rho \mathbf{M}_\rho.$$
-}
-%
+\begin{equation*}
+ \eta = f_\lambda(\lambda) +  f_\rho(\log{(v^{RATIO})}) = \lambda \mathbf{M}_\lambda + \rho \mathbf{M}_\rho.
+\end{equation*}
 \indent The matrices $\mathbf{M}_\lambda$ and $\mathbf{M}_\rho$ are identical in structure but not content. Since $\lambda$ plays the role of an intercept -- that is, the parameters in $\lambda$ are not coefficients -- the elements of $\mathbf{M}_\lambda$ are zeros and ones indicating the Congress to which each observation pertains. For $\mathbf{M}_\rho$ each element is either a zero or the appropriate value of $\log{(v^{RATIO})}$. 
 
 % Discuss challenges with sparse matrices? Either here or in the lit review section
 
 The priors for $f_{\lambda}$ and $f_{\rho}$ are expressed as distributions over the vectors $\lambda$ and $\rho$ as 
 %
-$$ 
+\begin{equation*}
 p(\lambda | \tau_\lambda^2) \propto \exp{\left\{-\frac{1}{2\tau_\lambda^2} \: (\lambda - \bar{\lambda})^T \, \mathbf{P}  \, (\lambda - \bar{\lambda}) \right\}}, 
 \qquad
-p(\rho | \tau_\rho^2) \propto \exp{\left\{-\frac{1}{2\tau_\rho^2} \: (\rho - \bar{\rho})^T \, \mathbf{P} \, (\rho-\bar{\rho}) \right\}}
- $$
+p(\rho | \tau_\rho^2) \propto \exp{\left\{-\frac{1}{2\tau_\rho^2} \: (\rho - \bar{\rho})^T \, \mathbf{P} \, (\rho-\bar{\rho}) \right\}},
+\end{equation*}
 
 %
 \noindent where the penalty matrix $\mathbf{P}$ encodes assumptions about the temporal dependence between Congresses. %
 %\footnote{The impropriety of this prior stems from the fact that the matrix  $\mathbf{P}$ is not full rank.  The computational challenges this presents can be overcome by coding the model in a statistically equivalent but less intuitive form.} 
-To model temporal dependence such that the set of Congresses $\partial_t = \{C_{t-2}, C_{t-1}, C_{t+1}, C_{t + 2} \}$ provides information about $C_t$, the undirected $RW_2$ prior discussed earlier is used to penalize deviations from this hypothesized trend. This corresponds to constructing $\mathbf{P}$ from the adjacency matrix $\mathbf{A}$ with $a_{ij} = 1$ if $C_j \in \partial_i$ and 0 otherwise.
+To model temporal dependence such that the adjacent Congresses to $C_t$ provide information about the values of the  parameters of interest in $C_t$, the undirected random walk prior discussed in \ref{penalty_matrix} is used.
 
 As mentioned in \ref{hyperpriors}, several priors for $\tau^2_\lambda$ and $\tau^2_\rho$ were considered including inverse-gamma \shortcite{fahrmeir_bayesian_2001} and half-Cauchy \shortcite{gelman_prior_2006}, as well as half-normal. Parameter estimates were not sensitive to the choice of prior; for computational reasons -- e.g. nicer tail behavior -- half-normal priors are used for the final model presented below.
 
@@ -228,13 +223,11 @@ As mentioned in \ref{hyperpriors}, several priors for $\tau^2_\lambda$ and $\tau
 
 For notational convenience, let $y$ denote the outcome $w^{MAJ}$ and $X$ denote the observed data $n$ and $v^{RATIO}$. We require the joint posterior distribution
 
-{\singlespacing
 \begin{align*}
 p(\lambda, \rho, \tau^2_\lambda, \tau^2_\rho, \phi | y, X) & \propto p(\lambda, \rho, \tau^2_\lambda, \tau^2_\rho, \phi) p(y | \lambda, \rho, \tau^2_\lambda, \tau^2_\rho, \phi,  X)  \\
 & = p(\phi) p(\tau^2_\lambda) p(\tau^2_\rho)  p(\lambda | \tau^2_\lambda) p(\rho | \tau^2_\rho) \prod_i p(y_i | \eta_i, X_i) 
 \end{align*}
-}
-%
+
 \noindent where the second line follows from assumptions of conditional independence.\footnote{In particular we assume that hyperparameters are mutually independent in their priors, $p(\lambda | \tau^2_\lambda)$ and $p(\rho | \tau^2_\rho)$ are conditionally independent, and the observations $y_i$ are independent conditional on parameters and predictors.}
 %\footnote{The absence of the previously mentioned parameters $\alpha$, $\beta$, and $\theta$ from the expression for the posterior distribution is due to the fact that their values are determined by the other parameters.} 
 
