@@ -2,6 +2,17 @@
 \usepackage[margin=1in]{geometry} %one inch margins
 \renewcommand{\baselinestretch}{2} %double space, safe for fancy headers
 \usepackage{setspace}
+\usepackage{etoolbox}
+
+
+\BeforeBeginEnvironment{figure}{\begin{singlespace}}
+\AfterEndEnvironment{figure}{\end{singlespace}\noindent\ignorespaces}
+\BeforeBeginEnvironment{equation*}{\begin{singlespace}}
+\AfterEndEnvironment{equation*}{\end{singlespace}\noindent\ignorespaces}
+\BeforeBeginEnvironment{align*}{\begin{singlespace}}
+\AfterEndEnvironment{align*}{\end{singlespace}\noindent\ignorespaces}
+
+
 \usepackage{pslatex} %Times font
 \usepackage[bibnewpage]{apacite} %apa citation style
 \bibliographystyle{apacite}

@@ -118,13 +118,14 @@ $$ \mathbf{P} =
 $$
 }
 %
-\noindent which can be derived by computing the difference of the appropriate degree and adjacency matrices. An extension of the $RW_1$, the $RW_2$ prior used later in this thesis also considers the measurements $x^{[t-2]}$  and $x^{[t+2]}$ to be neighbors of $x^{[t]}$. 
+\noindent which can be derived by computing the difference of the appropriate degree and adjacency matrices \shortcite{brezger_generalized_2006}. The $RW_1$  can be extended to an $RW_2$ prior by also considering the measurements $x^{[t-2]}$  and $x^{[t+2]}$ to be neighbors of $x^{[t]}$. 
 
 The construction of $\mathbf{P}$ as the matrix difference $\mathbf{D} - \mathbf{A}$ also allows the estimation of an optional scalar parameter $\omega \in [0,1]$, which, as a coefficient on $\mathbf{A}$, can be interpreted as representing the strength of spatial or temporal dependence \shortcite{rue_gaussian_2005}. The interpretation of $\omega$ and its role in estimation will be discussed further in the later sections. 
 
 %\footnote{The resulting precision matrix $\mathbf{Q}= (\mathbf{D}- \gamma \mathbf{A})/\tau^2$ is the defining feature of the conditional autoregressive (CAR) model.  When $\gamma$ is fixed at 1, and thus $\mathbf{P}= \mathbf{D} - \mathbf{A}$, it is known as the intrinsic conditional autoregressive (ICAR) model.}
 
 \subsection{Hyperpriors}
+\label{hyperpriors}
 
-To complete the hierarchical model we must also specify hyperpriors $p(\tau_j^2)$.  Assigning a prior distribution to the variance hyperparameter $\tau_j^2$ allows for the simultaneous estimation of a smoothing function $f_j$ and the amount of smoothness. \citeA{fahrmeir_bayesian_2001}  and \citeA{brezger_bayesx:_2005} recommend a weakly informative but proper inverse-gamma prior on $\tau_j^2$. However, in light of concerns about this type of inverse-gamma prior raised by \citeA{gelman_prior_2006}, in this thesis several priors for $\tau^2_j$ are used and compared to check the degree to which the results are sensitive to the choice of prior.
+To complete the hierarchical model requires also specifying hyperpriors $p(\tau_j^2)$.  Assigning a prior distribution to the variance hyperparameter $\tau_j^2$ allows for the simultaneous estimation of a smoothing function $f_j$ and the amount of smoothness. \citeA{fahrmeir_bayesian_2001} and \citeA{brezger_bayesx:_2005} recommend a weakly informative but proper inverse-gamma prior on $\tau_j^2$. However, in light of concerns about this type of inverse-gamma prior raised by \citeA{gelman_prior_2006}, in this thesis several priors for $\tau^2_j$ are used and compared to check the degree to which the results are sensitive to the choice of prior.
 
