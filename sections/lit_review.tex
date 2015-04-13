@@ -7,12 +7,6 @@ This chapter draws on the relevant statistical literature to review the theory b
 \section{Hierarchical Bayesian models}
 \label{hierarchical}
 
-\begin{quote}
-{\it Clearly, there is a tension here, between parsimony and realism \dots }
-
-\hfill \shortcite[p.~302]{jackman_bayesian_2009}    
-\end{quote}
-
 One of the many challenges of fitting models to data comprising multiple groups is confronting the tradeoff between bias and variance. An analysis that disregards between-group heterogeneity can yield parameter estimates with low variance but high bias. Group-by-group analyses, on the other hand, can reduce bias at the expense of high-variance estimates \shortcite{jackman_bayesian_2009}. While complete pooling or no pooling of data across groups is sometimes called for, nonhierarchical models for hierarchical data tend to underfit or overfit the data \shortcite{gelman_bayesian_2013}. Hierarchical modeling provides a compromise by allowing parameters to vary by group at lower levels of the hierarchical while estimating population-level parameters at higher levels. 
 
 For example, consider a binomial model for the number of survey respondents $y$ in favor of a particular policy. It might be reasonable to estimate separate underlying levels of support $\theta$ for the policy for each of $R$ different geographical regions. However, it is also likely that there is some dependence between the $\theta$s that should be incorporated into the joint probability model. This can be expressed with a prior distribution for the $\theta$s conditional on shared hyperparameters $\phi$, potentially also estimating $\phi$ from the data 
@@ -99,7 +93,7 @@ The relationship between $G$ and $\theta$ -- the information they provide about 
 An extension of generalized linear models (GLMs), semiparametric structured additive regression (STAR) models replace the linear predictor with a structured additive predictor of the form
 %
 \begin{equation*}
-\eta = f_1(x_1) + \ldots + f_j(x_j) + \ldots + f_J(x_J) + u'\gamma  = u'\gamma + \sum_{j} f_j (x_j),
+\eta =  u'\gamma + \sum_{j} f_j (x_j) =  u'\gamma + f_1(x_1) + \ldots + f_j(x_j) + \ldots + f_J(x_J),
 \end{equation*}
 %
 \noindent which can include nonlinear unknown functions of covariates as well as linear components \shortcite{fahrmeir_bayesian_2001}. 

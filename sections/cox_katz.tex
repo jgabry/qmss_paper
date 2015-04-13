@@ -191,6 +191,97 @@ p(\rho | \tau_\rho^2) \propto \exp{\left\{-\frac{1}{2\tau_\rho^2} \: (\rho - \ba
 %\footnote{The impropriety of this prior stems from the fact that the matrix  $\mathbf{P}$ is not full rank.  The computational challenges this presents can be overcome by coding the model in a statistically equivalent but less intuitive form.} 
 To model temporal dependence such that the adjacent Congresses to $C_t$ provide information about the values of the  parameters of interest in $C_t$, the undirected random walk prior discussed in \ref{penalty_matrix} is used.
 
+
+\begin{figure}[htb]
+\centering
+
+\vspace{.5cm}
+
+\begin{tikzpicture}
+\node[const] (name) {$RW_1$} ;
+\node[obs, right=of name, fill=LightYellow] (r1) {$C_{46}$};
+\node[obs, right=of r1, fill=LightYellow] (r2) {$C_{47}$};
+\node[obs, right=of r2, fill=LightYellow] (r3) {$C_{48}$};
+\node[obs, right=of r3, fill=LightYellow] (r4) {$C_{49}$};
+\node[obs, right=of r4, fill=LightYellow] (r5) {$C_{50}$};
+\node[obs, right=of r5, fill=LightYellow] (r6) {$C_{51}$};
+\node[const, right=of r6] (dots1) {$\hspace{.33cm}$};
+\node[const, right=of dots1] (dots2) {$\hspace{.33cm}$};
+\node[const, right=of dots2] (dots3) {$$};
+\edge [-, color=DarkSlateGray, bend left = 5] {r1} {r2} ;
+\edge [-, color=MidnightBlue, bend right = 5] {r2} {r3} ;
+\edge [-, color=MidnightBlue, bend left = 5] {r3} {r4} ;
+\edge [-, color=MidnightBlue, bend right = 5] {r4} {r5} ;
+\edge [-, color=MidnightBlue, bend left = 5] {r5} {r6} ;
+\edge [dashed, -, color=MidnightBlue, bend right = 5] {r6} {dots1} ;
+\end{tikzpicture}
+%
+ \hspace{4cm} 
+ %
+\begin{tikzpicture}
+\node[const] (name) {$RW_2$} ;
+\node[obs, right=of name,  fill=Azure] (r1) {$C_{46}$};
+\node[obs, right=of r1, fill=Azure] (r2) {$C_{47}$};
+\node[obs, right=of r2, fill=Azure] (r3) {$C_{48}$};
+\node[obs, right=of r3, fill=Azure] (r4) {$C_{49}$};
+\node[obs, right=of r4, fill=Azure] (r5) {$C_{50}$};
+\node[obs, right=of r5, fill=Azure] (r6) {$C_{51}$};
+\node[const, right=of r6] (dots1) {$\hspace{.33cm}$};
+\node[const, right=of dots1] (dots2) {$\hspace{.33cm}$};
+\node[const, right=of dots2] (dots3) {$$};
+\edge [-, color=MidnightBlue, bend left = 5] {r1} {r2} ;
+\edge [-, color=SlateBlue, bend left=30] {r1} {r3} ;
+\edge [-, color=MidnightBlue, bend right = 5] {r2} {r3} ;
+\edge [-, color=SlateBlue, bend right=30] {r2} {r4} ;
+\edge [-, color=MidnightBlue, bend left = 5] {r3} {r4} ;
+\edge [-, color=SlateBlue, bend left=30] {r3} {r5} ;
+\edge [-, color=MidnightBlue, bend right = 5] {r4} {r5} ;
+\edge [-, color=SlateBlue, bend right=30] {r4} {r6} ;
+\edge [-, color=MidnightBlue, bend left = 5] {r5} {r6} ;
+\edge [dashed, -, color=SlateBlue, bend left=30] {r5} {dots1} ;
+\edge [dashed, -, color=MidnightBlue, bend right = 5] {r6} {dots1} ;
+\edge [dashed, -, color=SlateBlue, bend right=30] {r6} {dots2} 
+\end{tikzpicture}
+%
+ \hspace{4cm} 
+ %
+\begin{tikzpicture}
+\node[const] (name) {$RW_3$} ;
+\node[obs, right=of name,  fill=Honeydew] (r1) {$C_{46}$};
+\node[obs, right=of r1, fill=Honeydew] (r2) {$C_{47}$};
+\node[obs, right=of r2, fill=Honeydew] (r3) {$C_{48}$};
+\node[obs, right=of r3, fill=Honeydew] (r4) {$C_{49}$};
+\node[obs, right=of r4, fill=Honeydew] (r5) {$C_{50}$};
+\node[obs, right=of r5, fill=Honeydew] (r6) {$C_{51}$};
+\node[const, right=of r6] (dots1) {$\hspace{.33cm}$};
+\node[const, right=of dots1] (dots2) {$\hspace{.33cm}$};
+\node[const, right=of dots2] (dots3) {$$};
+\edge [-, color=MidnightBlue, bend left = 5] {r1} {r2} ;
+\edge [-, color=SlateBlue, bend left=30] {r1} {r3} ;
+\edge [-, color=SkyBlue, bend left=45] {r1} {r4} ;
+\edge [-, color=MidnightBlue, bend right = 5] {r2} {r3} ;
+\edge [-, color=SlateBlue, bend right=30] {r2} {r4} ;
+\edge [-, color=SkyBlue, bend right=45] {r2} {r5} ;
+\edge [-, color=MidnightBlue, bend left = 5] {r3} {r4} ;
+\edge [-, color=SlateBlue, bend left=30] {r3} {r5} ;
+\edge [-, color=SkyBlue, bend left=45] {r3} {r6} ;
+\edge [-, color=MidnightBlue, bend right = 5] {r4} {r5} ;
+\edge [-, color=SlateBlue, bend right=30] {r4} {r6} ;
+\edge [dashed, -, color=SkyBlue, bend right=45] {r4} {dots1} ;
+\edge [-, color=MidnightBlue, bend left = 5] {r5} {r6} ;
+\edge [dashed, -, color=SlateBlue, bend left=30] {r5} {dots1} ;
+\edge [dashed, -, color=SkyBlue, bend left=45] {r5} {dots2} ;
+\edge [dashed, -, color=MidnightBlue, bend right = 5] {r6} {dots1} ;
+\edge [dashed, -, color=SlateBlue, bend right=30] {r6} {dots2} 
+\edge [dashed, -, color=SkyBlue, bend right=45] {r6} {dots3} 
+\end{tikzpicture}
+\vspace{.5cm}
+
+\caption{Undirected graphs for the $RW_1$, $RW_2$, and $RW_3$ priors. Each node represents a Congress.}
+\label{fig:undirected_graphs}
+\end{figure}
+
+
 As mentioned in \ref{hyperpriors}, several priors for $\tau^2_\lambda$ and $\tau^2_\rho$ were considered including inverse-gamma \shortcite{fahrmeir_bayesian_2001} and half-Cauchy \shortcite{gelman_prior_2006}, as well as half-normal. Parameter estimates were not sensitive to the choice of prior; for computational reasons -- e.g. nicer tail behavior -- half-normal priors are used for the final model presented below.
 
 %As alluded to above, modeling the temporal dependence between Congresses is accomplished via the choice of penalty matrix $\mathbf{P}$. To model temporal dependence such that the set of Congresses $\partial_t = \{C_{t-2}, C_{t-1}, C_{t+1}, C_{t + 2} \}$ provides information about $C_t$, an undirected form of a second order random walk or autoregressive prior is used to penalize deviations from this hypothesized trend. This corresponds to setting $\mathbf{P} = \mathbf{D} - \mathbf{A}$, where $\mathbf{A}$ is a symmetric matrix with $a_{ij} = 1$ if $C_j \in \partial_i$ and 0 otherwise, and $\mathbf{D}$ is a diagonal matrix such that $\forall i = j, \: d_{ij} = \sum_j a_{ij}$. It can be useful to conceptualize the neighbor relations described by each set $\partial_t$ as an undirected graph $G$ with vertices $V=\{C_t: t=46,\dots,106\}$ and edges connecting the vertices corresponding to neighboring Congresses.\footnote{Note that here the term ``neighbor" is not reserved only for adjacent Congresses, but rather any Congress in $\partial_t$ is considered a neighbor of Congress $t$.} The penalty matrix $\mathbf{P}$ then has a zero for each missing edge and the resulting multivariate normal distribution is a GMRF with respect to $G$.
