@@ -1,0 +1,219 @@
+\subsection{Estimation using Stan}
+
+For notational convenience, let $y$ denote the outcome $w^{MAJ}$ and $X$ denote the observed data $n$ and $v^{RATIO}$. We require the joint posterior distribution
+
+\begin{align*}
+p(\lambda, \rho, \tau^2_\lambda, \tau^2_\rho, \phi | y, X) & \propto p(\lambda, \rho, \tau^2_\lambda, \tau^2_\rho, \phi) p(y | \lambda, \rho, \tau^2_\lambda, \tau^2_\rho, \phi,  X)  \\
+& = p(\phi) p(\tau^2_\lambda) p(\tau^2_\rho)  p(\lambda | \tau^2_\lambda) p(\rho | \tau^2_\rho) \prod_i p(y_i | \eta_i, X_i) 
+\end{align*}
+
+\noindent where the second line follows from assumptions of conditional independence.\footnote{In particular we assume that hyperparameters are mutually independent in their priors, $p(\lambda | \tau^2_\lambda)$ and $p(\rho | \tau^2_\rho)$ are conditionally independent, and the observations $y_i$ are independent conditional on parameters and predictors.}
+%\footnote{The absence of the previously mentioned parameters $\alpha$, $\beta$, and $\theta$ from the expression for the posterior distribution is due to the fact that their values are determined by the other parameters.} 
+
+Estimation is performed numerically by Markov chain Monte Carlo (MCMC) methods and implemented via RStan, the R interface to the probabilistic programming language and C++ library Stan \shortcite{rstan_software:2015}.\footnote{All relevant R and Stan code will be made publicly available in a repository on GitHub.} Although other existing software including BayesX, JAGS, and OpenBugs can sometimes be used to fit similar models, each has important limitations that Stan overcomes. Several of the many advantages to using Stan are discussed in the next section. Since there are no publicly available examples of fitting these models in Stan that we are aware of, the next section also provides a description of how the model is coded and estimated. 
+
+\subsubsection{Brief introduction to Stan}
+
+Stan is a probabilistic modeling language, MCMC sampler, and optimizer. The particular MCMC algorithm implemented in Stan is a variant of Hamiltonian Monte Carlo (HMC) called the no-U-turn sampler (NUTS) \shortcite{hoffman_2012}. Borrowing from physics the concepts and mathematics behind Hamiltonian dynamics, HMC treats the vector of unknown parameters as the position of a particle. In Hamiltonian dynamics, momentum and position change continuously over time, with the gradient of the particle's potential energy function --  which corresponds to the negative log posterior -- responsible for changes in momentum and momentum governing changes in position. Stan works by simulating a discretization of this process, making necessary corrections to preserve detailed balance (that is, to ensure that the resulting Markov chains are reversible). 
+
+Several characteristics of HMC, and in particular Stan's implementation of HMC, make it a more appealing choice than traditional Metropolis-Hastings (M-H) and Gibbs samplers in many cases. Both M-H and Gibbs samplers suffer from random walk behavior that leads to inefficient exploration of the parameter space. Using gradient information, HMC can find posterior modes much more efficiently, greatly reducing the number of iterations required to obtain a sufficient number of effective draws from the posterior. 
+
+M-H samplers in particular also require a great deal of tuning from the user. Although HMC itself does not overcome this problem, Stan automatically takes care of the tuning during a warmup period before sampling.\footnote{Users can also manually set tuning parameters, although this is rarely needed.} Gibbs sampling has an advantage over M-H in that it does not require tuning, but a serious drawback is that Gibbs sampling requires the full conditional distributions of all parameters. Except in a limited number of cases, full conditionals are difficult or impossible to derive, which results in a small number of prior distributions that are feasible to use with Gibbs samplers. In particular, conjugate priors are often used even when more believable priors are available. On the other hand, there is no advantage to conjugacy when using Stan. Users are free to specify priors that more accurately reflect their prior knowledge. For a more thorough introduction to Stan see \citeA{stan_development_team_stan_2015} and \citeA{gelman_bayesian_2013}.
+
+\subsubsection{Data and transformed data}
+
+\begin{figure}[h]
+\begin{lstlisting}[language=Stan, frame=trBL]
+data {
+  // dimensions 
+  int<lower=1>          N ; # number of observations 
+  int<lower=1>          C ; # number of congresses (time periods)
+  
+  // arrays of variables 
+  int<lower=1,upper=C>  cong[N] ;     # maps between obs & congress
+  int<lower=1,upper=56> nVotes[N] ;   # number of votes
+  int<lower=0,upper=55> nWins[N] ;    # number of maj party victories
+  real                  lvRatio[N] ;  # log(vRatio)
+  
+  // inverse of penalty matrix 
+  matrix[C,C]           Pinverse ; # for GMRF prior
+}
+\end{lstlisting}
+\caption{Stan: {\tt data} block}
+\label{stan_data}
+\end{figure}
+
+In the {\tt data} block of a Stan model (Figure~\ref{stan_data}) we declare the data that will be passed to Stan. The declarations below are all straightforward, except for the matrix {\tt Pinverse}, which is the inverse of the difference of the degree and adjacency matrices, which is precomputed and passed in as data. 
+
+\begin{figure}[h]
+\begin{lstlisting}[language=Stan, frame=trBL]
+transformed data {
+  real<lower=0> phi_scale ;     # scale for prior on phi
+  real<lower=0> phi_loc ;       # location for prior on phi
+  real<lower=0> tau_scale ;     # scale for priors on taus
+  real<lower=0> tau_loc ;       # location for priors on taus
+  matrix[C,C]   cholPinverse ;  # Cholesky decomposition 
+  
+  phi_loc <- 0 ;
+  phi_scale <- 10 ;
+  tau_loc <- 0 ;
+  tau_scale <- 1 ;
+  cholPinverse <- cholesky_decompose(Pinverse) ;
+}
+\end{lstlisting}
+\caption{Stan: {\tt transformed data} block}
+\label{stan_transformed_data}
+\end{figure}
+
+
+The {\tt transformed data} block (Figure~\ref{stan_transformed_data}) contains transformations of the variables declared in the {\tt data} block. In {\tt transformed data} the Cholesky decomposition of {\tt Pinverse} is computed; it will be used for a more efficient implementation of the multivariate normal distributions required for the GMRF priors. Values for the location and scale parameters of the Cauchy and normal distributions (to be used for priors) are also set in {\tt transformed data}. 
+
+
+
+
+
+
+\subsubsection{Parameters and transformed parameters}
+
+\begin{figure}[h]
+\begin{lstlisting}[language=Stan, frame=trBL]
+parameters {
+  real          lambda_bar ;  # prior mean 
+  real<lower=0> rho_bar ;     # prior mean 
+  vector[C]     lambda ;      
+  vector[C]     rho ;
+  real<lower=0> phi_noise ;    
+  real<lower=0> tau_sq_lambda ;  
+  real<lower=0> tau_sq_rho ;
+}
+\end{lstlisting}
+\caption{Stan: {\tt parameters} block}
+\label{stan_parameters}
+\end{figure}
+
+In the {\tt parameters} and {\tt transformed parameters} blocks (Figures \ref{stan_parameters}, \ref{stan_transformed_parameters}) we declare model parameters and deterministic transformations of the declared parameters. 
+
+
+%
+\noindent Parameter names with the suffix ${\tt \_noise}$ denote variables to be given standard normal priors. Stan tends to work best if the target posterior distribution is marginally standard normal and uncorrelated and parameters on a  similar scale. This means that it can help improve efficiency and convergence if variables defined in {\tt parameters} are given standard normal priors when possible and then transformed in {\tt transformed parameters} to have the desired distribution.\footnote{This is an extremely oversimplified description and a thorough examination of the issue is beyond the scope of this thesis. See \citeA{betancourt_hamiltonian_2013} and \citeA{stan_development_team_stan_2015}.} 
+
+\begin{figure}[h]
+\begin{lstlisting}[language=Stan, frame=trBL]
+transformed parameters {
+  real<lower=0> phi ;
+  
+  // inverse CDF method, from standard normal to (half) Cauchy
+  phi <- phi_loc + phi_scale * tan(pi()*(Phi_approx(phi_noise) - 0.5)) ;
+}
+\end{lstlisting}
+\caption{Stan: {\tt transformed parameters} block}
+\label{stan_transformed_parameters}
+\end{figure}
+
+In the {\tt transformed parameters} block, ${\tt phi\_noise}$ is transformed using the inverse-CDF method such that ${\tt phi}$ has a half-Cauchy distribution.\footnote{The inverse-CDF of the Cauchy distribution with location $\ell$ and scale $s$ is $F^{-1}(p, \ell,s)  = \ell + s \tan{\{ \pi (p - 0.5)\}}$. Thus if $z \sim \mathcal{N}(0,1)$ with CDF $\Phi$ then $\ell + s \tan{\{ \pi (\Phi(z) - 0.5)\}}$ is distributed Cauchy$(\ell, s)$. The transformation above therefore results in a half-Cauchy$({\tt phi\_loc}, {\tt phi\_scale})$ distribution due to the constraints that ${\tt phi\_noise}$ and ${\tt phi}$ be positive.}\footnote{The Cauchy prior can be considered weakly informative in that, while most of the mass is concentrated near the median, the tails are fat enough to allow for considerable variation. In fact, the variance of a Cauchy distribution is infinite.}
+
+
+
+\subsubsection{Model}
+
+In the {\tt model} block the likelihood and priors are specified. More precisely, Stan requires the log-likelihood and log-priors, the sum of which equals the log-posterior up to an additive constant.\footnote{Stan works on the log scale for the same reason as most other statistical software. Logarithms help avoid the loss of the numerical precision in addition to greatly simplifying expressions for complicated probability distributions.}
+The priors include the standard normal on ${\tt phi\_noise}$ discussed above, normal priors for ${\tt lambda\_bar}$, ${\tt rho\_bar}$, ${\tt tau\_sq\_lambda}$, and ${\tt tau\_sq\_rho}$, and multivariate normal priors on ${\tt lambda}$ and ${\tt rho}$.\footnote{The function names in the {\tt model} block ending in ${\tt\_log}$ return the logarithm of the density function (e.g. ${\tt normal\_log(theta,0,1)}$ returns the logarithm of the normal density of ${\tt theta}$  with location 0 and scale 1). While Stan does support the familiar sampling statement notation (e.g. ${\tt theta \sim normal(0,1)}$), it is not used here because such notation is somewhat misleading. Using a sampling statement like ${\tt theta \sim normal(0,1)}$ does {\it not} mean that ${\tt theta}$ will be drawn from the standard normal distribution; it means that the logarithm of the standard normal density (up to a constant) evaluated at ${\tt theta}$ will be added to the total log probability accumulator. This can be expressed explicitly using the ${\tt increment\_log\_prob}$ and ${\tt normal\_log}$ functions; the statement ${\tt increment\_log\_prob(normal\_log(theta,0,1))}$ more accurately reflects Stan's execution under the hood. The only non-cosmetic difference between sampling statements and directly incrementing the log probability is that the former drops all constant terms. For a more detailed explanation see \citeA{stan_development_team_stan_2015}.} The Cholesky parameterization of the multivariate normal distribution is used for computational efficiency.\footnote{Instead of using {\tt multi\_normal\_cholesky} in the {\tt model} block, we could also specify the desired multivariate normal distribution in {\tt transformed parameters} by defining ${\tt lambda}$ (and analogously for ${\tt rho}$) to be  ${\tt lambda\_bar + (tau\_sq\_lambda * cholPinverse) * lambda\_noise}$, where ${\tt lambda\_noise}$ is a vector of iid standard normals. This follows from the fact that if $z$ is a $K$-vector of iid $N(0,1)$ variables and $\theta = \mu + L z$, where $LL' = \boldsymbol{\Sigma}$, then $\theta \sim \mathcal{N}_K (\mu, \boldsymbol{\Sigma})$. This is analogous to the univariate case where $\theta = \mu + \sigma z$ and $z \sim \mathcal{N}(0,1)$ implies that $\theta \sim \mathcal{N}(\mu, \sigma^2)$. Unlike the elements of $\theta$, the elements of $z$ are independent which can lead to large gains in efficiency for MCMC algorithms in terms of effective sample size \shortcite{stan_development_team_stan_2015}. This strategy did not end up being necessary for this model, but it is worth considering if effective sample sizes are low.} 
+
+At the top of the {\tt model} block two vectors, {\tt alpha} and {\tt beta}, are also declared and will be filled in while looping over observations. This allows for the BetaBinomial likelihood to be vectorized for faster computation.
+
+\begin{figure}
+\begin{lstlisting}[language=Stan, frame=trBL]
+model {
+  // local/temporary variables
+  real                logLik ;    # log likelihood
+  real                logPrior ;  # log prior
+  vector<lower=0>[N]  alphas ;    # shape1 for beta_binomial 
+  vector<lower=0>[N]  betas ;     # shape2 for beta_binomial
+  matrix[C,C]         L_lambda ;  # cholesky of covmat
+  matrix[C,C]         L_rho ;     # cholesky of covmat
+  
+  // cholesky factors of covariance matrices
+  L_lambda <-diag_pre_multiply(rep_vector(tau_sq_lambda,C),cholPinverse);
+  L_rho <-diag_pre_multiply(rep_vector(tau_sq_rho,C),cholPinverse);
+  
+  // priors
+  logPrior <- (
+   normal_log(lambda_bar, 0, 1) + 
+   normal_log(rho_bar, 4, 2) + 
+   normal_log(phi_noise, 0, 1) +
+   normal_log(tau_sq_lambda, tau_loc, tau_scale) +
+   normal_log(tau_sq_rho, tau_loc, tau_scale) +
+   multi_normal_cholesky_log(lambda,rep_vector(lambda_bar,C),L_lambda) +
+   multi_normal_cholesky_log(rho,rep_vector(rho_bar,C),L_rho) 
+  ) ;
+  
+  // likelihood
+  for (n in 1:N) {
+    real eta_n ;
+    real theta_n ;
+    eta_n <- lambda[cong[n]] + rho[cong[n]] * lvRatio[n] ;
+    theta_n   <- inv_logit(eta_n) ;    
+    alphas[n] <- theta_n * phi ;
+    betas[n]  <- (1 - theta_n) * phi ;
+  }
+  // vectorized BetaBinomial
+  logLik <- beta_binomial_log(nWins, nVotes, alphas, betas) ; 
+  
+  increment_log_prob(logPrior + logLik) ; 
+}
+\end{lstlisting}
+\caption{Stan: {\tt model} block}
+\label{stan_model}
+\end{figure}
+%
+Expressing the likelihood in this way is perhaps less intuitive than incrementing the likelihood within the loop (and without creating the temporary {\tt alpha} and {\tt beta} variables)
+
+\begin{lstlisting}[language=Stan, backgroundcolor=]
+  logLik <- 0.0 ;
+  for (n in 1:N) {
+   ...
+   logLik <- logLik +
+   		beta_binomial_log(nWins[n], nVotes[n], 
+   				  theta_n * phi, (1-theta_n) * phi) ;
+  }
+\end{lstlisting}
+%
+\noindent but filling in the elements of {\tt alpha} and {\tt beta} inside the loop and then using the vectorized version of the BetaBinomial is much faster. 
+
+Note also that in the {\tt model} block the prior distributions are placed only on variables declared in {\tt parameters}  and not those defined in {\tt transformed parameters}. This is not a requirement, but assigning distributions to parameters declared in {\tt transformed parameters} requires the additional -- and potentially onerous -- step of accounting for changes in curvature due to the change of variables. For scalar parameters this entails calculating the log absolute derivative of the transform and incrementing the log probability by this value. For multivariate changes of variables the log probability must be incremented by the log absolute determinant of the corresponding Jacobian matrix.\footnote{This is explained in greater detail and with examples in \citeA{stan_development_team_stan_2015}. In brief, this adjustment is required to account for how the scale of the variable obtained by the transformation varies with respect to the original variable.}
+
+
+
+
+\subsubsection{Generated quantities}
+
+\begin{figure}[h]
+\begin{lstlisting}[language=Stan, frame=trBL]
+generated quantities {
+  real        bias[C] ;  # bias toward majority party
+  int         y_rep[N] ; # draws from posterior predictive distribution
+  
+  for (c in 1:C) 
+    bias[c] <- inv_logit(lambda[c]) - 0.5 ;
+  
+  for (n in 1:N) {
+    real eta_n ;
+    real theta_n ;
+    real alpha_n ;
+    real beta_n ;
+    eta_n <- lambda[cong[n]] + rho[cong[n]] * lvRatio[n] ;
+    theta_n <- inv_logit(eta_n) ;    
+    alpha_n <- phi * theta_n ;
+    beta_n  <- phi * (1 - theta_n) ;
+    // RNGs not vectorized in Stan so do it inside loop
+    y_rep[n] <- beta_binomial_rng(nVotes[n], alpha_n, beta_n) ;
+  }
+}
+\end{lstlisting}
+\caption{Stan: {\tt generated quantities} block}
+\label{stan_generated_quantities}
+\end{figure}
+
+The {\tt generated quantities} block allows for the computation of distributions of quantities of interest without affecting the log posterior specified in the model block. In this case we compute bias towards the majority party in each congress, which can be calculated as $-0.5$ plus the inverse-logit of the {\tt b\_bias} parameter. For model checking we also simulate data from the posterior predictive distribution, which is discussed in further detail below in \ref{subsection_model_checking}.\footnote{The random number generating functions are not currently vectorized in Stan, which is why the call to ${\tt beta\_binomial\_rng}$ is inside the loop in the {\tt generated quantities} block unlike the call to ${\tt beta\_binomial\_log}$ in the {\tt model} block.} 
+
+

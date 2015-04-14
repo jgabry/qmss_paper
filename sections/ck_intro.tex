@@ -1,0 +1,30 @@
+\chapter{Empirical example: Cox and Katz (2007)}
+\label{cox_katz}
+
+To demonstrate the benefits of the methods proposed by \citeA{wawro_designing_2014}, we conduct a reanalysis of \citeA{cox_gerrymandering_2007}, a study of bias and responsiveness in congressional roll-call votes in the 46th through 106th US Congresses.\footnote{In the legislative context of Cox and Katz's analysis, bias refers to an advantage for one party in the efficiency with which its votes translate into legislative victories. For example, consider a majority party with only a small advantage in the number of seats its members occupy. If the majority is well-organized and unified it may win a much larger proportion of votes than its slim seat advantage would typically suggest \shortcite{cox_gerrymandering_2007}.} Cox and Katz hypothesize and find evidence of persistent bias towards the majority party during the periods from 1889-1910 and 1961-2000, known as the period of ``czar rule" and the post-packing era, respectively. Using the same data, we find much weaker evidence for bias towards the majority over the time periods in question. 
+
+
+
+
+
+%Cox and Katz (2007) is a study of bias and responsiveness in the 46th through 106th Congresses. Cox and Katz are predominantly concerned with estimating the parameters $\lambda = \{\lambda_t : t = 46, \dots, 106\}$ representing bias in each $C_t$ (Congress t), which they do by maximum likelihood estimation of grouped logit models with linear predictor
+%
+%$$ \lambda_t + \rho_t \log{\left(\frac{v_t}{1 - v_t} \right)}, $$
+%
+%\noindent where $\rho$ is responsiveness and $v$ is average Democratic vote share. They use this strategy to estimate what they call ``a sort of running average" of the bias across time, where they take as their estimate of $\lambda_t$ the average estimate of $\lambda$ over the seven congresses centered at $t$, i.e., the set of congresses $\{C_\tau, t-3 \leq \tau \leq t+3\}$. 
+%
+%Note that this strategy requires using the data for each Congress up to seven times, which can lead to overly precise parameter estimates. Moreover, the estimation strategy used by Cox and Katz treats each of the seven congresses centered at $t$ as providing {\it equal} information about $\lambda_t$, which is unlikely to be the case. 
+%
+%Many new possibilities are available to us if we can reformulate their model according to the Bayesian approach advocated above. Let $x = \log{\left(\frac{v_t}{1 - v_t} \right)}$. We use the addititive predictor
+%
+%$$ \eta = f_1(\lambda) + f_2(x),$$
+%
+%where the $f_j$ are unknown functions such that the vector of evaluations of $f_j$ can be expressed as the product $\theta_j \mathbf{M}_j$ of a parameter vector $\theta_j$ and a design matrix $\mathbf{M}_j$.  We can then assign a prior for $f_j$ by specifying a suitable $\mathbf{M}_j$ and a (typically partially improper) multivariate normal prior 
+%%
+%$$ p(\theta_j | \tau_j^2) \propto \exp{\left(-\frac{1}{2\tau_j^2} \theta_j^T \mathbf{P}^{-1} \theta_j \right)}, $$
+%
+%\noindent where we choose to specify a penalty matrix $\mathbf{P}$ that represents our assumptions of temporal dependence between adjacent Congresses. 
+%
+% For example, suppose we want to specify a prior that reflects a belief that $\partial_t = \{C_{t-2}, C_{t-1}, C_{t+1}, C_{t + 2} \}$ provides information about $C_t$. We will refer to the elements of $\partial_t$ as the {\it neighbors} of $C_t$. We can use an undirected form of a second order random walk or autoregressive prior to penalize deviations from this hypothesized trend, which corresponds to setting $\mathbf{P} = \mathbf{D} - \mathbf{A}$, where $\mathbf{A}$ is a symmetric matrix with $a_{ij} = 1$ if $C_j \in \partial_i$ and 0 otherwise, and $\mathbf{D}$ is a diagonal matrix such that $\forall i = j, \: d_{ij} = \sum_j a_{ij}$.\footnote{It can be useful to conceptualize the neighbor relations as an undirected graph $G$ with vertices $V= \{C_t, t = 46, \dots, 106\}$ and edges connecting the vertices corresponding to neighboring congresses. The penalty matrix $\mathbf{P}$ then has a zero for each missing edge and the resulting multivariate normal distribution is said to form a Markov random field with respect to $G$. The matrices $\mathbf{A}$ and $\mathbf{D}$ are commonly referred to as the adjacency and degree matrices.}   We then specify a hyperprior $p(\tau^2)$, completing the hierarchical model and enabling the concurrent estimation of the unknown function $f$ and the amount of nonparametric smoothing (Fahrmeir and Lang, 2000). 
+% 
+% Note that this approach enables us to account for temporal dependence without reusing the data to estimate separate a model for each congress. The Bayesian approach advocated here allows the specification of more intricate temporal relationships that better reflect our assumptions of association across time (and across space in other contexts). For example, a second order random walk prior treats $C_{t-1}$ and $C_{t+1}$ as being more informative than $C_{t-2}$ and $C_{t+2}$ about bias in $C_t$, which seems more reasonable. 

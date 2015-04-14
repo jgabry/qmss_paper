@@ -4,8 +4,6 @@
 \usepackage{setspace}
 \usepackage{etoolbox}
 
-
-
 \BeforeBeginEnvironment{equation*}{\begin{singlespace}}
 \AfterEndEnvironment{equation*}{\end{singlespace}\noindent\ignorespaces}
 \BeforeBeginEnvironment{align*}{\begin{singlespace}}
@@ -28,7 +26,20 @@
 \usepackage{amsmath}
 \usepackage{amssymb}
 
-\usepackage[svgnames]{xcolor} % Required to specify font color
+%\usepackage[svgnames]{xcolor} 
+\usepackage[usenames,dvipsnames,svgnames,table]{xcolor} % Required to specify font color
+
+%\definecolor{mygray}{HTML}{222222}
+%\definecolor{myblue}{HTML}{6699CC}
+
+%\definecolor{myblue1}{HTML}{'011f4b} 
+\definecolor{myblue2}{HTML}{03396c}
+\definecolor{myblue3}{HTML}{005b96}
+\definecolor{myblue4}{HTML}{6497b1}
+\definecolor{myblue5}{HTML}{b3cde0}
+\definecolor{myorange}{HTML}{e0c6b3}
+\definecolor{mypurple}{HTML}{b3b7e0}
+\definecolor{mygreen}{HTML}{64b1a5}
 
 \usepackage[document]{ragged2e} % left alignment (ragged right) instead of justified
 \setlength{\RaggedRightParindent}{.5in} % 1/2 inch paragraph indentation
@@ -105,70 +116,70 @@ xrightmargin=2em
 \node[const, right=of r6] (dots1) {$\hspace{.33cm}$};
 \node[const, right=of dots1] (dots2) {$\hspace{.33cm}$};
 \node[const, right=of dots2] (dots3) {$$};
-\edge [-, color=DarkSlateGray, bend left = 5] {r1} {r2} ;
-\edge [-, color=MidnightBlue, bend right = 5] {r2} {r3} ;
-\edge [-, color=MidnightBlue, bend left = 5] {r3} {r4} ;
-\edge [-, color=MidnightBlue, bend right = 5] {r4} {r5} ;
-\edge [-, color=MidnightBlue, bend left = 5] {r5} {r6} ;
-\edge [dashed, -, color=MidnightBlue, bend right = 5] {r6} {dots1} ;
+\edge [-, color=myblue3, bend left = 5] {r1} {r2} ;
+\edge [-, color=myblue3, bend right = 5] {r2} {r3} ;
+\edge [-, color=myblue3, bend left = 5] {r3} {r4} ;
+\edge [-, color=myblue3, bend right = 5] {r4} {r5} ;
+\edge [-, color=myblue3, bend left = 5] {r5} {r6} ;
+\edge [dashed, -, color=myblue3, bend right = 5] {r6} {dots1} ;
 \end{tikzpicture}
 %
  \hspace{4cm} 
  %
 \begin{tikzpicture}
-\node[obs, fill=Azure] (r1) {$C_{46}$};
-\node[obs, right=of r1, fill=Azure] (r2) {$C_{47}$};
-\node[obs, right=of r2, fill=Azure] (r3) {$C_{48}$};
-\node[obs, right=of r3, fill=Azure] (r4) {$C_{49}$};
-\node[obs, right=of r4, fill=Azure] (r5) {$C_{50}$};
-\node[obs, right=of r5, fill=Azure] (r6) {$C_{51}$};
+\node[obs, fill=mypurple] (r1) {$C_{46}$};
+\node[obs, right=of r1, fill=mypurple] (r2) {$C_{47}$};
+\node[obs, right=of r2, fill=mypurple] (r3) {$C_{48}$};
+\node[obs, right=of r3, fill=mypurple] (r4) {$C_{49}$};
+\node[obs, right=of r4, fill=mypurple] (r5) {$C_{50}$};
+\node[obs, right=of r5, fill=mypurple] (r6) {$C_{51}$};
 \node[const, right=of r6] (dots1) {$\hspace{.33cm}$};
 \node[const, right=of dots1] (dots2) {$\hspace{.33cm}$};
 \node[const, right=of dots2] (dots3) {$$};
-\edge [-, color=MidnightBlue, bend left = 5] {r1} {r2} ;
-\edge [-, color=SlateBlue, bend left=30] {r1} {r3} ;
-\edge [-, color=MidnightBlue, bend right = 5] {r2} {r3} ;
-\edge [-, color=SlateBlue, bend right=30] {r2} {r4} ;
-\edge [-, color=MidnightBlue, bend left = 5] {r3} {r4} ;
-\edge [-, color=SlateBlue, bend left=30] {r3} {r5} ;
-\edge [-, color=MidnightBlue, bend right = 5] {r4} {r5} ;
-\edge [-, color=SlateBlue, bend right=30] {r4} {r6} ;
-\edge [-, color=MidnightBlue, bend left = 5] {r5} {r6} ;
-\edge [dashed, -, color=SlateBlue, bend left=30] {r5} {dots1} ;
-\edge [dashed, -, color=MidnightBlue, bend right = 5] {r6} {dots1} ;
-\edge [dashed, -, color=SlateBlue, bend right=30] {r6} {dots2} 
+\edge [-, color=myblue3, bend left = 5] {r1} {r2} ;
+\edge [-, color=myblue4, bend left=30] {r1} {r3} ;
+\edge [-, color=myblue3, bend right = 5] {r2} {r3} ;
+\edge [-, color=myblue4, bend right=30] {r2} {r4} ;
+\edge [-, color=myblue3, bend left = 5] {r3} {r4} ;
+\edge [-, color=myblue4, bend left=30] {r3} {r5} ;
+\edge [-, color=myblue3, bend right = 5] {r4} {r5} ;
+\edge [-, color=myblue4, bend right=30] {r4} {r6} ;
+\edge [-, color=myblue3, bend left = 5] {r5} {r6} ;
+\edge [dashed, -, color=myblue4, bend left=30] {r5} {dots1} ;
+\edge [dashed, -, color=myblue3, bend right = 5] {r6} {dots1} ;
+\edge [dashed, -, color=myblue4, bend right=30] {r6} {dots2} 
 \end{tikzpicture}
 %
  \hspace{4cm} 
  %
 \begin{tikzpicture}
-\node[obs,  fill=Honeydew] (r1) {$C_{46}$};
-\node[obs, right=of r1, fill=Honeydew] (r2) {$C_{47}$};
-\node[obs, right=of r2, fill=Honeydew] (r3) {$C_{48}$};
-\node[obs, right=of r3, fill=Honeydew] (r4) {$C_{49}$};
-\node[obs, right=of r4, fill=Honeydew] (r5) {$C_{50}$};
-\node[obs, right=of r5, fill=Honeydew] (r6) {$C_{51}$};
+\node[obs,  fill=mygreen] (r1) {$C_{46}$};
+\node[obs, right=of r1, fill=mygreen] (r2) {$C_{47}$};
+\node[obs, right=of r2, fill=mygreen] (r3) {$C_{48}$};
+\node[obs, right=of r3, fill=mygreen] (r4) {$C_{49}$};
+\node[obs, right=of r4, fill=mygreen] (r5) {$C_{50}$};
+\node[obs, right=of r5, fill=mygreen] (r6) {$C_{51}$};
 \node[const, right=of r6] (dots1) {$\hspace{.33cm}$};
 \node[const, right=of dots1] (dots2) {$\hspace{.33cm}$};
 \node[const, right=of dots2] (dots3) {$$};
-\edge [-, color=MidnightBlue, bend left = 5] {r1} {r2} ;
-\edge [-, color=SlateBlue, bend left=30] {r1} {r3} ;
-\edge [-, color=SkyBlue, bend left=45] {r1} {r4} ;
-\edge [-, color=MidnightBlue, bend right = 5] {r2} {r3} ;
-\edge [-, color=SlateBlue, bend right=30] {r2} {r4} ;
-\edge [-, color=SkyBlue, bend right=45] {r2} {r5} ;
-\edge [-, color=MidnightBlue, bend left = 5] {r3} {r4} ;
-\edge [-, color=SlateBlue, bend left=30] {r3} {r5} ;
-\edge [-, color=SkyBlue, bend left=45] {r3} {r6} ;
-\edge [-, color=MidnightBlue, bend right = 5] {r4} {r5} ;
-\edge [-, color=SlateBlue, bend right=30] {r4} {r6} ;
-\edge [dashed, -, color=SkyBlue, bend right=45] {r4} {dots1} ;
-\edge [-, color=MidnightBlue, bend left = 5] {r5} {r6} ;
-\edge [dashed, -, color=SlateBlue, bend left=30] {r5} {dots1} ;
-\edge [dashed, -, color=SkyBlue, bend left=45] {r5} {dots2} ;
-\edge [dashed, -, color=MidnightBlue, bend right = 5] {r6} {dots1} ;
-\edge [dashed, -, color=SlateBlue, bend right=30] {r6} {dots2} 
-\edge [dashed, -, color=SkyBlue, bend right=45] {r6} {dots3} 
+\edge [-, color=myblue3, bend left = 5] {r1} {r2} ;
+\edge [-, color=myblue4, bend left=30] {r1} {r3} ;
+\edge [-, color=myblue5, bend left=45] {r1} {r4} ;
+\edge [-, color=myblue3, bend right = 5] {r2} {r3} ;
+\edge [-, color=myblue4, bend right=30] {r2} {r4} ;
+\edge [-, color=myblue5, bend right=45] {r2} {r5} ;
+\edge [-, color=myblue3, bend left = 5] {r3} {r4} ;
+\edge [-, color=myblue4, bend left=30] {r3} {r5} ;
+\edge [-, color=myblue5, bend left=45] {r3} {r6} ;
+\edge [-, color=myblue3, bend right = 5] {r4} {r5} ;
+\edge [-, color=myblue4, bend right=30] {r4} {r6} ;
+\edge [dashed, -, color=myblue5, bend right=45] {r4} {dots1} ;
+\edge [-, color=myblue3, bend left = 5] {r5} {r6} ;
+\edge [dashed, -, color=myblue4, bend left=30] {r5} {dots1} ;
+\edge [dashed, -, color=myblue5, bend left=45] {r5} {dots2} ;
+\edge [dashed, -, color=myblue3, bend right = 5] {r6} {dots1} ;
+\edge [dashed, -, color=myblue4, bend right=30] {r6} {dots2} 
+\edge [dashed, -, color=myblue5, bend right=45] {r6} {dots3} 
 \end{tikzpicture}
 \end{center}
 \vspace{2cm}
@@ -205,7 +216,11 @@ xrightmargin=2em
 
 \input{sections/introduction}
 \input{sections/lit_review}
-\input{sections/cox_katz}
+\input{sections/ck_intro}
+\input{sections/ck_data}
+\input{sections/ck_stats}
+\input{sections/ck_stan}
+\input{sections/ck_results}
 %\include{sections/farhang_katznelson}
 
 

@@ -1,0 +1,189 @@
+\section{Statistical and computational methods}
+\subsection{Description of statistical model}
+\label{subsection_methods}
+
+\citeA{cox_gerrymandering_2007} propose two methods for checking their hypothesis of bias towards the majority party during the czar rule and post-packing eras. One strategy is to estimate separate models for four historical time periods of interest. \citeA{goodrich_designing_2012} point out that this ``imposes a particular periodization scheme that, while consistent with received wisdom, may or may not be the correct one" (p. 16). Cox and Katz's second approach is more promising in that it allows for greater parameter heterogeneity and makes fewer a priori assumptions about the underlying data generating process.\footnote{It is worth noting that making assumptions about the data generating process is in general not only unavoidable but also extremely important. The problem with the assumptions required for Cox and Katz's first method is not that they are implausible, but rather that periodization schemes per se are convenient abstractions that, in the context of quantitative historical analysis, can enforce a theoretically motivated but not empirically justified structure that should be learned rather than imposed.} However, as demonstrated below, there are other drawbacks to their design that can be overcome by following the recommendations in \citeA{wawro_designing_2014}. 
+
+Let $C$ denote the number of unique Congresses (time periods) in the data. The analysis conducted by Cox and Katz concerns the estimation of parameters  $\lambda = (\lambda_t : t = 1, \dots, C)$ representing bias (on the logit scale) toward the majority party in each Congress $t$, which is done by maximum likelihood estimation of grouped logit models with linear predictor $ \lambda_t + \rho_t \log{\left(v_t^{RATIO} \right)}$. Here the parameter $\rho$ represents responsiveness, as defined above. 
+
+The estimation of $\lambda$ and $\rho$ by grouped logit models follows naturally from solving the seats-votes equation for the average seat share, which in the legislative context of Cox and Katz's example is the expected roll-call win share for the majority 
+
+\begin{equation*}
+  E(p_t)  = \left(1 + \exp{\left\{- \lambda_t - \rho_t \log{\left( v_t^{RATIO}  \right)}\right\}}\right)^{-1},
+\end{equation*}
+%
+\noindent which is the familiar logistic function. 
+
+Cox and Katz's strategy is to estimate what they call ``a sort of running average" of bias across time (p. 116). To do this they take as their estimate of $\lambda_t$ the average estimate of $\lambda$ over the seven congresses centered at $t$. However, this approach to modeling temporal dependence in $\lambda$ requires reusing the data to estimate models for each Congress (the observations for each Congress are used up to seven times).  \citeA{goodrich_designing_2012} point out that such recycling data can lead to overly precise parameter estimates. 
+
+Although Cox and Katz do not acknowledge this potential for exaggerated precision, they do call attention to another important concern. To obtain reasonable estimates, their method requires a nontrivial amount of variation in average vote share between the seven Congresses centered at $t$.\footnote{Technically there will be fewer than seven Congresses for $t < 4$ as well as $t > C- 3$, but the idea is the same regardless of the exact number.}
+
+
+The alternative analysis presented below overcomes both of these concerns by employing a hierarchical Bayesian framework with partial pooling. Following Cox and Katz, a BetaBinomial likelihood is used, however the linear predictor is replaced by the structured additive predictor $\eta$. The data model with logit link function is 
+
+$$w_t^{MAJ} | n_t, \alpha_t, \beta_t \sim {\rm BetaBinomial}(n_t, \alpha_t, \beta_t),$$
+$$ \alpha_t = \theta_t \phi, \qquad \beta_t = \theta_t (1 - \phi),$$
+$$ \log\left({\frac{\theta_t}{1 - \theta_t}}\right) = \eta_t = f_{\lambda}(\lambda_t) + f_\rho \left(\log{(v_t^{RATIO})}\right).$$
+
+The ${\rm BetaBinomial}(\alpha,\beta)$ distribution can be thought of as a compound distribution resulting from a binomial distribution where the probability parameter follows a ${\rm Beta}(\alpha,\beta)$ distribution. In other words, rather than assuming that the Congress-by-Congress probabilities of a majority party roll-call victory are independent and identically distributed -- in which case the binomial distribution would suffice -- the BetaBinomial  allows for direct modeling of the variation in the probability of victory through the Beta distribution. The parameters $\alpha$ and $\beta$ govern the shape of the Beta distribution, however it is both more intuitive and computationally attractive to reparameterize in terms of the mean $\theta$, which requires introducing a parameter $\phi$ as the sum of $\alpha$ and $\beta$.  This parameterization allows for ${\rm logit}(\theta)$ to be estimated by the semi-parametric structured additive predictor $\eta$ of the STAR model. 
+
+Instead of Cox and Katz's ``sort of running average" approach, the hierarchical Bayesian STAR model entails estimating the unknown functions $f_\lambda$ and $f_\rho$. As we've seen, the vector of evaluations of the unknown functions can be conveniently expressed as the products 
+
+\begin{equation*}
+\mathbf{f}^{eval}_\lambda = \lambda \mathbf{M}_\lambda, 
+\qquad 
+\mathbf{f}^{eval}_\rho = \rho \mathbf{M}_\rho, 
+\end{equation*}
+%
+\noindent of the parameter vectors $\lambda \in \mathbb{R}^C$ and $\rho \in \mathbb{R}^C$ and  $N \times C$ design matrices  $\mathbf{M}_\lambda$ and  $\mathbf{M}_\rho$ (where $N$ is the total number of observations in the data). The predictor $\eta$ can be written compactly in vector notation as 
+
+\begin{equation*}
+ \eta = f_\lambda(\lambda) +  f_\rho(\log{(v^{RATIO})}) = \lambda \mathbf{M}_\lambda + \rho \mathbf{M}_\rho.
+\end{equation*}
+\indent The matrices $\mathbf{M}_\lambda$ and $\mathbf{M}_\rho$ are identical in structure but not content. Since $\lambda$ plays the role of an intercept -- that is, the parameters in $\lambda$ are not coefficients -- the elements of $\mathbf{M}_\lambda$ are zeros and ones indicating the Congress to which each observation pertains. For $\mathbf{M}_\rho$ each element is either a zero or the appropriate value of $\log{(v^{RATIO})}$. 
+
+% Discuss challenges with sparse matrices? Either here or in the lit review section
+
+The priors for $f_{\lambda}$ and $f_{\rho}$ are expressed as distributions over the vectors $\lambda$ and $\rho$ as 
+%
+\begin{equation*}
+p(\lambda | \tau_\lambda^2) \propto \exp{\left\{-\frac{1}{2\tau_\lambda^2} \: (\lambda - \bar{\lambda})^T \, \mathbf{P}  \, (\lambda - \bar{\lambda}) \right\}}, 
+\qquad
+p(\rho | \tau_\rho^2) \propto \exp{\left\{-\frac{1}{2\tau_\rho^2} \: (\rho - \bar{\rho})^T \, \mathbf{P} \, (\rho-\bar{\rho}) \right\}},
+\end{equation*}
+
+%
+\noindent where the penalty matrix $\mathbf{P}$ encodes assumptions about the temporal dependence between Congresses. %
+%\footnote{The impropriety of this prior stems from the fact that the matrix  $\mathbf{P}$ is not full rank.  The computational challenges this presents can be overcome by coding the model in a statistically equivalent but less intuitive form.} 
+To model temporal dependence such that the neighbors of Congress $t$ also provide information about the values of the parameters of interest at time $t$, the undirected random walk (RW) prior discussed in \ref{penalty_matrix} is used. However, theoretical as well as computational challenges can arise depending on how adjacency is defined. 
+
+Using the notation introduced in \ref{undirected_graphs} we can define adjacency by specifying $\partial^\mathbf{G}_t$ for all $t = 1, \dots, \left\vert{C}\right\vert$
+
+\begin{equation*}
+\partial^\mathbf{G}_t = \{C_\tau : \left| \tau - t \right| <= k \}
+\end{equation*}
+
+\noindent where $k \leq C$ is a positive integer and $\mathbf{G}$ is the undirected graph with nodes $V = \{1, \dots, \left\vert{C}\right\vert\}$ and edges implied by $\partial^\mathbf{G}$.
+   The penalty matrix corresponding to a $RW_k$ prior over the parameter vector $\lambda \in \mathbb{R}^{\left\vert{C}\right\vert}$ has rank $|C| - k$ and the resulting precision matrix is not positive definite. 
+    
+  undirected RW prior can be used regardless of how adjacency is defined, however certain practical challenges arise. For example, suppose we choose adjacency to mean $\partial_t = \{C_\tau : \left| \tau - t \right| <= 3\}$
+
+
+
+\begin{figure}[htb]
+\centering
+
+\vspace{.5cm}
+
+\begin{tikzpicture}
+\node[const] (name) {$RW_1$} ;
+\node[obs, right=of name, fill=LightYellow] (r1) {$C_{46}$};
+\node[obs, right=of r1, fill=LightYellow] (r2) {$C_{47}$};
+\node[obs, right=of r2, fill=LightYellow] (r3) {$C_{48}$};
+\node[obs, right=of r3, fill=LightYellow] (r4) {$C_{49}$};
+\node[obs, right=of r4, fill=LightYellow] (r5) {$C_{50}$};
+\node[obs, right=of r5, fill=LightYellow] (r6) {$C_{51}$};
+\node[const, right=of r6] (dots1) {$\hspace{.33cm}$};
+\node[const, right=of dots1] (dots2) {$\hspace{.33cm}$};
+\node[const, right=of dots2] (dots3) {$$};
+\edge [-, color=DarkSlateGray, bend left = 5] {r1} {r2} ;
+\edge [-, color=MidnightBlue, bend right = 5] {r2} {r3} ;
+\edge [-, color=MidnightBlue, bend left = 5] {r3} {r4} ;
+\edge [-, color=MidnightBlue, bend right = 5] {r4} {r5} ;
+\edge [-, color=MidnightBlue, bend left = 5] {r5} {r6} ;
+\edge [dashed, -, color=MidnightBlue, bend right = 5] {r6} {dots1} ;
+\end{tikzpicture}
+%
+ \hspace{4cm} 
+ %
+\begin{tikzpicture}
+\node[const] (name) {$RW_2$} ;
+\node[obs, right=of name,  fill=Azure] (r1) {$C_{46}$};
+\node[obs, right=of r1, fill=Azure] (r2) {$C_{47}$};
+\node[obs, right=of r2, fill=Azure] (r3) {$C_{48}$};
+\node[obs, right=of r3, fill=Azure] (r4) {$C_{49}$};
+\node[obs, right=of r4, fill=Azure] (r5) {$C_{50}$};
+\node[obs, right=of r5, fill=Azure] (r6) {$C_{51}$};
+\node[const, right=of r6] (dots1) {$\hspace{.33cm}$};
+\node[const, right=of dots1] (dots2) {$\hspace{.33cm}$};
+\node[const, right=of dots2] (dots3) {$$};
+\edge [-, color=MidnightBlue, bend left = 5] {r1} {r2} ;
+\edge [-, color=SlateBlue, bend left=30] {r1} {r3} ;
+\edge [-, color=MidnightBlue, bend right = 5] {r2} {r3} ;
+\edge [-, color=SlateBlue, bend right=30] {r2} {r4} ;
+\edge [-, color=MidnightBlue, bend left = 5] {r3} {r4} ;
+\edge [-, color=SlateBlue, bend left=30] {r3} {r5} ;
+\edge [-, color=MidnightBlue, bend right = 5] {r4} {r5} ;
+\edge [-, color=SlateBlue, bend right=30] {r4} {r6} ;
+\edge [-, color=MidnightBlue, bend left = 5] {r5} {r6} ;
+\edge [dashed, -, color=SlateBlue, bend left=30] {r5} {dots1} ;
+\edge [dashed, -, color=MidnightBlue, bend right = 5] {r6} {dots1} ;
+\edge [dashed, -, color=SlateBlue, bend right=30] {r6} {dots2} 
+\end{tikzpicture}
+%
+ \hspace{4cm} 
+ %
+\begin{tikzpicture}
+\node[const] (name) {$RW_3$} ;
+\node[obs, right=of name,  fill=Honeydew] (r1) {$C_{46}$};
+\node[obs, right=of r1, fill=Honeydew] (r2) {$C_{47}$};
+\node[obs, right=of r2, fill=Honeydew] (r3) {$C_{48}$};
+\node[obs, right=of r3, fill=Honeydew] (r4) {$C_{49}$};
+\node[obs, right=of r4, fill=Honeydew] (r5) {$C_{50}$};
+\node[obs, right=of r5, fill=Honeydew] (r6) {$C_{51}$};
+\node[const, right=of r6] (dots1) {$\hspace{.33cm}$};
+\node[const, right=of dots1] (dots2) {$\hspace{.33cm}$};
+\node[const, right=of dots2] (dots3) {$$};
+\edge [-, color=MidnightBlue, bend left = 5] {r1} {r2} ;
+\edge [-, color=SlateBlue, bend left=30] {r1} {r3} ;
+\edge [-, color=SkyBlue, bend left=45] {r1} {r4} ;
+\edge [-, color=MidnightBlue, bend right = 5] {r2} {r3} ;
+\edge [-, color=SlateBlue, bend right=30] {r2} {r4} ;
+\edge [-, color=SkyBlue, bend right=45] {r2} {r5} ;
+\edge [-, color=MidnightBlue, bend left = 5] {r3} {r4} ;
+\edge [-, color=SlateBlue, bend left=30] {r3} {r5} ;
+\edge [-, color=SkyBlue, bend left=45] {r3} {r6} ;
+\edge [-, color=MidnightBlue, bend right = 5] {r4} {r5} ;
+\edge [-, color=SlateBlue, bend right=30] {r4} {r6} ;
+\edge [dashed, -, color=SkyBlue, bend right=45] {r4} {dots1} ;
+\edge [-, color=MidnightBlue, bend left = 5] {r5} {r6} ;
+\edge [dashed, -, color=SlateBlue, bend left=30] {r5} {dots1} ;
+\edge [dashed, -, color=SkyBlue, bend left=45] {r5} {dots2} ;
+\edge [dashed, -, color=MidnightBlue, bend right = 5] {r6} {dots1} ;
+\edge [dashed, -, color=SlateBlue, bend right=30] {r6} {dots2} 
+\edge [dashed, -, color=SkyBlue, bend right=45] {r6} {dots3} 
+\end{tikzpicture}
+\vspace{.5cm}
+
+\caption{Undirected graphs for the $RW_1$, $RW_2$, and $RW_3$ priors. Each node represents a Congress.}
+\label{fig:undirected_graphs}
+\end{figure}
+
+
+As mentioned in \ref{hyperpriors}, several priors for $\tau^2_\lambda$ and $\tau^2_\rho$ were considered including inverse-gamma \shortcite{fahrmeir_bayesian_2001} and half-Cauchy \shortcite{gelman_prior_2006}, as well as half-normal. Parameter estimates were not sensitive to the choice of prior; for computational reasons -- e.g. nicer tail behavior -- half-normal priors are used for the final model presented below.
+
+%As alluded to above, modeling the temporal dependence between Congresses is accomplished via the choice of penalty matrix $\mathbf{P}$. To model temporal dependence such that the set of Congresses $\partial_t = \{C_{t-2}, C_{t-1}, C_{t+1}, C_{t + 2} \}$ provides information about $C_t$, an undirected form of a second order random walk or autoregressive prior is used to penalize deviations from this hypothesized trend. This corresponds to setting $\mathbf{P} = \mathbf{D} - \mathbf{A}$, where $\mathbf{A}$ is a symmetric matrix with $a_{ij} = 1$ if $C_j \in \partial_i$ and 0 otherwise, and $\mathbf{D}$ is a diagonal matrix such that $\forall i = j, \: d_{ij} = \sum_j a_{ij}$. It can be useful to conceptualize the neighbor relations described by each set $\partial_t$ as an undirected graph $G$ with vertices $V=\{C_t: t=46,\dots,106\}$ and edges connecting the vertices corresponding to neighboring Congresses.\footnote{Note that here the term ``neighbor" is not reserved only for adjacent Congresses, but rather any Congress in $\partial_t$ is considered a neighbor of Congress $t$.} The penalty matrix $\mathbf{P}$ then has a zero for each missing edge and the resulting multivariate normal distribution is a GMRF with respect to $G$.
+%
+%The matrices $\mathbf{A}$ and $\mathbf{D}$ are commonly referred to as the adjacency and degree matrices because encoded in $\mathbf{A}$ are all neighbor relationships (in this case a temporal relationship between Congresses) and the diagonal elements of $\mathbf{D}$ are the number of neighbors (the degree) of each vertex.
+%
+%To illustrate why this form of $\mathbf{P}$ captures these particular assumptions, consider $N$ measurements of a variable $x$, with each measurement made at one of $T$ evenly spaced points in time. For simplicity assume $N=T$ and that unit of $x$ is a unit of time.  The sequence of equally spaced time measurements $(x^{[t]})_{t=1}^T$ corresponds to a grid of points on a line.  Fahrmeir & Lang (2001) suggest several possible choices for a prior on a smooth function $f(x)$, the simplest of which is a first order random walk ($RW_1$) prior.  Under the $RW_1$ prior, the first differences
+%
+%$$\Delta_t = f(x^{[t]}) - f(x^{[t-1]})$$
+%
+%are treated as independent and identically distributed standard normal random variables. 
+%
+%While this formulation of the $RW_1$ prior is {\it directed}, conditioning also on $f(x^{[t+1]})$ -- one step into the future -- forms an undirected $RW_1$, where the neighbors of time $t$ are both $t-1$ and $t+1$.  The associated graph $G$ therefore has vertices $V=\{v_t : t=1,\dots,T\}$, each of which has two neighbors, with the exception of $v_1$ and $v_T$, which have one neighbor. The penalty matrix $\mathbf{P}$ corresponding to the $RW_1$ prior with equally with equally spaced observations is the tridiagonal matrix
+%
+%$$ \mathbf{P} = \mathbf{D} - \mathbf{A} =  \begin{bmatrix}
+%1  	& -1 	& 		& 	& \\
+%-1  	& 2 	& -1 		& 	& \\
+%  	& -1 	& \ddots 	& \ddots	& \\
+%  	&  	& \ddots 	& 2 	& -1\\
+%  	&  	& 		& -1 	& 1\\
+%\end{bmatrix}
+%.
+%$$
+%
+%The $RW_2$ prior used in this thesis is simply an extension of the $RW_1$ to the case where, in addition to $x^{[t-1]}$  and $x^{[t+1]}$, the measurements $x^{[t-2]}$  and $x^{[t+2]}$ are also considered neighbors of $x^{[t]}$. The construction of $\mathbf{P}$ as the matrix difference $\mathbf{D} - \mathbf{A}$ also allows the estimation of an optional scalar parameter $\gamma \in [0,1]$, which, as a coefficient on $\mathbf{A}$, can be interpreted as representing the strength of dependence (Rue and Held, 2005).\footnote{The resulting precision matrix $\mathbf{Q}= (\mathbf{D}- \gamma \mathbf{A})/\tau^2$ is the defining feature of the conditional autoregressive (CAR) model.  When $\gamma$ is fixed at 1, and thus $\mathbf{P}= \mathbf{D} - \mathbf{A}$, it is known as the intrinsic conditional autoregressive (ICAR) model.} In the results section it will be demonstrated that the degree to which the proposed model fits the data depends (slightly but non-negligibly) on the inclusion of $\gamma$. 
+
+
