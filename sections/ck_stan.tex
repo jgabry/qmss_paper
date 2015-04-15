@@ -10,7 +10,7 @@ p(\lambda, \rho, \tau^2_\lambda, \tau^2_\rho, \phi | y, X) & \propto p(\lambda, 
 \noindent where the second line follows from assumptions of conditional independence.\footnote{In particular we assume that hyperparameters are mutually independent in their priors, $p(\lambda | \tau^2_\lambda)$ and $p(\rho | \tau^2_\rho)$ are conditionally independent, and the observations $y_i$ are independent conditional on parameters and predictors.}
 %\footnote{The absence of the previously mentioned parameters $\alpha$, $\beta$, and $\theta$ from the expression for the posterior distribution is due to the fact that their values are determined by the other parameters.} 
 
-Estimation is performed numerically by Markov chain Monte Carlo (MCMC) methods and implemented via RStan, the R interface to the probabilistic programming language and C++ library Stan \shortcite{rstan_software:2015}.\footnote{All relevant R and Stan code will be made publicly available in a repository on GitHub.} Although other existing software including BayesX, JAGS, and OpenBugs can sometimes be used to fit similar models, each has important limitations that Stan overcomes. Several of the many advantages to using Stan are discussed in the next section. Since there are no publicly available examples of fitting these models in Stan that we are aware of, the next section also provides a description of how the model is coded and estimated. 
+Estimation is performed numerically by Markov chain Monte Carlo (MCMC) methods and implemented via RStan, the R interface to the probabilistic programming language and C++ library Stan \shortcite{rstan_software:2015}. Although other existing software including BayesX, JAGS, and OpenBugs can sometimes be used to fit similar models, each has important limitations that Stan overcomes. Several of the many advantages to using Stan are discussed in the next section. Since there are no publicly available examples of fitting these models in Stan that we are aware of, the next section also provides a description of how the model is coded and estimated. 
 
 \subsubsection{Brief introduction to Stan}
 
@@ -43,7 +43,7 @@ data {
 \label{stan_data}
 \end{figure}
 
-In the {\tt data} block of a Stan model (Figure~\ref{stan_data}) we declare the data that will be passed to Stan. The declarations below are all straightforward, except for the matrix {\tt Pinverse}, which is the inverse of the difference of the degree and adjacency matrices, which is precomputed and passed in as data. 
+In the {\tt data} block of a Stan model (Figure~\ref{stan_data}) we declare the data that will be passed to Stan. The declarations below are all straightforward, except for the matrix {\tt Pinverse}, which is the inverse of the difference of the degree and adjacency matrices, which is precomputed and passed in as data.\footnote{R code for all  computations and data manipulation required before estimation in Stan will be made publicly available on GitHub.} 
 
 \begin{figure}[h]
 \begin{lstlisting}[language=Stan, frame=trBL]
@@ -205,7 +205,6 @@ generated quantities {
     theta_n <- inv_logit(eta_n) ;    
     alpha_n <- phi * theta_n ;
     beta_n  <- phi * (1 - theta_n) ;
-    // RNGs not vectorized in Stan so do it inside loop
     y_rep[n] <- beta_binomial_rng(nVotes[n], alpha_n, beta_n) ;
   }
 }
@@ -214,6 +213,6 @@ generated quantities {
 \label{stan_generated_quantities}
 \end{figure}
 
-The {\tt generated quantities} block allows for the computation of distributions of quantities of interest without affecting the log posterior specified in the model block. In this case we compute bias towards the majority party in each congress, which can be calculated as $-0.5$ plus the inverse-logit of the {\tt b\_bias} parameter. For model checking we also simulate data from the posterior predictive distribution, which is discussed in further detail below in \ref{subsection_model_checking}.\footnote{The random number generating functions are not currently vectorized in Stan, which is why the call to ${\tt beta\_binomial\_rng}$ is inside the loop in the {\tt generated quantities} block unlike the call to ${\tt beta\_binomial\_log}$ in the {\tt model} block.} 
+The {\tt generated quantities} block allows for the computation of distributions of quantities of interest without affecting the log posterior specified in the model block. In this case we compute bias towards the majority party in each congress, which can be calculated as $-0.5$ plus the inverse-logit of the {\tt b\_bias} parameter. For model checking we also simulate data from the posterior predictive distribution, which is discussed in further detail in section \ref{subsection_model_checking}.\footnote{The random number generating functions are not currently vectorized in Stan, which is why the call to ${\tt beta\_binomial\_rng}$ is inside the loop in the {\tt generated quantities} block unlike the call to ${\tt beta\_binomial\_log}$ in the {\tt model} block.} 
 
 
