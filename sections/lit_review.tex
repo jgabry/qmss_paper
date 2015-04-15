@@ -2,7 +2,15 @@
 \chapter{Literature review}
 \label{lit_review}
 
-This chapter draws on the relevant statistical literature to review the theory behind the model applied in the empirical example in Chapter~\ref{cox_katz}. Section \ref{hierarchical} is a brief review of hierarchical models. Gaussian Markov random fields (GMRF) are defined and discussed in \ref{gmrf}. Finally, \ref{star} discusses Bayesian structured additive regression (STAR) models. 
+This chapter begins with a brief summary of the ideas presented in \citeA{wawro_designing_2014} and then draws on the relevant literature to review the statistical theory underlying the model developed for the empirical example in Chapter~\ref{cox_katz}. Section \ref{hierarchical} is a brief review of hierarchical models. Gaussian Markov random fields (GMRF) are defined and discussed in \ref{gmrf}. Finally, \ref{star} discusses Bayesian structured additive regression (STAR) models. 
+
+\section{Designing historical social scientific inquiry}
+\label{wawro}
+
+The recommendations of \citeA{wawro_designing_2014} are many, but the central theme is that the epistemological concerns of historians are not antithetical to a quantitative treatment. Indeed, greater sensitivity to these issues motivates the use of more interesting quantitative methods and naturally leads to a fully Bayesian approach.   Bayesian hierarchical models have the flexibility to accommodate parameter variation, account for unobserved heterogeneity, and, through prior probability distributions, can be further tailored to incorporate existing knowledge from previous studies and historically motivated hypothesis  \cite{wawro_designing_2014, goodrich_designing_2012}.  In particular, Wawro and Katznelson suggest that semi-parametric mixed models -- in particular,  Bayesian structured additive regression (STAR) models -- and the flexible family of Gaussian Markov random fields priors can be used to model interesting temporal and spatial relationships.
+
+Accounting for variation over time (and potentially space) commonly involves estimating a large number of parameters relevant to the size of the available data, which can present a number of statistical challenges (e.g. under-identification). While Bayesian methods present their own unique set of burdens, many of which are highlighted throughout this thesis, they provide a more promising way forward than classical approaches estimated by maximum likelihood methods. 
+
 
 \section{Hierarchical Bayesian models}
 \label{hierarchical}
