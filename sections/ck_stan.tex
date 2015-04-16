@@ -195,6 +195,6 @@ generated quantities {
 \label{stan_generated_quantities}
 \end{figure}
 
-The {\tt generated quantities} block (Figure~\ref{stan_generated_quantities}) allows for the computation of distributions of quantities of interest without affecting the log posterior specified in the model block. In this case the estimated bias towards the majority party in each congress is computed. For model checking, simulations from the posterior predictive distribution are also generated (see section~\ref{subsection_model_checking}).\footnote{The random number generating functions are not currently vectorized in Stan, which is why the call to ${\tt beta\_binomial\_rng}$ is inside the loop in the {\tt generated quantities} block unlike the call to ${\tt beta\_binomial\_log}$ in the {\tt model} block.} 
+The {\tt generated quantities} block (Figure~\ref{stan_generated_quantities}) allows for the computation of distributions of quantities of interest without affecting the log posterior specified in the model block. In this case the estimated bias towards the majority party in each congress is computed. For model checking (section~\ref{subsection_model_checking}), simulations from the posterior predictive distribution are also generated.\footnote{The call to ${\tt beta\_binomial\_rng}$ is inside the loop in the {\tt generated quantities} block unlike the call to ${\tt beta\_binomial\_log}$ in the {\tt model} block because random number generating functions are not currently vectorized in Stan.} 
 
 

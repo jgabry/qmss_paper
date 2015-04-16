@@ -8,8 +8,8 @@
 \AfterEndEnvironment{equation*}{\end{singlespace}\noindent\ignorespaces}
 \BeforeBeginEnvironment{align*}{\begin{singlespace}}
 \AfterEndEnvironment{align*}{\end{singlespace}\noindent\ignorespaces}
-\BeforeBeginEnvironment{figure}{\begin{singlespace}}
-\AfterEndEnvironment{figure}{\end{singlespace}\noindent\ignorespaces}
+%\BeforeBeginEnvironment{figure}{\begin{singlespace}}
+%\AfterEndEnvironment{figure}{\end{singlespace}\noindent\ignorespaces}
 \BeforeBeginEnvironment{quote}{\begin{singlespace}}
 \AfterEndEnvironment{quote}{\end{singlespace}\noindent\ignorespaces}
 
@@ -21,7 +21,9 @@
 \usepackage{enumerate} %for lists
 \usepackage{booktabs}
 %\usepackage{verbatim}
-\usepackage[multiple, flushmargin]{footmisc} % 'multiple' to allow multiple footnotes separated by comma, 'flushmargin' to remove indentation of footnotes
+\usepackage[bottom, multiple, flushmargin]{footmisc} % 'multiple' to allow multiple footnotes separated by comma, 'flushmargin' to remove indentation of footnotes
+
+%\raggedbottom
 
 \usepackage{amsmath}
 \usepackage{amssymb}
@@ -236,6 +238,7 @@ xrightmargin=2em
 
 
 \nocite{r_software}
+\nocite{breslow_approximate_1993}
 
 \begingroup
     \setstretch{1}
