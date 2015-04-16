@@ -10,7 +10,7 @@ Let $RC_{it}$ denote the result of roll-call vote $i$ in Congress $t$ such that
 \begin{equation*}
 RC_{it} =
 \begin{cases} 
-1, & \text{ if Democratic position wins vote $i$ in Congress $t$,} \\
+1, & \text{ if Democratic position wins vote $i$ in Congress $t$,} \\[10pt]
 0, & \text{ if Republican position wins vote $i$ in Congress $t$.}
 \end{cases}
 \end{equation*}
@@ -46,11 +46,11 @@ RC_{it} =
 
 
 
-\noindent The outcomes of interest are the number of wins ($w_t^{MAJ}$) and proportion of wins ($p_t^{MAJ}$) for the majority party position in each Congress $t$
-%
+\noindent The outcomes of interest are the number of wins ($w_t^{MAJ}$) and proportion of wins ($p_t^{MAJ}$) for the majority party position in each Congress $t$,
+
 \begin{equation*}
 w_t^{MAJ} =
-\begin{cases} \sum_{i=1}^{n_t} RC_{it}, & \text{ if Democrats hold majority}, \\
+\begin{cases} \sum_{i=1}^{n_t} RC_{it}, & \text{ if Democrats hold majority}, \\[10pt]
 n_t - \sum_{i=1}^{n_t} RC_{it}, & \text{ if Republicans hold majority,} \\
 \end{cases}
 \end{equation*}
@@ -68,31 +68,30 @@ v_t^{DEM} = n_t^{-1} \sum_{i=1}^{n_t} \pi_{it}^{DEM}, \qquad v_t^{REP} = 1 - v_t
 \begin{equation*}
 v^{RATIO} = 
 \begin{cases} 
-v_t^{DEM} / v_t^{REP}, & \text{ if Democrats hold the majority,} \\
+v_t^{DEM} / v_t^{REP}, & \text{ if Democrats hold the majority,} \\[10pt]
 v_t^{REP} / v_t^{DEM}, & \text{ if Republicans hold the majority.} \\
 \end{cases}
 \end{equation*}
 
 
-Figure~\ref{fig:log_vratio_vs_ptdem} shows $\log{(v_t^{DEM} / v_t^{REP} )}$ plotted against $p^{DEM}$. The shape of the curve is similar to the standard seats-votes curve used in analyses of bias and responsiveness in electoral contexts. The curve is analogous in the legislative context of Cox and Katz's example, although we are not concerned with seat shares in a given Congress but rather roll-call vote shares ($p_t^{DEM}$ and $p_t^{REP}$). This is discussed further in section \ref{subsection_methods} in relation to the statistical model. 
-
 %FIGURE
-\begin{figure}[h]
+\begin{figure}
 \centering
 	\includegraphics[scale=0.75]{sections/figs/logvratio_vs_pdem}
 \caption{$\log{(v_t^{DEM} / v_t^{REP} )}$  vs. $p^{DEM}$}
 \label{fig:log_vratio_vs_ptdem}
 \end{figure}
-%
+
+Figure~\ref{fig:log_vratio_vs_ptdem} shows $\log{(v_t^{DEM} / v_t^{REP} )}$ plotted against $p^{DEM}$. The shape of the curve is similar to the standard seats-votes curve used in analyses of bias and responsiveness in electoral contexts. The curve is analogous in the legislative context of Cox and Katz's example, although we are not concerned with seat shares in a given Congress but rather roll-call vote shares ($p_t^{DEM}$ and $p_t^{REP}$). This is discussed further in section \ref{subsection_methods} in relation to the statistical model. 
 
 The trends of $\log{(v_t^{DEM} / v_t^{REP} )}$ and $p^{DEM}$ over time are shown in the visual summary of the data set in Figure~\ref{fig:data_summary}.
 
 
 %FIGURE
-\begin{figure}[h!]
+\begin{figure}[p]
 \centering
 	\includegraphics[scale=0.75]{sections/figs/vis_summary}
-\caption{Visual summary of the data}
+\caption{Visual summary of the data. The trends of $\log{(v_t^{DEM} / v_t^{REP} )}$ and $p^{DEM}$ by Congress are plotted on top, with the number of roll-call votes per Congress below. Background shading is used to differentiate between Democratic and Republican majorities.}
 \label{fig:data_summary}
 \end{figure}
 %

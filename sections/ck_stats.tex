@@ -27,7 +27,7 @@ $$ \log\left({\frac{\theta_t}{1 - \theta_t}}\right) = \eta_t = f_{\lambda}(\lamb
 
 The ${\rm BetaBinomial}(\alpha,\beta)$ distribution can be thought of as a compound distribution resulting from a binomial distribution where the probability parameter follows a ${\rm Beta}(\alpha,\beta)$ distribution. In other words, rather than assuming that the Congress-by-Congress probabilities of a majority party roll-call victory are independent and identically distributed -- in which case the binomial distribution would suffice -- the BetaBinomial  allows for direct modeling of the variation in the probability of victory through the Beta distribution. The parameters $\alpha$ and $\beta$ govern the shape of the Beta distribution, however it is both more intuitive and computationally attractive to reparameterize in terms of the mean $\theta$, which requires introducing a parameter $\phi$ as the sum of $\alpha$ and $\beta$.  This parameterization allows for ${\rm logit}(\theta)$ to be estimated by the semi-parametric structured additive predictor $\eta$ of the STAR model. 
 
-Instead of Cox and Katz's ``sort of running average" approach, the hierarchical Bayesian STAR model entails estimating the unknown functions $f_\lambda$ and $f_\rho$. As discussed in section~\ref{star}, the vectors of evaluations of the unknown functions can be conveniently expressed as the products 
+The hierarchical Bayesian STAR model entails estimating the unknown functions $f_\lambda$ and $f_\rho$. As discussed in section~\ref{star}, the vectors of function evaluations are the products 
 
 \begin{equation*}
 \mathbf{f}^{eval}_\lambda = \lambda \mathbf{M}_\lambda, 
@@ -35,7 +35,7 @@ Instead of Cox and Katz's ``sort of running average" approach, the hierarchical 
 \mathbf{f}^{eval}_\rho = \rho \mathbf{M}_\rho, 
 \end{equation*}
 %
-\noindent of the parameter vectors $\lambda \in \mathbb{R}^C$ and $\rho \in \mathbb{R}^C$ and  $N \times C$ design matrices  $\mathbf{M}_\lambda$ and  $\mathbf{M}_\rho$ (where $N$ is the total number of observations in the data). The predictor $\eta$ can be written compactly in vector notation as 
+\noindent of the parameter vectors $\lambda \in \mathbb{R}^C$ and $\rho \in \mathbb{R}^C$ and  $N \times C$ design matrices  $\mathbf{M}_\lambda$ and  $\mathbf{M}_\rho$ (where $N$ is the number of observations). The predictor $\eta$ can be written compactly in vector notation as 
 
 \begin{equation*}
  \eta = f_\lambda(\lambda) +  f_\rho(\log{(v^{RATIO})}) = \lambda \mathbf{M}_\lambda + \rho \mathbf{M}_\rho.
@@ -45,14 +45,13 @@ Instead of Cox and Katz's ``sort of running average" approach, the hierarchical 
 % Discuss challenges with sparse matrices? Either here or in the lit review section
 
 The priors for $f_{\lambda}$ and $f_{\rho}$ are expressed as distributions over the vectors $\lambda$ and $\rho$ as 
-%
+
 \begin{equation*}
-p(\lambda | \tau_\lambda^2) \propto \exp{\left\{-\frac{1}{2\tau_\lambda^2} \: (\lambda - \bar{\lambda})^T \, \mathbf{P}  \, (\lambda - \bar{\lambda}) \right\}}, 
+p(\lambda | \tau_\lambda^2) \propto \exp{\left\{-\frac{1}{2\tau_\lambda^2} \: (\lambda - \bar{\lambda})^\intercal \, \mathbf{P}  \, (\lambda - \bar{\lambda}) \right\}}, 
 \qquad
-p(\rho | \tau_\rho^2) \propto \exp{\left\{-\frac{1}{2\tau_\rho^2} \: (\rho - \bar{\rho})^T \, \mathbf{P} \, (\rho-\bar{\rho}) \right\}},
+p(\rho | \tau_\rho^2) \propto \exp{\left\{-\frac{1}{2\tau_\rho^2} \: (\rho - \bar{\rho})^\intercal \, \mathbf{P} \, (\rho-\bar{\rho}) \right\}},
 \end{equation*}
 
-%
 \noindent where the penalty matrix $\mathbf{P}$ encodes assumptions about the temporal dependence between Congresses.\footnote{As mentioned in \ref{hyperpriors}, several priors for $\tau^2_\lambda$ and $\tau^2_\rho$ were considered including inverse-gamma \shortcite{fahrmeir_bayesian_2001} and half-Cauchy \shortcite{gelman_prior_2006}, as well as half-normal. Parameter estimates were not sensitive to the choice of prior. For computational reasons (nicer tail behavior) half-normal priors are used for the final model presented below.}
 
 To model temporal dependence such that the neighbors of Congress $t$ also provide information about the values of the parameters of interest at time $t$, the undirected random walk (RW) prior discussed in \ref{penalty_matrix} is used. Using the notation introduced in \ref{undirected_graphs} we can define adjacency by specifying the neighborhoods for all Congresses (time periods) $t = 1, \dots, C$

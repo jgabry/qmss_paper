@@ -23,10 +23,12 @@
 %\usepackage{verbatim}
 \usepackage[bottom, multiple, flushmargin]{footmisc} % 'multiple' to allow multiple footnotes separated by comma, 'flushmargin' to remove indentation of footnotes
 
-%\raggedbottom
+%\raggedbottom 
+\addtolength{\topskip}{0pt plus 10pt}
 
-\usepackage{amsmath}
-\usepackage{amssymb}
+\usepackage{amsmath,amsfonts,amssymb}
+\newcommand{\mtrx}[1]{\mathbf{#1}}
+%\usepackage{amssymb}
 
 %\usepackage[svgnames]{xcolor} 
 \usepackage[usenames,dvipsnames,svgnames,table]{xcolor} % Required to specify font color
