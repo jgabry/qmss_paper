@@ -53,7 +53,7 @@ p(\rho | \tau_\rho^2) \propto \exp{\left\{-\frac{1}{2\tau_\rho^2} \: (\rho - \ba
 \end{equation*}
 
 %
-\noindent where the penalty matrix $\mathbf{P}$ encodes assumptions about the temporal dependence between Congresses.\footnote{As mentioned in \ref{hyperpriors}, several priors for $\tau^2_\lambda$ and $\tau^2_\rho$ were considered including inverse-gamma \shortcite{fahrmeir_bayesian_2001} and half-Cauchy \shortcite{gelman_prior_2006}, as well as half-normal. Parameter estimates were not sensitive to the choice of prior; for computational reasons -- e.g. nicer tail behavior -- half-normal priors are used for the final model presented below.}
+\noindent where the penalty matrix $\mathbf{P}$ encodes assumptions about the temporal dependence between Congresses.\footnote{As mentioned in \ref{hyperpriors}, several priors for $\tau^2_\lambda$ and $\tau^2_\rho$ were considered including inverse-gamma \shortcite{fahrmeir_bayesian_2001} and half-Cauchy \shortcite{gelman_prior_2006}, as well as half-normal. Parameter estimates were not sensitive to the choice of prior. For computational reasons (nicer tail behavior) half-normal priors are used for the final model presented below.}
 
 To model temporal dependence such that the neighbors of Congress $t$ also provide information about the values of the parameters of interest at time $t$, the undirected random walk (RW) prior discussed in \ref{penalty_matrix} is used. Using the notation introduced in \ref{undirected_graphs} we can define adjacency by specifying the neighborhoods for all Congresses (time periods) $t = 1, \dots, C$
 
