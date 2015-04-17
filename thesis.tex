@@ -4,6 +4,9 @@
 \usepackage{setspace}
 \usepackage{etoolbox}
 
+%\usepackage[nottoc]{tocbibind}
+\usepackage[toc,page]{appendix} % for appendices %
+
 \BeforeBeginEnvironment{equation*}{\begin{singlespace}}
 \AfterEndEnvironment{equation*}{\end{singlespace}\noindent\ignorespaces}
 \BeforeBeginEnvironment{align*}{\begin{singlespace}}
@@ -17,7 +20,7 @@
 %\usepackage[T1]{fontenc}
 %\usepackage[utf8]{inputenc}
 \usepackage[slantedGreek]{mathptmx}
-\usepackage[bibnewpage]{apacite} %apa citation style
+\usepackage[bibnewpage, nosectionbib]{apacite} %apa citation style
 \bibliographystyle{apacite}
 %\usepackage[pdfborder={0 0 0}]{hyperref}%for hyperlinks without ugly boxes
 \usepackage{graphicx} %for figures
@@ -249,10 +252,19 @@ xrightmargin=2em
 \nocite{r_software}
 \nocite{breslow_approximate_1993}
 
+
+
 \begingroup
     \setstretch{1}
     \setlength\bibitemsep{1\baselineskip}
     \bibliography{bibliography.bib}
+%     \addcontentsline{toc}{chapter}{References}
 \endgroup
+
+
+\begin{appendices}
+\input{sections/appendixA}
+\end{appendices}
+
 
 \end{document}

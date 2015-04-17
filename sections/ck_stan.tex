@@ -59,7 +59,7 @@ transformed data {
 \label{stan_data}
 \end{figure}
 
-In the {\tt data} block of a Stan model (Figure~\ref{stan_data}) we declare the data that will be passed to Stan. In this case, the declarations are all straightforward, defining the dimensions and variables discussed in section~\ref{ckdata}. The exception is the matrix {\tt Pinverse}, which is the inverse of the difference of the degree and adjacency matrices, which is precomputed and passed in as data.\footnote{R code for all  computations and data manipulation required before estimation in Stan will be made publicly available on GitHub.} 
+In the {\tt data} block of a Stan model (Figure~\ref{stan_data}) we declare the data that will be passed to Stan. In this case, the declarations are all straightforward, defining the dimensions and variables discussed in section~\ref{ckdata}. The exception is the matrix {\tt Pinverse}, which is the inverse of the difference of the degree and adjacency matrices, which is precomputed and passed in as data (see Appendix~\ref{AppendixA}).\footnote{R code for all  computations and data manipulation required before estimation in Stan will be made publicly available on GitHub.}
 
 The {\tt transformed data} block (also Figure~\ref{stan_data}) contains transformations of the variables declared in the {\tt data} block and defines other fixed quantities to be used throughout the rest of the model. In {\tt transformed data} the Cholesky decomposition of {\tt Pinverse} is computed; it will be used for a more efficient implementation of the multivariate normal distributions required for the GMRF priors. Values for the location and scale parameters of the Cauchy and normal distributions (to be used for priors) are also set in {\tt transformed data}. 
 
