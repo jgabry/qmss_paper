@@ -30,26 +30,27 @@ The ${\rm BetaBinomial}(\alpha,\beta)$ distribution can be thought of as a compo
 The hierarchical Bayesian STAR model entails estimating the unknown functions $f_\lambda$ and $f_\rho$. As discussed in section~\ref{star}, the vectors of function evaluations are the products 
 
 \begin{equation*}
-\mathbf{f}^{eval}_\lambda = \lambda \mathbf{M}_\lambda, 
+\mathbf{f}^{eval}_\lambda = \mtrx{M}_\lambda \lambda, 
 \qquad 
-\mathbf{f}^{eval}_\rho = \rho \mathbf{M}_\rho, 
+\mathbf{f}^{eval}_\rho =  \mtrx{M}_\rho \rho, 
 \end{equation*}
 %
-\noindent of the parameter vectors $\lambda \in \mathbb{R}^C$ and $\rho \in \mathbb{R}^C$ and  $N \times C$ design matrices  $\mathbf{M}_\lambda$ and  $\mathbf{M}_\rho$ (where $N$ is the number of observations). The predictor $\eta$ can be written compactly in vector notation as 
+\noindent of the parameter vectors $\lambda \in \mathbb{R}^C$ and $\rho \in \mathbb{R}^C$ premultiplied by the  $N \times C$ design matrices  $\mathbf{M}_\lambda$ and  $\mathbf{M}_\rho$ (where $N$ is the number of observations). The predictor $\eta$ can be written compactly in vector notation as 
 
 \begin{equation*}
- \eta = f_\lambda(\lambda) +  f_\rho(\log{(v^{RATIO})}) = \lambda \mathbf{M}_\lambda + \rho \mathbf{M}_\rho.
+ \eta = f_\lambda(\lambda) +  f_\rho(\log{(v^{RATIO})}) = \mtrx{M}_\lambda \lambda  + \mtrx{M}_\rho \rho.
 \end{equation*}
-\indent The matrices $\mathbf{M}_\lambda$ and $\mathbf{M}_\rho$ are identical in structure but not content. Since $\lambda$ plays the role of an intercept -- that is, the parameters in $\lambda$ are not coefficients -- the elements of $\mathbf{M}_\lambda$ are zeros and ones indicating the Congress to which each observation pertains. For $\mathbf{M}_\rho$ each element is either a zero or the appropriate value of $\log{(v^{RATIO})}$. 
+\indent The matrices $\mathbf{M}_\lambda$ and $\mathbf{M}_\rho$ are identical in structure but not content. The elements of $\mathbf{M}_\lambda$ are zeros and ones indicating the Congress to which each observation pertains. For $\mathbf{M}_\rho$ each element is either a zero or the appropriate value of $\log{(v^{RATIO})}$. 
 
 % Discuss challenges with sparse matrices? Either here or in the lit review section
 
-The priors for $f_{\lambda}$ and $f_{\rho}$ are expressed as distributions over the vectors $\lambda$ and $\rho$ as 
+Priors for $f_{\lambda}$ and $f_{\rho}$ are expressed as distributions over the vectors $\lambda$ and $\rho$ as 
 
 \begin{equation*}
-p(\lambda | \tau_\lambda^2) \propto \exp{\left\{-\frac{1}{2\tau_\lambda^2} \: (\lambda - \bar{\lambda})^\intercal \, \mathbf{P}  \, (\lambda - \bar{\lambda}) \right\}}, 
-\qquad
-p(\rho | \tau_\rho^2) \propto \exp{\left\{-\frac{1}{2\tau_\rho^2} \: (\rho - \bar{\rho})^\intercal \, \mathbf{P} \, (\rho-\bar{\rho}) \right\}},
+p(\lambda | \tau_\lambda^2, \bar{\lambda}) \propto \exp{\left\{-\frac{1}{2\tau_\lambda^2} \: \left(\lambda - \bar{\lambda}\right)^\intercal  \mtrx{P}   \left(\lambda - \bar{\lambda}\right) \right\}}, 
+\end{equation*}
+\begin{equation*}
+p(\rho | \tau_\rho^2, \bar{\rho}) \propto \exp{\left\{-\frac{1}{2\tau_\rho^2} \: \left(\rho - \bar{\rho}\right)^\intercal  \mtrx{P} \left(\rho-\bar{\rho}\right) \right\}},
 \end{equation*}
 
 \noindent where the penalty matrix $\mathbf{P}$ encodes assumptions about the temporal dependence between Congresses.\footnote{As mentioned in \ref{hyperpriors}, several priors for $\tau^2_\lambda$ and $\tau^2_\rho$ were considered including inverse-gamma \shortcite{fahrmeir_bayesian_2001} and half-Cauchy \shortcite{gelman_prior_2006}, as well as half-normal. Parameter estimates were not sensitive to the choice of prior. For computational reasons (nicer tail behavior) half-normal priors are used for the final model presented below.}
@@ -60,7 +61,7 @@ To model temporal dependence such that the neighbors of Congress $t$ also provid
 \partial^\mathbf{G}_t = \{C_s : \left| s - t \right| <= \kappa \},
 \end{equation*}
 
-\noindent where $\kappa \leq C$ is a positive integer and $\mathbf{G}$ is the undirected graph with nodes $V = \{v_1, \dots, v_C\}$ and the edges implied by $\partial^\mathbf{G}$ (see Figure~\ref{fig:rw_undirected_graphs}).\footnote{The penalty matrix $\mathbf{P}$ corresponding to an undirected $RW_\kappa$ prior over parameter vector $\lambda \in \mathbb{R}^C$ has rank $C - \kappa$ and the resulting matrix $\Sigma^{-1} = \mathbf{Q} = \mathbf{P}/\tau^2$ is not a valid precision matrix. In the $RW_1$ case this can be mitigated by jittering the elements of $\mathbf{P}$. For $\kappa > 1$ a possibility is to estimate only $C - \kappa$ of the $C$ parameters in $\lambda$,  from which the remaining $\kappa$ {\it pinned} parameters (each of which has a conditional variance of zero) can be computed following the properties of the multivariate normal distribution. Alternatively, rather than using a fixed penalty matrix and estimating the hierarchical variance parameters, an entirely different tactic would be to estimate an arbitrary tridiagonal precision matrix. One way to do this would be to decompose the precision matrix into conditional correlations and standard deviations. This is possible to do in Stan and should be explored in future work to sidestep the matrix singularity problems. It is also possible to avoid these problems by estimating the autoregressive parameter $\omega$ mentioned in \ref{penalty_matrix} (see footnote~\ref{footnote_car}). \citeA<See>{rue_gaussian_2005} \citeA<and>{banerjee_hierarchical_2004}.} The results presented in \ref{results} use $RW_1$ GMRF priors for $f_\lambda$ and $f_\rho$, which applies smoothing while allowing for slightly more abrupt shifts in $\lambda$ and $\rho$ between Congresses than a $RW_2$ prior. 
+\noindent where $\kappa \leq C$ is a positive integer and $\mathbf{G}$ is the undirected graph with nodes $V = \{v_1, \dots, v_C\}$ and the edges implied by $\partial^\mathbf{G}$ (see Figure~\ref{fig:rw_undirected_graphs}).\footnote{The penalty matrix $\mathbf{P}$ corresponding to an undirected $RW_\kappa$ prior over parameter vector $\lambda \in \mathbb{R}^C$ has rank $C - \kappa$ and the resulting matrix $\Sigma^{-1} = \mathbf{Q} = \mathbf{P}/\tau^2$ is not a valid precision matrix. In the $RW_1$ case this can be mitigated by jittering the elements of $\mathbf{P}$. For $\kappa > 1$ a possibility is to estimate only $C - \kappa$ of the $C$ parameters in $\lambda$,  from which the remaining $\kappa$ {\it pinned} parameters (each of which has a conditional variance of zero) can be computed following the properties of the multivariate normal distribution. Alternatively, rather than using a fixed penalty matrix and estimating the hierarchical variance parameters, an entirely different tactic would be to estimate an arbitrary tridiagonal precision matrix. One way to do this would be to decompose the precision matrix into conditional correlations and standard deviations. This is possible to do in Stan and should be explored in future work to sidestep the matrix singularity problems. It is also possible to avoid these problems by estimating the autoregressive parameter $\omega$ mentioned in \ref{penalty_matrix} (see footnote~\ref{footnote_car}). \citeA<See>{rue_gaussian_2005} \citeA<and>{banerjee_hierarchical_2004}.} The results presented in section~\ref{results} use the $RW_1$ GMRF prior for $f_\lambda$ and $f_\rho$, which applies smoothing while allowing for slightly more abrupt shifts in $\lambda$ and $\rho$ between Congresses than a $RW_2$ prior. 
 
 
 \begin{figure}[htb]

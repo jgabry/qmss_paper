@@ -13,7 +13,10 @@
 \BeforeBeginEnvironment{quote}{\begin{singlespace}}
 \AfterEndEnvironment{quote}{\end{singlespace}\noindent\ignorespaces}
 
-\usepackage{pslatex} %Times font
+%\usepackage{pslatex} %Times font
+%\usepackage[T1]{fontenc}
+%\usepackage[utf8]{inputenc}
+\usepackage[slantedGreek]{mathptmx}
 \usepackage[bibnewpage]{apacite} %apa citation style
 \bibliographystyle{apacite}
 %\usepackage[pdfborder={0 0 0}]{hyperref}%for hyperlinks without ugly boxes
@@ -22,6 +25,8 @@
 \usepackage{booktabs}
 %\usepackage{verbatim}
 \usepackage[bottom, multiple, flushmargin]{footmisc} % 'multiple' to allow multiple footnotes separated by comma, 'flushmargin' to remove indentation of footnotes
+%\raggedbottom
+\renewcommand\footnotelayout{\small}
 
 %\raggedbottom 
 \addtolength{\topskip}{0pt plus 10pt}
@@ -116,6 +121,8 @@ xrightmargin=2em
 
 \textsc{Advisor: Gregory J. Wawro}
 
+\vspace{1cm} \textsc{May, 2015}
+
 %\vspace{2cm}
 %\begin{center}
 %\begin{tikzpicture}
@@ -198,8 +205,8 @@ xrightmargin=2em
 
 \vspace{0.5\textheight} % Whitespace between the title block and the publisher
 \begin{center}
-{\noindent \bf May, 2015}\\[\baselineskip] 
-{\noindent Columbia University \qquad \qquad New York, New York}
+%{\noindent \bf }\\[\baselineskip] 
+{\noindent Columbia University $\vert$ New York, New York}
 \end{center}
 }}
 

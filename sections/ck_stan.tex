@@ -1,13 +1,14 @@
 \subsection{Estimation using Stan}
 
-For notational convenience, let $y$ denote the outcome $w^{MAJ}$ and $X$ denote the observed data $n$ and $v^{RATIO}$. We require the joint posterior distribution
+For notational convenience, let $y$ denote the outcome $w^{MAJ}$ and $X$ denote the observed data $n$ and $v^{RATIO}$. The joint posterior distribution is 
 
 \begin{align*}
-p(\lambda, \rho, \tau^2_\lambda, \tau^2_\rho, \phi | y, X) & \propto p(\lambda, \rho, \tau^2_\lambda, \tau^2_\rho, \phi) p(y | \lambda, \rho, \tau^2_\lambda, \tau^2_\rho, \phi,  X)  \\
-& = p(\phi) p(\tau^2_\lambda) p(\tau^2_\rho)  p(\lambda | \tau^2_\lambda) p(\rho | \tau^2_\rho) \prod_i p(y_i | \eta_i, X_i), 
+p(\lambda, \rho, \tau^2_\lambda, \tau^2_\rho, \bar{\lambda}, \bar{\rho}, \phi | y, X) & \propto p(\lambda, \rho, \tau^2_\lambda, \tau^2_\rho, \bar{\lambda}, \bar{\rho}, \phi) p(y | \lambda, \rho, \tau^2_\lambda, \tau^2_\rho, \bar{\lambda}, \bar{\rho}, \phi,  X)  \\[5pt]
+& =p(\lambda | \tau^2_\lambda, \bar{\lambda}) p(\rho | \tau^2_\rho, \bar{\rho})  \prod_k p(\psi_k) \prod_i p(y_i | \eta_i, X_i), 
 \end{align*}
+% p(\phi) p(\tau^2_\lambda) p(\tau^2_\rho) p(\bar{\rho}) p(\bar{\lambda}) p(\tau^2_\rho)  
 
-\noindent where the second line follows from assumptions of conditional independence.\footnote{In particular we assume that hyperparameters are mutually independent in their priors, $p(\lambda | \tau^2_\lambda)$ and $p(\rho | \tau^2_\rho)$ are conditionally independent, and the observations $y_i$ are independent conditional on parameters and predictors.}
+\noindent where $\prod_k p(\psi_k)$ is shorthand for the product of all hyperpriors. The second line follows from assumptions of independence and conditional independence.\footnote{In particular we assume that hyperparameters are mutually independent in their priors, $p(\lambda | \tau^2_\lambda, \bar{\lambda})$ and $p(\rho | \tau^2_\rho, \bar{\rho})$ are conditionally independent, and the observations $y_i$ are independent conditional on parameters and predictors.}
 %\footnote{The absence of the previously mentioned parameters $\alpha$, $\beta$, and $\theta$ from the expression for the posterior distribution is due to the fact that their values are determined by the other parameters.} 
 
 Estimation is performed numerically by Markov chain Monte Carlo (MCMC) methods and implemented via RStan, the R interface to the probabilistic programming language and C++ library Stan \shortcite{rstan_software:2015}. Although other existing software including BayesX, JAGS, and OpenBugs can sometimes be used to fit similar models, each has important limitations that Stan overcomes. Several of the many advantages to using Stan are discussed in the next section. Since there are few publicly available examples of fitting these models in Stan, the next section is written in the style of a technical vignette, introducing Stan and describing how the model is coded and estimated. 
