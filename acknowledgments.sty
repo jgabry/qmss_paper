@@ -1,0 +1,26 @@
+\newcommand\acknowledgmentsname{Acknowledgments}  %%copy this to the other package if you don't want to use babel (replace Acknowledgments with Abstract).
+\makeatletter
+\if@titlepage
+  \newenvironment{acknowledgments}{%
+      \titlepage
+      \null\vfil
+      \@beginparpenalty\@lowpenalty
+      \begin{center}%
+        \bfseries \acknowledgmentsname
+        \@endparpenalty\@M
+      \end{center}}%
+     {\par\vfil\null\endtitlepage}
+\else
+  \newenvironment{acknowledgments}{%
+      \if@twocolumn
+        \section*{\acknowledgmentsname}%
+      \else
+        \small
+        \begin{center}%
+          {\bfseries \acknowledgmentsname\vspace{-.5em}\vspace{\z@}}%
+        \end{center}%
+        \quotation
+      \fi}
+      {\if@twocolumn\else\endquotation\fi}
+\fi
+\makeatother
