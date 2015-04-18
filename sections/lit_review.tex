@@ -86,6 +86,8 @@ The prior distributions of particular interest in this thesis are known as Gauss
  An undirected graph $\mathbf{G} = (V,E)$ is simply an ordered pair of sets containing the vertices (or nodes) and edges of the graph, respectively. In what follows assume that $V$ and $E$ are finite and let $e_{ij} \in E$ denote the element in $E$ corresponding to the edge connecting vertices $v_i$ and $v_j$ in $V$. The term {\it undirected} refers to the fact that the edges lack orientation.\footnote{Intuitively, it is helpful to think of the edges of an undirected graph as line segments with no implied direction, whereas the edges in a directed graph can be thought of as arrows.} The {\it neighbors} of node $v_j$ are all of the nodes that share a common edge with $v_j$. The notation $\partial^{\mathbf{G}}_j$ will be used for the {\it neighborhood} of node $v_j$ in graph  $\mathbf{G}$ and $\partial^\mathbf{G}$ for the set containing the neighborhoods for all nodes in $\mathbf{G}$.\footnote{$ \partial^\mathbf{G}_j = \{v_{i \neq j} \in V \,\vert\, e_{ij} \in E\}$ and $\partial^\mathbf{G} = \{\partial^\mathbf{G}_j \,\vert\, v_j \in V\}$.} For example, in Figure~\ref{fig:undirected_graphs}, $\partial^{\mtrx{A}}_1 = \{v_2, v_6\}$ and $\partial^{\mathbf{B}}_1 = \{v_2, v_3\}$.  For a more comprehensive discussion of undirected graphs in the context of GMRFs see \citeA{rue_gaussian_2005}. 
  
 
+
+
 \subsection{GMRFs}
 Let $\theta \in \mathbb{R}^D$ have a multivariate normal distribution with probability density function $p(\theta | \mu, \boldsymbol{\Sigma}) = \mathcal{N}_D (\theta | \mu, \boldsymbol{\Sigma})$. The random vector $\theta$ is said to form a GMRF with respect to the graph $\mathbf{G} = (V,E)$ if for each element in $\theta$ there is a corresponding node in $V$, and there is no edge $e_{ij}$ between nodes $v_i$ and $v_j$ \emph{if and only if} $\theta_i$ and $\theta_j$ are conditionally independent given all other elements of $\theta$ \shortcite{rue_gaussian_2005}.\footnote{$v_i \notin \partial^\mathbf{G}_{j} \iff \theta_i \bot \theta_j \mid \theta_{-ij}.$}\footnote{This definition is consistent with the definition of Markov random fields in general. The random variables $\theta_1, \dots, \theta_D$ obey the requisite Markov properties describing pairwise, local, and global conditional independencies \shortcite{rue_gaussian_2005}.} 
 
@@ -99,15 +101,15 @@ The relationship between $G$ and $\theta$ -- the information they provide about 
 \section{Bayesian STAR models}
 \label{star}
 
-An extension of a generalized linear models (GLMs), a semiparametric structured additive regression (STAR) model replaces the linear predictor of the GLM with a structured additive predictor
+The structured additive regression (STAR) model replaces the linear predictor of the generalized linear model (GLM) with a semiparametric structured additive predictor
 
 \begin{equation*}
-\eta =  u^\intercal\gamma + \sum_{j} f_j (x_j) =  u^\intercal\gamma + f_1(x_1) + \ldots + f_j(x_j) + \ldots + f_J(x_J),
+\eta =  u^\intercal\gamma + f_1(x_1) + \ldots + f_j(x_j) + \ldots + f_J(x_J) =  u^\intercal\gamma + \sum_{j} f_j (x_j) ,
 \end{equation*}
 
-\noindent which can include nonlinear unknown functions of covariates as well as linear components and is flexible enough to include mixed models familiar to social scientists as special cases \shortcite{fahrmeir_bayesian_2001}. 
+\noindent which can include nonlinear unknown functions of covariates as well as linear components and is flexible enough to include the assorted mixed effects models familiar to social scientists as special cases \shortcite{fahrmeir_bayesian_2001}. 
 
-From the Bayesian perspective, the non-varying parameters $\gamma$ as well as the unknown functions $f_1, \dots, f_J$ are treated as random variables distributed according to priors that we must specify. For an unknown function $f_j(x_j)$ let $\mtrx{f}_j^{eval}$ denote the vector of function evaluations of $f_j$ at each of the $N$ observed values of $x_j$ 
+From the Bayesian perspective, the non-varying parameters $\gamma$ as well as the unknown functions $f_1, \dots, f_J$ are treated as random variables distributed according to priors that must be specified. For an unknown function $f_j(x_j)$ let $\mtrx{f}_j^{eval}$ denote the vector of function evaluations of $f_j$ at each of the $N$ observed values of $x_j$ 
 
 \begin{equation*}
 \mtrx{f}_j^{eval} = \left(f_j(x_{1j}), \dots f_j(x_{Nj})\right)^\intercal.  
