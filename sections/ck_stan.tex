@@ -1,6 +1,6 @@
 \subsection{Estimation using Stan}
 
-For notational convenience, let $y$ denote the observed outcome $w^{MAJ}$ and $x$ represent the observed $n$ and $v^{RATIO}$. Also let $\psi = \big((\tau^2_\lambda, \bar{\lambda}), (\tau^2_\rho, \bar{\rho}), \phi \big)$ denote the hyperparameters of the model and $\bm{f}$ the unknown functions  $f_\lambda$ and $f_\rho$. The joint posterior distribution for $(\bm{f}, \psi)$ given the data $(y, x)$ is
+For notational convenience, let $x$ represent the observed $n$ and $v^{RATIO}$, $\psi = \big((\tau^2_\lambda, \bar{\lambda}), (\tau^2_\rho, \bar{\rho}), \phi \big)$ denote the hyperparameters of the model, and $\bm{f}$ the unknown functions  $f_\lambda$ and $f_\rho$. The joint posterior distribution for $(\bm{f}, \psi)$ given the data $(y, x)$ is
 
 \begin{equation*}
 p(\bm{f}, \psi | y, x) \propto p(\bm{f}, \psi, \phi)  L(y | x, \bm{f}, \psi, \phi)  =p(\psi)  p(\bm{f} | \psi)   \prod_{n=1}^N L(y_n | \eta_n, x_n), 

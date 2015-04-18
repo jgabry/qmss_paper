@@ -13,7 +13,7 @@ Let $C$ denote the number of unique Congresses (time periods) in the data. The a
 The estimation of $\lambda$ and $\rho$ by grouped logit models follows naturally from solving the seats-votes equation for the average seat share, which in the legislative context of Cox and Katz's example is the expected roll-call win share for the majority 
 
 \begin{equation*}
-  E(p_t)  = \left(1 + \exp{\left\{- \lambda_t - \rho_t \log{\left( v_t^{RATIO}  \right)}\right\}}\right)^{-1},
+  E(\pi_t)  = \left(1 + \exp{\left\{- \lambda_t - \rho_t \log{\left( v_t^{RATIO}  \right)}\right\}}\right)^{-1},
 \end{equation*}
 %
 \noindent which is the familiar logistic function. 
@@ -26,7 +26,7 @@ Although Cox and Katz do not address this potential for exaggerated precision, t
 
 The alternative analysis presented below overcomes both of these concerns by employing a hierarchical Bayesian framework which takes advantage of partial pooling. Following Cox and Katz, a BetaBinomial likelihood is used, however the linear predictor is replaced by the structured additive predictor $\eta$. The data model with logit link function is 
 
-$$w_t^{MAJ} | n_t, \alpha_t, \beta_t \sim {\rm Beta\text{-}Binomial}(n_t, \alpha_t, \beta_t),$$
+$$y_t | n_t, \alpha_t, \beta_t \sim {\rm Beta\text{-}Binomial}(n_t, \alpha_t, \beta_t),$$
 $$ \alpha_t = \theta_t \phi, \qquad \beta_t = \theta_t (1 - \phi),$$
 $$ \log\left({\frac{\theta_t}{1 - \theta_t}}\right) = \eta_t = f_{\lambda}(\lambda_t) + f_\rho \left(\log{(v_t^{RATIO})}\right).$$
 
