@@ -1,5 +1,5 @@
 \section{Results, convergence monitoring, and model checking}
-
+\label{results_convergence_checking}
 
 \subsection{Estimated bias toward the majority party}
 \label{results}
@@ -26,7 +26,7 @@ When compared to Cox and Katz's results, the hierarchical Bayesian STAR model es
 
 As discussed in \ref{subsection_methods}, Cox and Katz's results comprise estimates taken from 61 separate models (one for each Congress). This results in the data for each Congress $t$ being reused in up to six of the 60 models besides the model for Congress $t$ itself. It also entails the exclusion of all data from Congresses outside each window. Furthermore, the choice of using rolling windows of seven Congresses ($t \pm 3$) is also somewhat arbitrary. 
 
-The curves in Figure~\ref{fig:ck_hypothetical} (p.~\pageref{fig:ck_hypothetical}) show the results Cox and Katz would have found had they chosen narrower or wider windows. As the set of Congresses included in each model grows, the resulting curve necessarily becomes smoother because Cox and Katz's method is less and less distinguishable from simply estimating a common bias parameter for all Congresses (that is, assuming no variation in bias over time). Conversely, a single Bayesian can allows for bias in each Congress to depend on neighboring Congresses while using the entire dataset only once, obviating the need to dubiously prune the data. 
+The curves in Figure~\ref{fig:ck_hypothetical} (p.~\pageref{fig:ck_hypothetical}) show the results Cox and Katz would have found had they chosen narrower or wider windows. As the set of Congresses included in each model grows, the resulting curve necessarily becomes smoother because Cox and Katz's method is less and less distinguishable from simply estimating a common bias parameter for all Congresses (that is, assuming no variation in bias over time). Conversely, the single Bayesian model allows for bias in each Congress to depend on neighboring Congresses while using the entire dataset only once, obviating the need to dubiously prune the data. 
 
 \subsection{Convergence monitoring}
 \label{subsection_convergence}

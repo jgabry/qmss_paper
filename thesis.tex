@@ -32,11 +32,11 @@
 \renewcommand\footnotelayout{\small}
 
 %\raggedbottom 
-\addtolength{\topskip}{0pt plus 10pt}
+%\addtolength{\topskip}{0pt plus 10pt}
 
 \usepackage{amsmath,amsfonts,amssymb}
 \newcommand{\mtrx}[1]{\mathbf{#1}}
-%\usepackage{amssymb}
+\usepackage{bm} % for bold-italic math font
 
 %\usepackage[svgnames]{xcolor} 
 \usepackage[usenames,dvipsnames,svgnames,table]{xcolor} % Required to specify font color
@@ -114,9 +114,12 @@ xrightmargin=2em
 
 
 \singlespacing
-{\noindent\Huge\bfseries Quantitative Methods \\ \noindent \LARGE for Historical Social Scientific Inquiry}\\[2\baselineskip] % Title
-{\large \textit{with Bayesian Semiparametric \\ Structured Additive Regression Models}}\\[4\baselineskip] % Tagline or further description
+%{\noindent\Huge\bfseries Quantitative Methods \\ \noindent \LARGE for Historical Social Scientific Inquiry}\\[2\baselineskip] % Title
+%{\large \textit{with Bayesian Semiparametric \\ Structured Additive Regression Models}}\\[4\baselineskip] % Tagline or further description
+{\noindent\Huge\bfseries Bayesian Structured Additive Regression Models}\\[2\baselineskip] % Title
+{\large \textit{for Quantitative Historical Social Scientific Inquiry }}\\[4\baselineskip] % Tagline or further description
 
+\vspace{2cm}
 
 {\Large \textsc{Jonah Sol Gabry}} % Author name
 
@@ -206,7 +209,7 @@ xrightmargin=2em
 %\end{center}
 %\vspace{2cm}
 
-\vspace{0.5\textheight} % Whitespace between the title block and the publisher
+\vspace{0.35\textheight} % Whitespace between the title block and the publisher
 \begin{center}
 %{\noindent \bf }\\[\baselineskip] 
 {\noindent Columbia University $\vert$ New York, New York}
@@ -218,11 +221,12 @@ xrightmargin=2em
 
 
 \begin{document}
+\pagenumbering{roman} 
 
 \titleGM % This command includes the title page
 
 \thispagestyle{empty}
-
+\clearpage
 
 \begin{quote}
 {\it Clearly, there is a tension here, between parsimony and realism \dots }
@@ -236,7 +240,8 @@ xrightmargin=2em
 \bigskip
 \tableofcontents
 }
-\pagebreak
+\clearpage
+\pagenumbering{arabic}
 \setcounter{page}{1}
 
 \input{sections/introduction}

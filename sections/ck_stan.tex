@@ -1,17 +1,16 @@
 \subsection{Estimation using Stan}
 
-For notational convenience, let $y$ denote the outcome $w^{MAJ}$ and $X$ denote the observed data $n$ and $v^{RATIO}$. The joint posterior distribution is 
+For notational convenience, let $y$ denote the observed outcome $w^{MAJ}$ and $x$ represent the observed $n$ and $v^{RATIO}$. Also let $\psi = \big((\tau^2_\lambda, \bar{\lambda}), (\tau^2_\rho, \bar{\rho}), \phi \big)$ denote the hyperparameters of the model and $\bm{f}$ the unknown functions  $f_\lambda$ and $f_\rho$. The joint posterior distribution for $(\bm{f}, \psi)$ given the data $(y, x)$ is
 
 \begin{align*}
-p(\lambda, \rho, \tau^2_\lambda, \tau^2_\rho, \bar{\lambda}, \bar{\rho}, \phi | y, X) & \propto p(\lambda, \rho, \tau^2_\lambda, \tau^2_\rho, \bar{\lambda}, \bar{\rho}, \phi) p(y | \lambda, \rho, \tau^2_\lambda, \tau^2_\rho, \bar{\lambda}, \bar{\rho}, \phi,  X)  \\[5pt]
-& =p(\lambda | \tau^2_\lambda, \bar{\lambda}) p(\rho | \tau^2_\rho, \bar{\rho})  \prod_k p(\psi_k) \prod_i p(y_i | \eta_i, X_i), 
+p(\bm{f}, \psi | y, x) &\propto p(\bm{f}, \psi, \phi)  L(y | x, \bm{f}, \psi, \phi)     \\[5pt]
+& =p(\psi)  p(\bm{f} | \psi)   \prod_{n=1}^N L(y_n | \eta_n, x_n), 
 \end{align*}
-% p(\phi) p(\tau^2_\lambda) p(\tau^2_\rho) p(\bar{\rho}) p(\bar{\lambda}) p(\tau^2_\rho)  
 
-\noindent where $\prod_k p(\psi_k)$ is shorthand for the product of all hyperpriors. The second line follows from assumptions of independence and conditional independence.\footnote{In particular we assume that hyperparameters are mutually independent in their priors, $p(\lambda | \tau^2_\lambda, \bar{\lambda})$ and $p(\rho | \tau^2_\rho, \bar{\rho})$ are conditionally independent, and the observations $y_i$ are independent conditional on parameters and predictors.}
+\noindent where the second line follows from assumptions of independence and conditional independence.\footnote{In particular it is assumed that hyperparameters are mutually independent in their priors, $p(f_\lambda | \tau^2_\lambda, \bar{\lambda})$ and $p(f_\rho | \tau^2_\rho, \bar{\rho})$ are conditionally independent, and the outcomes $y_i$ are independent conditional on parameters and $x$.}
 %\footnote{The absence of the previously mentioned parameters $\alpha$, $\beta$, and $\theta$ from the expression for the posterior distribution is due to the fact that their values are determined by the other parameters.} 
 
-Estimation is performed numerically by Markov chain Monte Carlo (MCMC) methods and implemented via RStan, the R interface to the probabilistic programming language and C++ library Stan \shortcite{rstan_software:2015}. Although other existing software including BayesX, JAGS, and OpenBugs can sometimes be used to fit similar models, each has important limitations that Stan overcomes. Several of the many advantages to using Stan are discussed in the next section. Since there are few publicly available examples of fitting these models in Stan, the next section is written in the style of a technical vignette, introducing Stan and describing how the model is coded and estimated. 
+Estimation is performed numerically by Markov chain Monte Carlo (MCMC) methods and implemented in RStan, the R interface to the probabilistic programming language and C++ library Stan \shortcite{rstan_software:2015}. Although other existing software including BayesX, JAGS, and OpenBugs can sometimes be used to fit similar models, each has important limitations that Stan overcomes. Several of the many advantages to using Stan are discussed in the next section. Since there are few publicly available examples of fitting these models in Stan, the next section is written in the style of a technical vignette, introducing Stan and describing how the model is coded and estimated. 
 
 \subsubsection{Brief introduction to Stan}
 
@@ -59,7 +58,7 @@ transformed data {
 \label{stan_data}
 \end{figure}
 
-In the {\tt data} block of a Stan model (Figure~\ref{stan_data}) we declare the data that will be passed to Stan. In this case, the declarations are all straightforward, defining the dimensions and variables discussed in section~\ref{ckdata}. The exception is the matrix {\tt Pinverse}, which is the inverse of the difference of the degree and adjacency matrices, which is precomputed and passed in as data (see Appendix~\ref{AppendixA}).\footnote{R code for all  computations and data manipulation required before estimation in Stan will be made publicly available on GitHub.}
+In the {\tt data} block of a Stan program (Figure~\ref{stan_data}) we declare the data that will be passed to Stan. In this case, the declarations are all straightforward, defining the dimensions and variables discussed in section~\ref{ckdata}. The exception is the matrix {\tt Pinverse}, which is the inverse of the difference of the degree and adjacency matrices, which is precomputed and passed in as data (see Appendix~\ref{AppendixA}).\footnote{R code for all  computations and data manipulation required before estimation in Stan will be made publicly available on GitHub.}
 
 The {\tt transformed data} block (also Figure~\ref{stan_data}) contains transformations of the variables declared in the {\tt data} block and defines other fixed quantities to be used throughout the rest of the model. In {\tt transformed data} the Cholesky decomposition of {\tt Pinverse} is computed; it will be used for a more efficient implementation of the multivariate normal distributions required for the GMRF priors. Values for the location and scale parameters of the Cauchy and normal distributions (to be used for priors) are also set in {\tt transformed data}. 
 
