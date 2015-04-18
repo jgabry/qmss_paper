@@ -1,10 +1,10 @@
 \section{Results, convergence monitoring, and model checking}
 \label{results_convergence_checking}
 
-\subsection{Estimated bias toward the majority party}
+\subsection[Estimates]{Estimated bias toward the majority party}
 \label{results}
 
-Figure~\ref{fig:ck_bias} (p.~\pageref{fig:ck_bias}) shows the estimates of bias towards the majority party over time from Cox and Katz's analysis and the reanalysis conducted in this thesis. 
+Figure~\ref{fig:ck_bias} (p.~\pageref{fig:ck_bias}) juxtaposes the estimates of bias towards the majority party over time from Cox and Katz's analysis and the reanalysis using the Bayesian STAR model.
 
 \begin{figure}
 \centering
@@ -26,7 +26,7 @@ When compared to Cox and Katz's results, the hierarchical Bayesian STAR model es
 
 As discussed in \ref{subsection_methods}, Cox and Katz's results comprise estimates taken from 61 separate models (one for each Congress). This results in the data for each Congress $t$ being reused in up to six of the 60 models besides the model for Congress $t$ itself. It also entails the exclusion of all data from Congresses outside each window. Furthermore, the choice of using rolling windows of seven Congresses ($t \pm 3$) is also somewhat arbitrary. 
 
-The curves in Figure~\ref{fig:ck_hypothetical} (p.~\pageref{fig:ck_hypothetical}) show the results Cox and Katz would have found had they chosen narrower or wider windows. As the set of Congresses included in each model grows, the resulting curve necessarily becomes smoother because Cox and Katz's method is less and less distinguishable from simply estimating a common bias parameter for all Congresses (that is, assuming no variation in bias over time). Conversely, the single Bayesian model allows for bias in each Congress to depend on neighboring Congresses while using the entire dataset only once, obviating the need to dubiously prune the data. 
+The curves in Figure~\ref{fig:ck_hypothetical} (p.~\pageref{fig:ck_hypothetical}) show the results Cox and Katz would have found had they chosen narrower or wider windows. As the set of Congresses included in each model grows, the resulting curve necessarily becomes smoother because Cox and Katz's method is less and less distinguishable from simply estimating a common bias parameter for all Congresses (that is, assuming no variation in bias over time). Conversely, the single Bayesian model allows for bias in each Congress to depend on neighboring Congresses while using the entire dataset only once, obviating the need to dubiously subset the data. 
 
 \subsection{Convergence monitoring}
 \label{subsection_convergence}
@@ -76,7 +76,7 @@ In addition to the diagnostics discussed above, trace plots for all parameters w
 
 
 
-\subsection{Graphical model checking}
+\subsection{Graphical posterior predictive checks}
 \label{subsection_model_checking}
 
 Graphical posterior predictive checking is a valuable tool for examining how well the proposed model fits the available data \shortcite{gelman_bayesian_2013}. The idea is simple: if the model is a good fit then it should be possible simulate data from the model that resembles the observed data. Let $\Theta$ denote all parameters (including hyperparameters) in the hierarchical model, and $y$ denote the observed outcomes. Following  \citeA{gelman_bayesian_2013}, $y^{\it rep}$ will be used to denote a replication of $y$ from the model.\footnote{\citeA{gelman_bayesian_2013} distinguishes between $y^{rep}$ and $\tilde{y}$. The former makes use of the same explanatory variables/predictors $x$ used to estimate $\Theta$, while the latter refers predictions of future $y$ using potentially different variables $\tilde{x}$ (e.g. after collecting more data).}
