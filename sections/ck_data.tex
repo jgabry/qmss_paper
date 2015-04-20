@@ -80,28 +80,28 @@ v^{REP} / v^{DEM}, & \text{ if Republicans hold the majority.} \\
 %FIGURE
 \begin{figure}
 \centering
-	\includegraphics[scale=0.75]{sections/figs/logvratio_vs_pdem}
-\caption{$\log{(v_t^{DEM} / v_t^{REP} )}$  vs. $\pi^{DEM}$}
+	\includegraphics[scale=0.75]{sections/figs/vdem_vs_pdem}
+\caption{$v^{\it DEM}$  vs. $\pi^{DEM}$}
 \label{fig:log_vratio_vs_ptdem}
 \end{figure}
 
 
-Figure~\ref{fig:log_vratio_vs_ptdem} shows $\log{(v^{DEM} / v^{REP} )}$ plotted against $\pi^{DEM}$. The shape of the curve is similar to the standard seats-votes curve  
+Figure~\ref{fig:log_vratio_vs_ptdem} shows $v^{\it DEM}$ plotted against $\pi^{DEM}$. The shape of the curve is similar to the standard seats-votes curve  
 
 \begin{equation*}
  \frac{s}{1-s} = \exp{(\lambda)}\left(\frac{v}{1-v}\right)^\rho 
 \end{equation*}
 
-\noindent used in analyses of bias and responsiveness in electoral contexts. The curve is analogous in the legislative context of Cox and Katz's example, although we are not concerned with seat shares $s$ but rather roll-call vote shares $\pi$. This is discussed further in section \ref{subsection_methods} in relation to the statistical model.\footnote{See also Appendix~\ref{AppendixB} for visual examples of seats-votes curves.}
+\noindent used in analyses of bias and responsiveness in electoral contexts. The curve is analogous in the legislative context of Cox and Katz's example but for roll-call vote shares $\pi$ rather than seat shares $s$. This is discussed further in section \ref{subsection_methods} in relation to the statistical model.\footnote{See also Appendix~\ref{AppendixB} for visual examples of seats-votes curves.}
 
-The trends of $\log{(v^{DEM} / v^{REP} )}$ and $\pi^{DEM}$ over time are shown in the visual summary of the data set in Figure~\ref{fig:data_summary}.
+The trends of $\log{(v^{\it RATIO})}$ and $\pi^{MAJ}$ over time are shown in the visual summary of the data set in Figure~\ref{fig:data_summary}. \\[10pt]
 
 
 %FIGURE
 \begin{figure}[p]
 \centering
 	\includegraphics[scale=0.75]{sections/figs/vis_summary}
-\caption{Visual summary of the data. The trends of $\log{(v_t^{DEM} / v_t^{REP} )}$ and $\pi^{DEM}$ by Congress are plotted on top, with the number of roll-call votes per Congress below. Background shading is used to differentiate between Democratic and Republican majorities.}
+\caption{Visual summary of the data. The trends of $\log{(v^{\it RATIO} )}$ and $\pi^{MAJ}$ by Congress are plotted on top, with the number of roll-call votes per Congress below. Background shading is used to differentiate between Democratic and Republican majorities.}
 \label{fig:data_summary}
 \end{figure}
 %
