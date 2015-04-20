@@ -140,9 +140,12 @@ xrightmargin=2em
 \endgroup}
 
 % abstract and acknowledgements
-\usepackage[american]{babel}
+\usepackage[english, american]{babel}
 \usepackage{bookabstract} 
 \usepackage{acknowledgments}
+\addto\captionsamerican{%
+  \renewcommand{\bibname}{References}%
+}% use 'References' instead of 'Bibliography'
 
 % environment for temporarily shrinking margins
 \newenvironment{changemargin}[2]{%
@@ -239,7 +242,7 @@ Raya, Amelia and Silvia. \\
 
 
 \begin{appendices}
-\input{sections/appendixA}
+\input{sections/appendices}
 \end{appendices}
 
 
