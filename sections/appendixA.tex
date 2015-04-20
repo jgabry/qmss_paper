@@ -1,6 +1,6 @@
 
 
-\chapter{Impropriety of the GMRF prior} \label{AppendixA}
+\section*{Appendix A: On the possible singularity of the precision matrix} \label{AppendixA}
 
 The penalty matrix $\mathbf{P}$ corresponding to an undirected $RW_\kappa$ prior over parameter vector $\lambda \in \mathbb{R}^C$ has rank $C - \kappa$ and the resulting matrix $\Sigma^{-1} = \mathbf{Q} = \mathbf{P}/\tau^2$ is not a valid precision matrix. In the $RW_1$ case this can be mitigated by jittering the elements of $\mathbf{P}$. For $\kappa > 1$ a possibility is to estimate only $C - \kappa$ of the $C$ parameters in $\lambda$,  from which the remaining $\kappa$ so-called {\it pinned} parameters (each of which has a conditional variance of zero) can be computed following the properties of the multivariate normal distribution. This strategy amounts to  constraining the relevant linear combinations to have zero variance, from which a proper prior on a lower dimensional subspace is obtained \shortcite{paciorek_2009, rue_gaussian_2005}. 
 
