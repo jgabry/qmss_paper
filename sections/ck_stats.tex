@@ -10,7 +10,7 @@ Cox and Katz's second approach is more promising in that it allows for greater p
 
 Let $C$ denote the number of unique Congresses (time periods) in the data. The analysis conducted by Cox and Katz concerns the estimation of parameters  $\lambda = (\lambda_t : t = 1, \dots, C)$ representing bias (on the logit scale) toward the majority party in each Congress $t$, which is done by maximum likelihood estimation of grouped logit models with linear predictor $ \lambda_t + \rho_t \log{\left(v_t^{RATIO} \right)}$. 
 
-The estimation of $\lambda$ and $\rho$ by grouped logit models follows naturally from solving the seats-votes equation for the average seat share, which in the legislative context of Cox and Katz's example is the expected roll-call win share for the majority 
+The estimation of $\lambda$ and $\rho$ by grouped logit models follows naturally from solving the seats-votes equation for the average seat share. In the legislative context of Cox and Katz's example this means solving for the expected roll-call win share for the majority as
 
 \begin{equation*}
   E(\pi_t)  = \left(1 + \exp{\left\{- \lambda_t - \rho_t \log{\left( v_t^{RATIO}  \right)}\right\}}\right)^{-1},
@@ -30,7 +30,7 @@ $$y_t | n_t, \alpha_t, \beta_t \sim {\rm Beta\text{-}Binomial}(n_t, \alpha_t, \b
 $$ \alpha_t = \theta_t \phi, \qquad \beta_t = \theta_t (1 - \phi),$$
 $$ \log\left({\frac{\theta_t}{1 - \theta_t}}\right) = \eta_t = f_{\lambda}(\lambda_t) + f_\rho \left(\log{(v_t^{RATIO})}\right).$$
 
-The ${\rm Beta\text{-}Binomial}(n,\alpha,\beta)$ distribution can be thought of as a compound distribution resulting from a ${\rm Binomial}(n,p)$ distribution where $p \sim {\rm Beta}(\alpha,\beta)$. Rather than assuming a fixed probability of a majority party roll-call victory -- in which case a simple binomial model would suffice -- the beta-binomial distribution treats the underlying probability $p$ as unknown. The parameters $\alpha$ and $\beta$ govern the shape of the Beta distribution, however it is both more intuitive and computationally attractive to reparameterize in terms of the mean $\theta$, which requires introducing a parameter $\phi$ as the sum of $\alpha$ and $\beta$.  This parameterization allows for modeling ${\rm logit}(\theta)$ by the semi-parametric structured additive predictor $\eta$ of the STAR model. 
+The ${\rm Beta\text{-}Binomial}(n,\alpha,\beta)$ distribution can be thought of as a compound distribution resulting from a ${\rm Binomial}(n,p)$ distribution where $p \sim {\rm Beta}(\alpha,\beta)$. Rather than assuming a fixed probability of a majority party roll-call victory -- in which case a simple binomial model would suffice -- the beta-binomial distribution treats the underlying probability $p$ as unknown. The parameters $\alpha$ and $\beta$ govern the shape of the beta distribution, however it is both more intuitive and computationally attractive to reparameterize in terms of the mean $\theta$, which requires introducing a parameter $\phi$ as the sum of $\alpha$ and $\beta$.  This parameterization allows for modeling ${\rm logit}(\theta)$ by the semi-parametric structured additive predictor $\eta$ of the STAR model. 
 
 The hierarchical Bayesian STAR model entails estimating the unknown functions $f_\lambda$ and $f_\rho$. As discussed in \ref{star}, the vectors of function evaluations are the products 
 
@@ -52,10 +52,10 @@ The hierarchical Bayesian STAR model entails estimating the unknown functions $f
 Priors for $f_{\lambda}$ and $f_{\rho}$ are expressed as distributions over the random vectors $\lambda$ and $\rho$ as 
 
 \begin{equation*}
-p(\lambda | \tau_\lambda^2, \bar{\lambda}) \propto \exp{\left\{-\frac{1}{2\tau_\lambda^2} \: \left(\lambda - \bar{\lambda}\right)^\intercal  \mtrx{P}   \left(\lambda - \bar{\lambda}\right) \right\}}, 
+p(\lambda | \tau_\lambda^2, \bar{\lambda}) \propto \exp{\left\{-\frac{1}{2\tau_\lambda^2} \: \left(\lambda - \bar{\lambda}\right)^\intercal  \mtrx{P}   \left(\lambda - \bar{\lambda}\right) \right\}} \propto \mathcal{N} (\bar{\lambda}, \mtrx{Q}_\lambda^{-1}), 
 \end{equation*}
 \begin{equation*}
-p(\rho | \tau_\rho^2, \bar{\rho}) \propto \exp{\left\{-\frac{1}{2\tau_\rho^2} \: \left(\rho - \bar{\rho}\right)^\intercal  \mtrx{P} \left(\rho-\bar{\rho}\right) \right\}},
+p(\rho | \tau_\rho^2, \bar{\rho}) \propto \exp{\left\{-\frac{1}{2\tau_\rho^2} \: \left(\rho - \bar{\rho}\right)^\intercal  \mtrx{P} \left(\rho-\bar{\rho}\right) \right\}} \propto \mathcal{N} (\bar{\rho}, \mtrx{Q}_\rho^{-1}), 
 \end{equation*}
 
 \noindent where the penalty matrix $\mathbf{P}$ encodes assumptions about the temporal dependence between Congresses.\footnote{As mentioned in \ref{hyperpriors}, several priors for $\tau^2_\lambda$ and $\tau^2_\rho$ were considered including inverse-gamma \shortcite{fahrmeir_bayesian_2001} and half-Cauchy \shortcite{gelman_prior_2006}, as well as half-normal. Parameter estimates were not sensitive to the choice of prior. For computational reasons (nicer tail behavior) half-normal priors are used for the final model presented below.}
