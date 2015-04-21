@@ -20,10 +20,10 @@ One of the many challenges of fitting models to data comprising multiple groupin
 For example, consider a simple binomial model for the number of survey respondents $y$ in favor of a particular policy. It might be reasonable to estimate separate underlying levels of support $\theta$ for the policy for each of $R$ different geographical regions. However, it is also likely that there is some dependence between the $\theta$s that should be incorporated into the joint probability model. This can be expressed with a prior distribution for the $\theta$s conditional on shared hyperparameters $\phi$, potentially also estimating $\phi$ from the data 
 
 \begin{align*}
-y_r | \theta_r &\sim {\rm Bin}(N_r, \theta_r), \quad r = 1, \dots, R \\
-\theta_r  | \phi &\sim p(\theta_r | \phi) \\
-\phi | \xi & \sim p(\phi | \xi)  \\
-\vdots
+  y_r | \theta_r &\sim {\rm Bin}(N_r, \theta_r), \quad r = 1, \dots, R \\
+  \theta_r  | \phi &\sim p(\theta_r | \phi) \\
+  \phi | \xi & \sim p(\phi | \xi)  \\
+  \vdots
 \end{align*}
 
 In theory there is no limit to the number of levels in the hierarchy -- if the value of $\xi$ is not fixed in the example above then it too must be modeled -- however, in practice the data are informative only up to a point (and there are computational challenges to be considered as well). 
@@ -92,7 +92,7 @@ An undirected graph $\mathbf{G} = (V,E)$ is simply an ordered pair of sets conta
 \subsection{GMRFs}
 Let $\theta \in \mathbb{R}^D$ have a multivariate normal distribution with probability density $p(\theta | \mu, \boldsymbol{\Sigma}) = \mathcal{N}_D (\theta | \mu, \boldsymbol{\Sigma})$. The random vector $\theta$ is said to form a GMRF with respect to the graph $\mathbf{G} = (V,E)$ if for each element in $\theta$ there is a corresponding node in $V$, and no edge $e_{ij}$ between nodes $v_i$ and $v_j$ \emph{if and only if} $\theta_i$ and $\theta_j$ are conditionally independent given all other elements of $\theta$ \shortcite{rue_gaussian_2005}.\footnote{$v_i \notin \partial^\mathbf{G}_{j} \iff \theta_i \bot \theta_j \mid \theta_{-ij}.$}\footnote{This definition is consistent with the definition of Markov random fields in general. The random variables $\theta_1, \dots, \theta_D$ obey the requisite Markov properties describing pairwise, local, and global conditional independencies \shortcite{rue_gaussian_2005}.} 
 
-The relationship between $G$ and $\theta$ -- the information they provide about each other -- is fully contained in the covariance matrix $\boldsymbol{\Sigma} \in \mathbb{R}^{D\times D}$, but it is not obvious from the individual elements of $\boldsymbol{\Sigma}$.\footnote{Nothing about the conditional independencies among the elements of $\theta$ can be inferred from the mean vector $\mu$.} It is more useful to instead consider the precision (inverse covariance) matrix $\mtrx{Q} =\boldsymbol{\Sigma}^{-1}$, for which it can be shown that conditional independence between $\theta_i$ and $\theta_j$ (no edge between nodes $v_i$ and $v_j$) always corresponds to a zero in cell $ij$ of the precision matrix, and vice-versa $(\forall i \neq j, \:\: v_i \in \partial_j \iff q_{ij} = 0)$.  For a simple proof see \citeA{rue_gaussian_2005}.\footnote{For intuition, the following interpretations of the elements of a precision matrix may also be helpful to keep in mind. For $i = j$ (the diagonal),  $q_{ij} = Var(\theta_i | \theta_{-i})$, the variance of $\theta_i$ conditional all the variables except $\theta_i$. For $i \neq j$ (the off-diagonal), $q_{ij}  = -Cov(\theta_i, \theta_j | \theta_{-ij}) $, the negative (flipped sign) covariance between $\theta_i$ and $\theta_j$ conditional on all $\theta$s except $i$ and $j$.  }
+The relationship between $G$ and $\theta$ -- the information they provide about each other -- is fully contained in the covariance matrix $\boldsymbol{\Sigma} \in \mathbb{R}^{D\times D}$, but it is not obvious from the individual elements of $\boldsymbol{\Sigma}$.\footnote{Nothing about the conditional independencies among the elements of $\theta$ can be inferred from the mean vector $\mu$.} It is more useful to instead consider the precision (inverse covariance) matrix $\mtrx{Q} =\boldsymbol{\Sigma}^{-1}$, for which it can be shown that conditional independence between $\theta_i$ and $\theta_j$ (no edge between nodes $v_i$ and $v_j$) always corresponds to a zero in cell $ij$ of the precision matrix, and vice-versa.\footnote{$\forall i \neq j, \:\: v_i \in \partial_j \iff q_{ij} = 0$}.  For a simple proof see \citeA{rue_gaussian_2005}.\footnote{For intuition, the following interpretations of the elements of a precision matrix may also be helpful to keep in mind. For $i = j$ (the diagonal),  $q_{ij} = Var(\theta_i | \theta_{-i})$, the variance of $\theta_i$ conditional all the variables except $\theta_i$. For $i \neq j$ (the off-diagonal), $q_{ij}  = -Cov(\theta_i, \theta_j | \theta_{-ij}) $, the negative (flipped sign) covariance between $\theta_i$ and $\theta_j$ conditional on all $\theta$s except $i$ and $j$.  }
 
 
 
@@ -105,7 +105,7 @@ The relationship between $G$ and $\theta$ -- the information they provide about 
 The structured additive regression (STAR) model replaces the linear predictor of the generalized linear model (GLM) with a semiparametric structured additive predictor
 
 \begin{equation*}
-\eta =  u^\intercal\gamma + f_1(x_1) + \ldots + f_j(x_j) + \ldots + f_J(x_J) =  u^\intercal\gamma + \sum_{j} f_j (x_j) ,
+  \eta =  u^\intercal\gamma + f_1(x_1) + \ldots + f_j(x_j) + \ldots + f_J(x_J) =  u^\intercal\gamma + \sum_{j} f_j (x_j) ,
 \end{equation*}
 
 \noindent which can include nonlinear unknown functions of covariates as well as linear components and is flexible enough to include the assorted mixed effects models familiar to social scientists as special cases \shortcite{fahrmeir_bayesian_2001}. 
@@ -143,7 +143,7 @@ While this formulation of the $RW_1$ prior is {\it directed}, conditioning also 
 \begin{bmatrix}
 1  	& -1 	& 		& 	& \\
 -1  	& 2 	& -1 		& 	& \\
-  	& -1 	& \ddots 	& \ddots	& \\
+  	& -1 & \ddots 	& \ddots	& \\
   	&  	& \ddots 	& 2 	& -1\\
   	&  	& 		& -1 	& 1\\
 \end{bmatrix}
