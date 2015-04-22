@@ -33,3 +33,90 @@ Estimates from the Bayesian STAR model. The darker ribbons show 50\% posterior i
 \label{fig:lambda_rho}
 \end{figure}
 
+
+\clearpage
+\chapter[Hamiltonian Monte Carlo]{Appendix D}\label{AppendixD}
+
+A simplified version of the Hamiltonian Monte Carlo algorithm used by Stan. 
+
+{\singlespacing
+\subsubsection{Notation}
+
+\begin{tabular}{ll}
+$\theta$ & D-dimensional position vector (model parameters to be estimated) \\
+
+ $ \rho$ & D-dimensional vector of auxiliary momentum variables \\
+
+$\mathcal{L}$ & Natural logarithm of joint probability density for $\theta$ (up to normalizing constant) \\
+
+$\nabla_\theta$ & Gradient with respect to $\theta$ \\
+
+$x^{[t]}$ & The value of $x$ at time $t$ \\
+
+$N$ & The number of iterations to run the algorithm \\
+
+$ L $ & number of ``leapfrog" steps (to run simulated Hamiltonian system) per iteration\\
+
+$ \epsilon$ & The size of the leapfrog steps
+\end{tabular}
+}
+\vskip.5cm
+
+\subsubsection{Leapfrog function}
+
+A single ``leapfrog" update consists of executing the following function once:
+
+{\singlespacing
+
+${\tt leapfrog} (\rho, \theta, \epsilon) \{$ 
+
+\begin{tabular}{ll}
+$\quad \tilde{\rho} \leftarrow \rho + \tfrac{1}{2}\epsilon \nabla_\theta \mathcal{L}(\theta)$ & {\it (half-step)} \\
+
+$\quad \tilde{\theta} \leftarrow \theta + \epsilon \tilde{\rho}$ & {\it (full-step)} \\
+
+$\quad \tilde{\rho} \leftarrow \tilde{\rho} + \tfrac{1}{2}\epsilon \nabla_\theta \mathcal{L}(\tilde{\theta})$ & {\it (half-step)} \\
+
+$\quad {\tt return} (\tilde{\rho}, \tilde{\theta})$
+\end{tabular}
+
+$\}$
+
+}
+
+\subsubsection{Pseudo-code for HMC algorithm}
+
+
+\noindent Set $\theta^{[0]}$, $N$, $\epsilon$ and $L$.
+
+\noindent For $n = 1, \dots, N \quad \{$ 
+
+\begin{tabular}{ll}
+{\bf (i)} $\rho^{[0]} \sim \mathcal{N}_D(0, \mtrx{I})$ & ({\it Sample standard normal inits for $\rho$}) \\
+
+{\bf (ii)} $\tilde{\rho} \leftarrow \rho^{[0]}$, $\tilde{\theta} \leftarrow \theta^{[n-1]}$ &  ({\it Initialize $\tilde{\rho}, \tilde{\theta}$})\\
+
+{\bf (iii)} For $\ell = 1, 2, \dots, L \quad \{$  & ({\it Do $L$ leapfrog updates to generate proposal }) \\[-8pt]
+
+\qquad $(\tilde{\rho}, \tilde{\theta}) \leftarrow {\tt leapfrog}(\tilde{\rho}, \tilde{\theta}, \epsilon)$ & \\[-8pt]
+\quad $\}$ & \\
+
+\quad Compute acceptance probability $p^\star$  & \\[-8pt]
+$\qquad  q^{\it new} \leftarrow  \mathcal{L}(\tilde{\theta}) - \tfrac{1}{2} \tilde{\rho} \cdot \tilde{\rho} $ & \\[-8pt]
+$ \qquad q^{\it old} \leftarrow   \mathcal{L}(\theta^{[n-1]} ) -  \tfrac{1}{2} \rho^{[0]} \cdot \rho^{[0]} $ & \\[-8pt]
+$ \qquad p^\star = \min{\left\{1, \exp{\left( q^{\it new} - q^{\it old} \right)} \right\}} $& \\[3pt]
+
+{\bf (iv)} Set $\theta^{[n]} \leftarrow \tilde{\theta}$ with probability $p^\star$  & ({\it Accept or reject proposal})\\
+\qquad and $\theta^{[n]} \leftarrow \theta^{[n-1]}$ with probability $ 1 - p^\star$ & \\
+
+\end{tabular}
+
+\noindent $\}$
+
+\noindent Technically in {\bf (iv)} the proposal for $m$ is accepted or rejected along with the proposal for $\theta$, but in practice we only care about $\theta$. 
+
+Note that the above procedure requires $\epsilon$ (step-size) and $L$ (number of steps) to be specified in advance. Very roughly speaking, if $L$ and/or $\epsilon$ is too small proposals for $\theta^{[n]}$ will be too close to $\theta^{[n-1]}$ and the chain will mix slowly, whereas if they are too large the proposals will stray too far and will be unlikely to be accepted. Larger values for $\epsilon$ will also lead to cruder discrete approximations of the continuous-time Hamiltonian system. The NUTS algorithm \shortcite{hoffman_2012} used by Stan is designed to automatically tune $L$ and $\epsilon$ for each chain during a warmup period. See \citeA{hoffman_2012} for the technical details and \citeA{stan_development_team_stan_2015} for more on Stan's implementation. 
+
+
+
+
