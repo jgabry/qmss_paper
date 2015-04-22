@@ -64,18 +64,18 @@ $ \epsilon$ & The size of the leapfrog steps
 
 \subsubsection{Leapfrog function}
 
-A single ``leapfrog" update consists of executing the following function once:
+A single leapfrog update consists of executing the following function once:
 
 {\singlespacing
 
 ${\tt leapfrog} (\rho, \theta, \epsilon) \{$ 
 
 \begin{tabular}{ll}
-$\quad \tilde{\rho} \leftarrow \rho + \tfrac{1}{2}\epsilon \nabla_\theta \mathcal{L}(\theta)$ & {\it (half-step)} \\
+$\quad \tilde{\rho} \leftarrow \rho + \tfrac{1}{2}\epsilon \nabla_\theta \mathcal{L}(\theta)$ & {\it (half step)} \\
 
-$\quad \tilde{\theta} \leftarrow \theta + \epsilon \tilde{\rho}$ & {\it (full-step)} \\
+$\quad \tilde{\theta} \leftarrow \theta + \epsilon \tilde{\rho}$ & {\it (full step)} \\
 
-$\quad \tilde{\rho} \leftarrow \tilde{\rho} + \tfrac{1}{2}\epsilon \nabla_\theta \mathcal{L}(\tilde{\theta})$ & {\it (half-step)} \\
+$\quad \tilde{\rho} \leftarrow \tilde{\rho} + \tfrac{1}{2}\epsilon \nabla_\theta \mathcal{L}(\tilde{\theta})$ & {\it (half step)} \\
 
 $\quad {\tt return} (\tilde{\rho}, \tilde{\theta})$
 \end{tabular}
@@ -92,11 +92,11 @@ $\}$
 \noindent For $n = 1, \dots, N \quad \{$ 
 
 \begin{tabular}{ll}
-{\bf (i)} $\rho^{[0]} \sim \mathcal{N}_D(0, \mtrx{I})$ & ({\it Sample standard normal inits for $\rho$}) \\
+{\bf (i)} $\rho^{[0]} \sim \mathcal{N}_D(0, \mtrx{I})$ & ({\it Sample iid standard normal inits for $\rho$}) \\
 
 {\bf (ii)} $\tilde{\rho} \leftarrow \rho^{[0]}$, $\tilde{\theta} \leftarrow \theta^{[n-1]}$ &  ({\it Initialize $\tilde{\rho}, \tilde{\theta}$})\\
 
-{\bf (iii)} For $\ell = 1, 2, \dots, L \quad \{$  & ({\it Do $L$ leapfrog updates to generate proposal }) \\[-8pt]
+{\bf (iii)} For $\ell = 1, \dots, L \quad \{$  & ({\it Do $L$ leapfrog updates to generate proposal }) \\[-8pt]
 
 \qquad $(\tilde{\rho}, \tilde{\theta}) \leftarrow {\tt leapfrog}(\tilde{\rho}, \tilde{\theta}, \epsilon)$ & \\[-8pt]
 \quad $\}$ & \\
