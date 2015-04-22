@@ -190,21 +190,30 @@ $\theta_i$. For $i \neq j$ (the off-diagonal), $q_{ij}  = -Cov(\theta_i, \theta_
 \section{Bayesian STAR models}
 \label{star}
 
-The structured additive regression (STAR) model replaces the linear predictor of the generalized linear model (GLM) with a semiparametric structured additive predictor
+The structured additive regression (STAR) model replaces the linear predictor of the generalized linear 
+model (GLM) with a semiparametric structured additive predictor
 
 \begin{equation*}
   \eta =  u^\intercal\gamma + f_1(x_1) + \ldots + f_j(x_j) + \ldots + f_J(x_J) =  u^\intercal\gamma + \sum_{j} f_j (x_j) ,
 \end{equation*}
 
-\noindent which can include nonlinear unknown functions of covariates as well as linear components and is flexible enough to include the assorted mixed effects models familiar to social scientists as special cases \shortcite{fahrmeir_bayesian_2001}. 
+\noindent which can include nonlinear unknown functions of covariates as well as linear components 
+and is flexible enough to include the assorted mixed effects models familiar to social scientists as 
+special cases \shortcite{fahrmeir_bayesian_2001}. 
 
-From the Bayesian perspective, the non-varying parameters $\gamma$ as well as the unknown functions $f_1, \dots, f_J$ are treated as random variables distributed according to priors that must be specified. For an unknown function $f_j(x_j)$ let $\mtrx{f}_j^{eval}$ denote the vector of function evaluations of $f_j$ at each of the $N$ observed values of $x_j$ 
+From the Bayesian perspective, the non-varying parameters $\gamma$ as well as the unknown 
+functions $f_1, \dots, f_J$ are treated as random variables distributed according to priors that must 
+be specified. For an unknown function $f_j(x_j)$ let $\mtrx{f}_j^{eval}$ denote the vector of function 
+evaluations of $f_j$ at each of the $N$ observed values of $x_j$ 
 
 \begin{equation*}
 \mtrx{f}_j^{eval} = \left(f_j(x_{1j}), \dots f_j(x_{Nj})\right)^\intercal.  
  \end{equation*}
  
-\noindent Then $\mathbf{f}_j^{eval}$ is treated as a random vector, which, following \citeA{brezger_generalized_2006}, can conveniently be expressed as the matrix product $\mtrx{M}_j \theta_j$ of a design matrix $\mtrx{M}_j \in \mathbb{R}^{N \times D}$ and a parameter vector $\theta_j$. The GMRF prior for each $\theta_j$ takes the general form
+\noindent Then $\mathbf{f}_j^{eval}$ is treated as a random vector, which, following 
+\citeA{brezger_generalized_2006}, can conveniently be expressed as the matrix product 
+$\mtrx{M}_j \theta_j$ of a design matrix $\mtrx{M}_j \in \mathbb{R}^{N \times D}$ and a 
+parameter vector $\theta_j$. The GMRF prior for each $\theta_j$ takes the general form
 
 \begin{equation*}
 p(\theta_j | \tau^2_j) 
@@ -213,18 +222,55 @@ p(\theta_j | \tau^2_j)
 \exp{\left\{-\frac{1}{2\tau^2_j} \theta_j^\intercal \mtrx{P} \theta_j\right\}}
 \end{equation*}
 
-\noindent where $\mtrx{P}$ is a penalty matrix whereby we operationalize our prior assumptions about the smoothness of the unknown function $f_j$.\footnote{See Appendix~\ref{AppendixA} for a discussion of ways to deal with the impropriety of this prior under certain conditions.}
+\noindent where $\mtrx{P}$ is a penalty matrix whereby we operationalize our prior assumptions 
+about the smoothness of the unknown function $f_j$.\footnote{See Appendix~\ref{AppendixA} 
+for a discussion of ways to deal with the impropriety of this prior under certain conditions.}
 
-To provide some intuition, suppose we are interested in learning about an effect with assumed variation over geographic regions.  A simple map with $R$ distinct regions $r_1, r_2, \dots r_R$ can be represented as an undirected graph $\mtrx{G}$ with vertices $V = \{v_1, v_2, \dots, v_R\}$ and edges $E$ connecting vertices corresponding to neighboring (or proximate) regions. A prior on a parameter vector $\theta = (\theta_1, \dots, \theta_r)$ can be constructed such that the matrix $\mtrx{P}$ has a zero in the $ij$th cell if and only if $\theta_i$ and $\theta_j$ (the parameters corresponding to regions $r_i$ and $r_j$) are assumed to be independent conditional on $\theta_{-ij}$. Then $\theta$ is a GMRF with respect to $G$ with $\boldsymbol{\Sigma}^{-1} = \mtrx{Q} = \mtrx{P}/\tau^2$. 
+To provide some intuition, suppose we are interested in learning about an effect with assumed 
+variation over geographic regions.  A simple map with $R$ distinct regions $r_1, r_2, \dots r_R$ can 
+be represented as an undirected graph $\mtrx{G}$ with vertices $V = \{v_1, v_2, \dots, v_R\}$ and 
+edges $E$ connecting vertices corresponding to neighboring (or proximate) regions. A prior on a 
+parameter vector $\theta = (\theta_1, \dots, \theta_r)$ can be constructed such that the matrix 
+$\mtrx{P}$ has a zero in the $ij$th cell if and only if $\theta_i$ and $\theta_j$ (the parameters 
+corresponding to regions $r_i$ and $r_j$) are assumed to be independent conditional on 
+$\theta_{-ij}$. Then $\theta$ is a GMRF with respect to $G$ with 
+$\boldsymbol{\Sigma}^{-1} = \mtrx{Q} = \mtrx{P}/\tau^2$. 
+
 
 \subsection{The penalty matrix} 
 \label{penalty_matrix}
 
-More specifically, the penalty matrix $\mtrx{P}$ can be constructed as  $\mtrx{P} = \mtrx{D} - \mtrx{A}$, where $\mtrx{A}$ is a symmetric matrix with $a_{ij} = 1$ if temporal or spatial units $i$ and $j$ are considered neighbors (the associated graph $\mtrx{G}$ has an edge between nodes $i$ and $j$) and 0 otherwise, and $\mtrx{D}$ is a diagonal matrix such that $\forall i = j, \: d_{ij} = \sum_j a_{ij}$. The matrices $\mtrx{A}$ and $\mtrx{D}$ are commonly referred to as the adjacency and degree matrices because encoded in $\mtrx{A}$ are all (temporal and/or spatial) neighbor relationships -- the information in $\partial^\mtrx{G}$ in matrix form -- and the (diagonal) elements of $\mtrx{D}$ are equal to the number of neighbors (the degree) of each vertex in the graph $\mtrx{G}$. 
+More specifically, the penalty matrix $\mtrx{P}$ can be constructed as  
+$\mtrx{P} = \mtrx{D} - \mtrx{A}$, where $\mtrx{A}$ is a symmetric matrix with 
+$a_{ij} = 1$ if temporal or spatial units $i$ and $j$ are considered neighbors 
+(the associated graph $\mtrx{G}$ has an edge between nodes $i$ and $j$) and 
+0 otherwise, and $\mtrx{D}$ is a diagonal matrix such that 
+$\forall i = j, \: d_{ij} = \sum_j a_{ij}$. The matrices $\mtrx{A}$ and $\mtrx{D}$ are 
+commonly referred to as the adjacency and degree matrices because encoded in 
+$\mtrx{A}$ are all (temporal and/or spatial) neighbor relationships -- the information 
+in $\partial^\mtrx{G}$ in matrix form -- and the (diagonal) elements of $\mtrx{D}$ 
+are equal to the number of neighbors (the degree) of each vertex in the 
+graph $\mtrx{G}$. 
 
-To illustrate why this form of $\mtrx{P}$ captures these particular assumptions, consider $N$ measurements of a variable $z$, with each measurement made at one of $T$ evenly spaced points in time. For simplicity, but without loss of generality,  assume that $z$ is a unit of time and there is exactly one measurement per time period.  The sequence $(z^{[t]})_{t=1}^T$ then corresponds to a grid of points on a line.  \citeA{fahrmeir_bayesian_2001} suggest several possible choices for a prior on a smooth function $f(z)$, the simplest of which is a first order random walk ($RW_1$) prior.  Under the $RW_1$ prior, the first differences $\Delta_t = f(z^{[t]}) - f(z^{[t-1]})$ are treated as independent and identically distributed standard normal random variables. 
+To illustrate why this form of $\mtrx{P}$ captures these particular assumptions, 
+consider $N$ measurements of a variable $z$, with each measurement made at 
+one of $T$ evenly spaced points in time. For simplicity, but without loss of generality,  
+assume that $z$ is a unit of time and there is exactly one measurement per time period.  
+The sequence $(z^{[t]})_{t=1}^T$ then corresponds to a grid of points on a line. 
+\citeA{fahrmeir_bayesian_2001} suggest several possible choices for a prior on a smooth f
+unction $f(z)$, the simplest of which is a first order random walk ($RW_1$) prior.  Under 
+the $RW_1$ prior, the first differences $\Delta_t = f(z^{[t]}) - f(z^{[t-1]})$ are treated as 
+independent and identically distributed standard normal random variables. 
 
-While this formulation of the $RW_1$ prior is {\it directed}, conditioning also on $f(z^{[t+1]})$ -- one step into the future -- forms an undirected $RW_1$, where the neighbors of time $t$ are both $t-1$ and $t+1$.\footnote{Unless otherwise noted, the notation $RW$ will refer to an {\it undirected} random walk throughout the remainder of this thesis.} The associated graph $\mtrx{G}$ therefore has vertices $V=\{v_t : t=1,\dots,T\}$, each of which has two neighbors, with the exception of $v_1$ and $v_T$, which have one neighbor.\footnote{$\partial_t = \{v_{s} : t - 1 \leq s \leq t + 1\}.$}  The penalty matrix $\mtrx{P}$ corresponding to the $RW_1$ prior with equally spaced observations is the tridiagonal matrix
+While this formulation of the $RW_1$ prior is {\it directed}, conditioning also on 
+$f(z^{[t+1]})$ -- one step into the future -- forms an undirected $RW_1$, where 
+the neighbors of time $t$ are both $t-1$ and $t+1$.\footnote{Unless otherwise 
+noted, the notation $RW$ will refer to an {\it undirected} random walk throughout 
+the remainder of this thesis.} The associated graph $\mtrx{G}$ therefore has vertices 
+$V=\{v_t : t=1,\dots,T\}$, each of which has two neighbors, with the exception of 
+$v_1$ and $v_T$, which have one neighbor.\footnote{$\partial_t = \{v_{s} : t - 1 \leq s \leq t + 1\}.$}  
+The penalty matrix $\mtrx{P}$ corresponding to the $RW_1$ prior with equally 
+spaced observations is the tridiagonal matrix
 
 \begin{equation*}
 \mtrx{P} = 
@@ -237,11 +283,32 @@ While this formulation of the $RW_1$ prior is {\it directed}, conditioning also 
 \end{bmatrix}
 \end{equation*}
 
-\noindent which can be derived by computing the difference of the appropriate degree and adjacency matrices \shortcite{brezger_generalized_2006}.\footnote{The construction of $\mtrx{P}$ as the matrix difference $\mtrx{D} - \mtrx{A}$ also allows for the estimation of a parameter $\omega \in [0,1]$, which, as a coefficient on $\mtrx{A}$, can be interpreted as representing the strength of spatial or temporal dependence \shortcite{rue_gaussian_2005}. The resulting precision matrix $\mtrx{Q}= (\mtrx{D} - \omega \mtrx{A})/\tau^2$ is the defining feature of the conditional autoregressive (CAR) model.  When $\omega = 1$, and thus $\mtrx{P}= \mtrx{D} - \mtrx{A}$, the model is sometimes referred to as an intrinsic CAR model. In general, CAR and (G)MRF refer to models with the same structure but different parameterizations. In the literature, the term CAR tends to be reserved for the model when expressed in terms of conditional distributions (for each random variable given its neighborhood) rather than the joint distribution \shortcite{banerjee_hierarchical_2004}. See also Appendix~\ref{AppendixA} for more details. \label{footnote_car}} The $RW_1$ can be extended to an $RW_2$ prior by also considering the measurements $z^{[t-2]}$  and $z^{[t+2]}$ to be neighbors of $z^{[t]}$. 
+\noindent which can be derived by computing the difference of the appropriate degree 
+and adjacency matrices \shortcite{brezger_generalized_2006}.\footnote{The construction 
+of $\mtrx{P}$ as the matrix difference $\mtrx{D} - \mtrx{A}$ also allows for the estimation 
+of a parameter $\omega \in [0,1]$, which, as a coefficient on $\mtrx{A}$, can be 
+interpreted as representing the strength of spatial or temporal dependence 
+\shortcite{rue_gaussian_2005}. The resulting precision matrix 
+$\mtrx{Q}= (\mtrx{D} - \omega \mtrx{A})/\tau^2$ is the defining feature of the conditional 
+autoregressive (CAR) model.  When $\omega = 1$, and thus $\mtrx{P}= \mtrx{D} - \mtrx{A}$, 
+the model is sometimes referred to as an intrinsic CAR model. In general, CAR and (G)MRF 
+refer to models with the same structure but different parameterizations. In the literature, the 
+term CAR tends to be reserved for the model when expressed in terms of conditional 
+distributions (for each random variable given its neighborhood) rather than the joint distribution \shortcite{banerjee_hierarchical_2004}. 
+See also Appendix~\ref{AppendixA} for more details.\label{footnote_car}} 
+The $RW_1$ can be extended to an $RW_2$ prior by also considering the 
+measurements $z^{[t-2]}$  and $z^{[t+2]}$ to be neighbors of $z^{[t]}$. 
 
 
 \subsection{Hyperpriors}
 \label{hyperpriors}
 
-To complete the hierarchical model requires also specifying hyperpriors $p(\tau_j^2)$.  Assigning a prior distribution to the variance hyperparameter $\tau_j^2$ allows for the simultaneous estimation of a smoothing function $f_j$ and the amount of smoothness. \citeA{fahrmeir_bayesian_2001} and \citeA{brezger_bayesx:_2005} recommend  inverse-gamma priors for the $\tau_j^2$. However, in light of concerns about this type of inverse-gamma prior raised by \citeA{gelman_prior_2006}, in this thesis several priors for $\tau^2_j$ are used and compared to check the degree to which the results are sensitive to the choice of prior.
+To complete the hierarchical model requires also specifying hyperpriors $p(\tau_j^2)$.  
+Assigning a prior distribution to the variance hyperparameter $\tau_j^2$ allows for the 
+simultaneous estimation of a smoothing function $f_j$ and the amount of smoothness.
+ \citeA{fahrmeir_bayesian_2001} and \citeA{brezger_bayesx:_2005} recommend  
+ inverse-gamma priors for the $\tau_j^2$. However, in light of concerns about this type 
+ of inverse-gamma prior raised by \citeA{gelman_prior_2006}, in this thesis several priors 
+ for $\tau^2_j$ are used and compared to check the degree to which the results are sensitive 
+ to the choice of prior.
 
