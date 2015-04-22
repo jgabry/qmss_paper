@@ -2,22 +2,57 @@
 \chapter{Review of Statistical Methods}
 \label{lit_review}
 
-Part~\ref{lit_review} begins with a summary of the ideas presented in \citeA{wawro_designing_2014} and then draws on the relevant literature to review the statistical theory underlying the model developed for the empirical example in Part~\ref{cox_katz}. Section \ref{hierarchical} is a brief review of hierarchical models. Gaussian Markov random fields (GMRF) are defined and discussed in \ref{gmrf}. Finally, \ref{star} discusses Bayesian structured additive regression (STAR) models. 
+Part~\ref{lit_review} begins with a summary of the ideas presented in 
+\citeA{wawro_designing_2014} and then draws on the relevant literature 
+to review the statistical theory underlying the model developed for the empirical 
+example in Part~\ref{cox_katz}. Section \ref{hierarchical} is a brief review of 
+hierarchical models. Gaussian Markov random fields (GMRF) are defined and 
+discussed in \ref{gmrf}. Finally, \ref{star} discusses Bayesian structured additive 
+regression (STAR) models. 
 
 \section{Designing historical social scientific inquiry}
 \label{wawro}
 
-The recommendations of \citeA{wawro_designing_2014} are many, but the central theme is that the epistemological concerns of historians are not antithetical to a quantitative treatment but rather offer an opportunity to reflect on the shortcomings of traditional quantitative approaches and embrace different techniques that ``bridge the methodological divide" (p. 526). Indeed, greater sensitivity to these issues motivates the use of more interesting quantitative methods and naturally leads to a fully Bayesian approach.   Bayesian hierarchical models have the flexibility to accommodate parameter variation, account for unobserved heterogeneity, and, through prior probability distributions, can be further tailored to incorporate existing knowledge from previous studies and historically motivated hypotheses  \cite{wawro_designing_2014, goodrich_designing_2012}. Katznelson and Wawro suggest  semi-parametric mixed models -- in particular,  Bayesian structured additive regression (STAR) models -- and the flexible family of Gaussian Markov random fields priors for modeling interesting temporal and spatial relationships.
+The recommendations of \citeA{wawro_designing_2014} are many, but the central 
+theme is that the epistemological concerns of historians are not antithetical to a 
+quantitative treatment but rather offer an opportunity to reflect on the shortcomings 
+of traditional quantitative approaches and embrace different techniques that ``bridge 
+the methodological divide" (p. 526). Indeed, greater sensitivity to these issues motivates 
+the use of more interesting quantitative methods and naturally leads to a fully Bayesian 
+approach.  Bayesian hierarchical models have the flexibility to accommodate parameter 
+variation, account for unobserved heterogeneity, and, through prior probability distributions, 
+can be further tailored to incorporate existing knowledge from previous studies and 
+historically motivated hypotheses  \cite{wawro_designing_2014, goodrich_designing_2012}. 
+Katznelson and Wawro suggest  semi-parametric mixed models -- in particular,  Bayesian 
+structured additive regression (STAR) models -- and the flexible family of Gaussian Markov 
+random fields priors for modeling interesting temporal and spatial relationships.
 
-Accounting for variation over time (and potentially space) commonly involves estimating a large number of parameters relevant to the size of the available data, which can present a number of statistical challenges (e.g. under-identification). While Bayesian methods present their own unique set of burdens, many of which are highlighted throughout this thesis, they provide a more promising way forward than classical approaches estimated by maximum likelihood methods. 
+Accounting for variation over time (and potentially space) commonly involves estimating 
+a large number of parameters relevant to the size of the available data, which can lead 
+to a number of statistical challenges (e.g. under-identification). While Bayesian methods 
+bring their own unique set of burdens, many of which are highlighted throughout this 
+thesis, they provide a more promising way forward than classical approaches estimated 
+by maximum likelihood methods. 
 
 
 \section{Hierarchical Bayesian models}
 \label{hierarchical}
 
-One of the many challenges of fitting models to data comprising multiple groupings is confronting the tradeoff between bias and variance. An analysis that disregards between-group heterogeneity can yield parameter estimates with low variance but high bias. Group-by-group analyses, on the other hand, can reduce bias at the expense of high-variance estimates \shortcite{jackman_bayesian_2009}. While complete pooling or no pooling of data across groups is sometimes called for, nonhierarchical models for hierarchical data tend to underfit or overfit the data \shortcite{gelman_bayesian_2013}. Hierarchical modeling provides a compromise by allowing parameters to vary by group at lower levels of the hierarchical while estimating population-level parameters at higher levels. 
+One of the many challenges of fitting models to data comprising multiple groupings is 
+confronting the tradeoff between bias and variance. An analysis that disregards between-group 
+heterogeneity can yield parameter estimates with low variance but high bias. Group-by-group 
+analyses, on the other hand, can reduce bias at the expense of high-variance estimates \shortcite{jackman_bayesian_2009}. While complete pooling or no pooling of data across 
+groups is sometimes called for, nonhierarchical models for hierarchical data tend to underfit 
+or overfit the data \shortcite{gelman_bayesian_2013}. Hierarchical modeling provides a 
+compromise by allowing parameters to vary by group at lower levels of the hierarchical while 
+estimating population-level parameters at higher levels. 
 
-For example, consider a simple binomial model for the number of survey respondents $y$ in favor of a particular policy. It might be reasonable to estimate separate underlying levels of support $\theta$ for the policy for each of $R$ different geographical regions. However, it is also likely that there is some dependence between the $\theta$s that should be incorporated into the joint probability model. This can be expressed with a prior distribution for the $\theta$s conditional on shared hyperparameters $\phi$, potentially also estimating $\phi$ from the data 
+For example, consider a simple binomial model for the number of survey respondents $y$ in 
+favor of a particular policy. It might be reasonable to estimate separate underlying levels of 
+support $\theta$ for the policy for each of $R$ different geographical regions. However, it is 
+also likely that there is some dependence between the $\theta$s that should be incorporated 
+into the joint probability model. This can be expressed with a prior distribution for the $\theta$s 
+conditional on shared hyperparameters $\phi$, potentially also estimating $\phi$ from the data 
 
 \begin{align*}
   y_r | \theta_r &\sim {\rm Bin}(N_r, \theta_r), \quad r = 1, \dots, R \\
@@ -26,11 +61,23 @@ For example, consider a simple binomial model for the number of survey responden
   \vdots
 \end{align*}
 
-In theory there is no limit to the number of levels in the hierarchy -- if the value of $\xi$ is not fixed in the example above then it too must be modeled -- however, in practice the data are informative only up to a point (and there are computational challenges to be considered as well). 
+In theory there is no limit to the number of levels in the hierarchy -- if the value of $\xi$ is not 
+fixed in the example above then it too must be modeled -- however, in practice the data are 
+informative only up to a point (and there are computational challenges to be considered as well). 
 
-Perhaps the most important feature of hierarchical models is that inference for each group-level parameter is informed not only by the group-specific information contained in the data but also by the other groups as well \shortcite{jackman_bayesian_2009}.\footnote{The assumption of exchangeability is important here, but a sufficient discussion of exchangeability is beyond the scope of this thesis. See \citeA{gelman_bayesian_2013}.} This is commonly referred to as borrowing strength. In the example above, for instance, inferences about each $\theta_r$ are informed by $y_r$ but also by $y_{-r}$ through $\phi$.\footnote{The notation $y_{-r}$ is used here to refer to all $y$'s other than $y_r$ (e.g. $y_{-1} =  \{y_2, y_3, \dots, y_R\}$ ).} 
+Perhaps the most important feature of hierarchical models is that inference for each group-level 
+parameter is informed not only by the group-specific information contained in the data but also 
+by the other groups as well \shortcite{jackman_bayesian_2009}.\footnote{
+The assumption of exchangeability is important here, but a sufficient discussion of exchangeability 
+is beyond the scope of this thesis. See \citeA{gelman_bayesian_2013}.} This is commonly referred 
+to as borrowing strength. In the example above, for instance, inferences about each $\theta_r$ are 
+informed by $y_r$ but also by $y_{-r}$ through $\phi$.\footnote{The notation $y_{-r}$ is used here 
+to refer to all $y$'s other than $y_r$ (e.g. $y_{-1} =  \{y_2, y_3, \dots, y_R\}$ ).} 
 
-The term {\it hierarchical} is a suitable designation for a wide (theoretically unlimited) family of models, from the simple binomial example above to models with regressions at multiple levels to the semi-parameteric STAR models used by Wawro and Katznelson and in this thesis. See \citeA{gelman_bayesian_2013} and \citeA{jackman_bayesian_2009} for more thorough and formal introductions to the topic of hierarchical modeling.  
+The term {\it hierarchical} is a suitable designation for a wide (theoretically unlimited) family of 
+models, from the simple binomial example above to models with regressions at multiple levels 
+to the semi-parameteric STAR models used by Wawro and Katznelson and in this thesis. See \citeA{gelman_bayesian_2013} and \citeA{jackman_bayesian_2009} for more thorough and 
+formal introductions to the topic of hierarchical modeling.  
 
 
 
@@ -38,12 +85,33 @@ The term {\it hierarchical} is a suitable designation for a wide (theoretically 
 \section{Gaussian Markov random fields}
 \label{gmrf}
 
-The prior distributions of particular interest in this thesis are known as Gaussian Markov random field (GMRF) priors. The literature on GMRFs is vast, as they are frequently used in image processing and spatial statistics, however GMRFs appear only rarely in quantitative social science, and \citeA{wawro_designing_2014} is the first example extending the applications of GMRFs to historical social scientific inquiry.\footnote{This is actually only somewhat true. Many special cases of GMRFs  (e.g. autoregressive processes) are commonly used by researchers applying statistics in many different fields including all of the social sciences. This is because GMRFs are  multivariate normal distributions. It is the particular use advocated by Wawro and Katznelson that is unfamiliar in the social sciences.} Before defining GMRFs it is first necessary to introduce some basic concepts from graph theory, particular the idea of an undirected graph. 
+The prior distributions of particular interest in this thesis are known as Gaussian Markov random 
+field (GMRF) priors. The literature on GMRFs is vast, as they are frequently used in image processing 
+and spatial statistics, however GMRFs appear only rarely in quantitative social science, and \citeA{wawro_designing_2014} is the first example extending the applications of GMRFs to historical 
+social scientific inquiry.\footnote{This is actually only somewhat true. Many special cases of GMRFs  
+(e.g. autoregressive processes) are commonly used by researchers applying statistics in many different 
+fields including all of the social sciences. This is because GMRFs are  multivariate normal distributions. 
+It is the particular use advocated by Wawro and Katznelson that is unfamiliar in the social sciences.} 
+Before defining GMRFs it is first necessary to introduce some basic concepts from graph theory, 
+particular the idea of an undirected graph. 
 
 \subsection{Undirected graphs}
 \label{undirected_graphs}
 
-An undirected graph $\mathbf{G} = (V,E)$ is simply an ordered pair of sets containing the vertices (or nodes) and edges of the graph, respectively. In what follows assume that $V$ and $E$ are finite and let $e_{ij} \in E$ denote the element in $E$ corresponding to the edge connecting vertices $v_i$ and $v_j$ in $V$. The term {\it undirected} refers to the fact that the edges lack orientation.\footnote{Intuitively, it is helpful to think of the edges of an undirected graph as line segments with no implied direction, whereas the edges in a directed graph can be thought of as arrows.} The {\it neighbors} of node $v_j$ are all of the nodes that share a common edge with $v_j$. The notation $\partial^{\mathbf{G}}_j$ will be used for the {\it neighborhood} of node $v_j$ in graph  $\mathbf{G}$ and $\partial^\mathbf{G}$ for the set containing the neighborhoods for all nodes in $\mathbf{G}$.\footnote{$ \partial^\mathbf{G}_j = \{v_{i \neq j} \in V \,\vert\, e_{ij} \in E\}$ and $\partial^\mathbf{G} = \{\partial^\mathbf{G}_j \,\vert\, v_j \in V\}$.} For example, in Figure~\ref{fig:undirected_graphs}, $\partial^{\mtrx{A}}_1 = \{v_2, v_6\}$ and $\partial^{\mathbf{B}}_1 = \{v_2, v_3\}$.  For a more comprehensive discussion of undirected graphs in the context of GMRFs see \citeA{rue_gaussian_2005}. 
+An undirected graph $\mathbf{G} = (V,E)$ is simply an ordered pair of sets containing the 
+vertices (or nodes) and edges of the graph, respectively. In what follows assume that $V$ 
+and $E$ are finite and let $e_{ij} \in E$ denote the element in $E$ corresponding to the 
+edge connecting vertices $v_i$ and $v_j$ in $V$. The term {\it undirected} refers to the fact 
+that the edges lack orientation.\footnote{Intuitively, it is helpful to think of the edges of an 
+undirected graph as line segments with no implied direction, whereas the edges in a directed 
+graph can be thought of as arrows.} The {\it neighbors} of node $v_j$ are all of the nodes that 
+share a common edge with $v_j$. The notation $\partial^{\mathbf{G}}_j$ will be used for the 
+{\it neighborhood} of node $v_j$ in graph  $\mathbf{G}$ and $\partial^\mathbf{G}$ for the set 
+containing the neighborhoods for all nodes in $\mathbf{G}$.\footnote{$ \partial^\mathbf{G}_j = 
+\{v_{i \neq j} \in V \,\vert\, e_{ij} \in E\}$ and $\partial^\mathbf{G} = \{\partial^\mathbf{G}_j \,
+\vert\, v_j \in V\}$.} For example, in Figure~\ref{fig:undirected_graphs}, 
+$\partial^{\mtrx{A}}_1 = \{v_2, v_6\}$ and $\partial^{\mathbf{B}}_1 = \{v_2, v_3\}$.  For a more 
+comprehensive discussion of undirected graphs in the context of GMRFs see \citeA{rue_gaussian_2005}. 
 
  \begin{figure}[htb]
 \centering
@@ -90,9 +158,29 @@ An undirected graph $\mathbf{G} = (V,E)$ is simply an ordered pair of sets conta
 
 
 \subsection{GMRFs}
-Let $\theta \in \mathbb{R}^D$ have a multivariate normal distribution with probability density $p(\theta | \mu, \boldsymbol{\Sigma}) = \mathcal{N}_D (\theta | \mu, \boldsymbol{\Sigma})$. The random vector $\theta$ is said to form a GMRF with respect to the graph $\mathbf{G} = (V,E)$ if for each element in $\theta$ there is a corresponding node in $V$, and no edge $e_{ij}$ between nodes $v_i$ and $v_j$ \emph{if and only if} $\theta_i$ and $\theta_j$ are conditionally independent given all other elements of $\theta$ \shortcite{rue_gaussian_2005}.\footnote{$v_i \notin \partial^\mathbf{G}_{j} \iff \theta_i \bot \theta_j \mid \theta_{-ij}.$}\footnote{This definition is consistent with the definition of Markov random fields in general. The random variables $\theta_1, \dots, \theta_D$ obey the requisite Markov properties describing pairwise, local, and global conditional independencies \shortcite{rue_gaussian_2005}.} 
+Let $\theta \in \mathbb{R}^D$ have a multivariate normal distribution with probability 
+density $p(\theta | \mu, \boldsymbol{\Sigma}) = \mathcal{N}_D (\theta | \mu, \boldsymbol{\Sigma})$. 
+The random vector $\theta$ is said to form a GMRF with respect to the graph $\mathbf{G} = (V,E)$ if 
+for each element in $\theta$ there is a corresponding node in $V$, and no edge $e_{ij}$ between 
+nodes $v_i$ and $v_j$ \emph{if and only if} $\theta_i$ and $\theta_j$ are conditionally independent 
+given all other elements of $\theta$ \shortcite{rue_gaussian_2005}.\footnote{$v_i \notin 
+\partial^\mathbf{G}_{j} \iff \theta_i \bot \theta_j \mid \theta_{-ij}.$}\footnote{This definition is consistent 
+with the definition of Markov random fields in general. The random variables $\theta_1, \dots, \theta_D$ 
+obey the requisite Markov properties describing pairwise, local, and global conditional independencies \shortcite{rue_gaussian_2005}.} 
 
-The relationship between $G$ and $\theta$ -- the information they provide about each other -- is fully contained in the covariance matrix $\boldsymbol{\Sigma} \in \mathbb{R}^{D\times D}$, but it is not obvious from the individual elements of $\boldsymbol{\Sigma}$.\footnote{Nothing about the conditional independencies among the elements of $\theta$ can be inferred from the mean vector $\mu$.} It is more useful to instead consider the precision (inverse covariance) matrix $\mtrx{Q} =\boldsymbol{\Sigma}^{-1}$, for which it can be shown that conditional independence between $\theta_i$ and $\theta_j$ (no edge between nodes $v_i$ and $v_j$) always corresponds to a zero in cell $ij$ of the precision matrix, and vice-versa.\footnote{$\forall i \neq j, \:\: v_i \in \partial_j \iff q_{ij} = 0$}.  For a simple proof see \citeA{rue_gaussian_2005}.\footnote{For intuition, the following interpretations of the elements of a precision matrix may also be helpful to keep in mind. For $i = j$ (the diagonal),  $q_{ij} = Var(\theta_i | \theta_{-i})$, the variance of $\theta_i$ conditional all the variables except $\theta_i$. For $i \neq j$ (the off-diagonal), $q_{ij}  = -Cov(\theta_i, \theta_j | \theta_{-ij}) $, the negative (flipped sign) covariance between $\theta_i$ and $\theta_j$ conditional on all $\theta$s except $i$ and $j$.  }
+The relationship between $G$ and $\theta$ -- the information they provide about each other -- is fully 
+contained in the covariance matrix $\boldsymbol{\Sigma} \in \mathbb{R}^{D\times D}$, but it is not 
+obvious from the individual elements of $\boldsymbol{\Sigma}$.\footnote{Nothing about the conditional 
+independencies among the elements of $\theta$ can be inferred from the mean vector $\mu$.} It is 
+more useful to instead consider the precision (inverse covariance) matrix 
+$\mtrx{Q} =\boldsymbol{\Sigma}^{-1}$, for which it can be shown that conditional independence between 
+$\theta_i$ and $\theta_j$ (no edge between nodes $v_i$ and $v_j$) always corresponds to a zero in 
+cell $ij$ of the precision matrix, and vice-versa.\footnote{$\forall i \neq j, \:\: v_i \in \partial_j \iff q_{ij} = 0$}.  
+For a simple proof see \citeA{rue_gaussian_2005}.\footnote{For intuition, the following interpretations of 
+the elements of a precision matrix may also be helpful to keep in mind. For $i = j$ (the diagonal),  
+$q_{ij} = Var(\theta_i | \theta_{-i})$, the variance of $\theta_i$ conditional all the variables except 
+$\theta_i$. For $i \neq j$ (the off-diagonal), $q_{ij}  = -Cov(\theta_i, \theta_j | \theta_{-ij}) $, the negative 
+(flipped sign) covariance between $\theta_i$ and $\theta_j$ conditional on all $\theta$s except $i$ and $j$.  }
 
 
 
