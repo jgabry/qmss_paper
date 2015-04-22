@@ -1,9 +1,17 @@
 \section{Data}
 \label{ckdata}
 
-The data include -- with a few exceptions detailed below -- all roll-call votes in the U.S. House of Representatives during the 46th through 106th Congresses, corresponding to the period from 1879 to 2001.  Following Cox and Katz, excluded from the analysis are any records that meet at least one of the following three conditions: ({\it i}) the majority of both parties voted for the same position; ({\it ii}) the purpose of the vote was electing the Speaker of the House; ({\it iii}) the vote required a two-thirds majority for passage.
+The data include -- with a few exceptions detailed below -- all roll-call votes in the 
+U.S. House of Representatives during the 46th through 106th Congresses, corresponding 
+to the period from 1879 to 2001.  Following Cox and Katz, excluded from the analysis are 
+any records that meet at least one of the following three conditions: ({\it i}) the majority of 
+both parties voted for the same position; ({\it ii}) the purpose of the vote was electing the 
+Speaker of the House; ({\it iii}) the vote required a two-thirds majority for passage.
 
-The resulting data consist only of votes that required a simple majority for passage and on which the Republican and Democratic parties were in clear opposition.\footnote{A brief comment on notation: for greater consistency throughout this paper, this section uses different notation than \citeA{cox_gerrymandering_2007}.}
+The resulting data consist only of votes that required a simple majority for passage and on 
+which the Republican and Democratic parties were in clear opposition.\footnote{A brief 
+comment on notation: for greater consistency throughout this paper, this section uses different 
+notation than \citeA{cox_gerrymandering_2007}.}
 
 Let $RC_{it}$ denote the result of roll-call vote $i$ in Congress $t$ such that 
 
@@ -47,7 +55,8 @@ RC_{it} =
 
 
 
-\noindent The outcomes of interest are the number of wins $y_t$ and proportion of wins $\pi_t$ for the majority party position in each Congress $t$,
+\noindent The outcomes of interest are the number of wins $y_t$ and proportion of wins 
+$\pi_t$ for the majority party position in each Congress $t$,
 
 \begin{equation*}
 y_t =
@@ -57,10 +66,18 @@ n_t - \sum_{i=1}^{n_t} RC_{it}, & \text{ if Republicans hold majority,} \\
 \end{equation*}
 ~\\[-12pt]
  
-\noindent and $\pi_t = y_t / n_t$. Here $n_t$ denotes the number of roll-call votes in Congress $t$.\footnote{The value of $n$ ranges from a minimum of 33 votes in the 70th Congress (1927-1929) to a maximum of 836 votes in the 104th Congress (1995-1997). The median number is 143 votes. See also Figure~\ref{fig:data_summary} (p. \pageref{fig:data_summary}).} 
+\noindent and $\pi_t = y_t / n_t$. Here $n_t$ denotes the number of roll-call votes in 
+Congress $t$.\footnote{The value of $n$ ranges from a minimum of 33 votes in the 
+70th Congress (1927-1929) to a maximum of 836 votes in the 104th Congress (1995-1997). 
+The median number is 143 votes. See also Figure~\ref{fig:data_summary} 
+(p. \pageref{fig:data_summary}).} 
 
 
-The sole predictor is the ratio of the average vote share earned by the majority party position to the average vote share earned by the minority party position in each Congress.  (For each Congress the average is taken over all roll-call votes.)  For vote $i$ in Congress $t$, let $p_{it}^{DEM}$ be the proportion of representatives who cast their vote in favor of the Democratic position.  Then the mean vote shares for the Democratic and Republican positions in Congress t are
+The sole predictor is the ratio of the average vote share earned by the majority party position 
+to the average vote share earned by the minority party position in each Congress.  (For each 
+Congress the average is taken over all roll-call votes.)  For vote $i$ in Congress $t$, let 
+$p_{it}^{DEM}$ be the proportion of representatives who cast their vote in favor of the Democratic 
+position.  Then the mean vote shares for the Democratic and Republican positions in Congress t are
 
 \begin{equation*}
 v_t^{DEM} = n_t^{-1} \sum_{i=1}^{n_t} p_{it}^{DEM}, \qquad v_t^{REP} = 1 - v_t^{DEM},
@@ -93,16 +110,23 @@ Figure~\ref{fig:log_vratio_vs_ptdem} shows $v^{\it DEM}$ plotted against $\pi^{D
  \frac{s}{1-s} = \exp{(\lambda)}\left(\frac{v}{1-v}\right)^\rho 
 \end{equation*}
 
-\noindent used in analyses of bias and responsiveness in electoral contexts. The curve is analogous in the legislative context of Cox and Katz's example but for roll-call vote shares $\pi$ rather than seat shares $s$. This is discussed further in section \ref{subsection_methods} in relation to the statistical model.\footnote{See also Appendix~\ref{AppendixB} for visual examples of seats-votes curves.}
+\noindent used in analyses of bias and responsiveness in electoral contexts. The curve is 
+analogous in the legislative context of Cox and Katz's example but for roll-call vote shares 
+$\pi$ rather than seat shares $s$. This is discussed further in section \ref{subsection_methods}
+ in relation to the statistical model.\footnote{See also Appendix~\ref{AppendixB} for visual 
+ examples of seats-votes curves.}
 
-The trends of $\log{(v^{\it RATIO})}$ and $\pi^{MAJ}$ over time are shown in the visual summary of the dataset in Figure~\ref{fig:data_summary} (p.~\pageref{fig:data_summary}). \\[10pt]
+The trends of $\log{(v^{\it RATIO})}$ and $\pi^{MAJ}$ over time are shown in the visual summary 
+of the dataset in Figure~\ref{fig:data_summary} (p.~\pageref{fig:data_summary}). \\[10pt]
 
 
 %FIGURE
 \begin{figure}[p]
 \centering
 	\includegraphics[scale=0.75]{sections/figs/vis_summary}
-\caption{Visual summary of the data. The trends of $\log{(v^{\it RATIO} )}$ and $\pi^{MAJ}$ by Congress are plotted on top, with the number of roll-call votes per Congress below. Background shading is used to differentiate between Democratic and Republican majorities.}
+\caption{Visual summary of the data. The trends of $\log{(v^{\it RATIO} )}$ and $\pi^{MAJ}$ by 
+Congress are plotted on top, with the number of roll-call votes per Congress below. Background 
+shading is used to differentiate between Democratic and Republican majorities.}
 \label{fig:data_summary}
 \end{figure}
 %

@@ -4,13 +4,32 @@
 
 \subsubsection{Cox and Katz's analysis}
 
-\citeA{cox_gerrymandering_2007} propose two methods for checking their hypothesis of bias towards the majority party during the czar rule and post-packing eras. One strategy is to estimate separate models for four historical time periods of interest. \citeA{goodrich_designing_2012} advises that this ``imposes a particular periodization scheme that, while consistent with received wisdom, may or may not be the correct one" (p. 16). 
+\citeA{cox_gerrymandering_2007} propose two methods for checking their hypothesis 
+of bias towards the majority party during the czar rule and post-packing eras. One strategy 
+is to estimate separate models for four historical time periods of interest. 
+\citeA{goodrich_designing_2012} advises that this ``imposes a particular periodization scheme 
+that, while consistent with received wisdom, may or may not be the correct one" (p. 16). 
 
-Cox and Katz's second approach is more promising in that it allows for greater parameter heterogeneity and makes fewer a priori assumptions about the underlying data generating process. It is worth noting that making assumptions about the data generating process is in general not only unavoidable but also extremely important. The problem with the assumptions required for Cox and Katz's first method is not that they are implausible, but rather that periodization schemes per se are convenient abstractions that, in the context of quantitative historical analysis, can enforce a theoretically motivated but not empirically justified structure that should be learned rather than imposed. However, as demonstrated below, there are also issues with Cox and Katz's second design that can be overcome by following the recommendations in \citeA{wawro_designing_2014}. 
+Cox and Katz's second approach is more promising in that it allows for greater parameter 
+heterogeneity and makes fewer a priori assumptions about the underlying data generating 
+process. It is worth noting that making assumptions about the data generating process is in 
+general not only unavoidable but also extremely important. The problem with the assumptions 
+required for Cox and Katz's first method is not that they are implausible, but rather that 
+periodization schemes per se are convenient abstractions that, in the context of quantitative 
+historical analysis, can enforce a theoretically motivated but not empirically justified structure 
+that should be learned rather than imposed. However, as demonstrated below, there are also 
+issues with Cox and Katz's second design that can be overcome by following the recommendations in \citeA{wawro_designing_2014}. 
 
-Let $C$ denote the number of unique Congresses (time periods) in the data. The analysis conducted by Cox and Katz centers on estimating the parameters  $\lambda = (\lambda_t : t = 1, \dots, C)$ representing bias (on the logit scale) toward the majority party in each Congress $t$. They do this using maximum likelihood estimation of grouped logit models with linear predictor $ \lambda_t + \rho_t \log{\left(v_t^{RATIO} \right)}$. 
+Let $C$ denote the number of unique Congresses (time periods) in the data. The analysis 
+conducted by Cox and Katz centers on estimating the parameters  
+$\lambda = (\lambda_t : t = 1, \dots, C)$ representing bias (on the logit scale) toward the majority 
+party in each Congress $t$. They do this using maximum likelihood estimation of grouped logit 
+models with linear predictor $ \lambda_t + \rho_t \log{\left(v_t^{RATIO} \right)}$. 
 
-The estimation of $\lambda$ and $\rho$ by grouped logit models follows naturally from solving the seats-votes equation for the average seat share. In the legislative context of Cox and Katz's example this means solving for the expected roll-call win share for the majority as
+The estimation of $\lambda$ and $\rho$ by grouped logit models follows naturally from 
+solving the seats-votes equation for the average seat share. In the legislative context of 
+Cox and Katz's example this means solving for the expected roll-call win share for the 
+majority as
 
 \begin{equation*}
   E(\pi_t)  = \left(1 + \exp{\left\{- \lambda_t - \rho_t \log{\left( v_t^{RATIO}  \right)}\right\}}\right)^{-1},
@@ -18,21 +37,44 @@ The estimation of $\lambda$ and $\rho$ by grouped logit models follows naturally
 %
 \noindent which is the familiar logistic function. 
 
-Cox and Katz's strategy is to estimate what they call ``a sort of running average" of bias across time (p. 116). To do this they take as their estimate of $\lambda_t$ the average estimate of $\lambda$ over the seven congresses centered at $t$. However, this approach to modeling temporal dependence in $\lambda$ requires reusing the data to estimate models for each Congress -- the observations for each Congress are used up to seven times.  \citeA{goodrich_designing_2012} points out that such recycling of data can lead to overly precise parameter estimates (this point is discussed further and corroborated visually in \ref{results}). 
+Cox and Katz's strategy is to estimate what they call ``a sort of running average" of bias 
+across time (p. 116). To do this they take as their estimate of $\lambda_t$ the average 
+estimate of $\lambda$ over the seven congresses centered at $t$. However, this 
+approach to modeling temporal dependence in $\lambda$ requires reusing the data 
+to estimate models for each Congress -- the observations for each Congress are used 
+up to seven times.  \citeA{goodrich_designing_2012} points out that such recycling of 
+data can lead to overly precise parameter estimates (this point is discussed further and 
+corroborated visually in \ref{results}). 
 
-Although Cox and Katz do not address this potential for exaggerated precision, they do call attention to another  concern. To obtain reasonable estimates, their method requires nontrivial variation in average vote share between the seven Congresses centered at $t$.\footnote{Technically there will be fewer than seven Congresses for $t < 4$ as well as $t > C- 3$, but the idea is the same regardless of the exact number.}
+Although Cox and Katz do not address this potential for exaggerated precision, they do 
+call attention to another  concern. To obtain reasonable estimates, their method requires 
+nontrivial variation in average vote share between the seven Congresses centered at 
+$t$.\footnote{Technically there will be fewer than seven Congresses for $t < 4$ as well as 
+$t > C- 3$, but the idea is the same regardless of the exact number.}
 
 \subsubsection{Alternative analysis with Bayesian STAR model}
 
-The alternative analysis presented below overcomes both of these concerns by employing a hierarchical Bayesian framework which takes advantage of partial pooling. Following Cox and Katz, a BetaBinomial likelihood is used, however the linear predictor is replaced by the structured additive predictor $\eta$. The data model with logit link function is 
+The alternative analysis presented below overcomes both of these concerns by employing 
+a hierarchical Bayesian framework which takes advantage of partial pooling. Following Cox 
+and Katz, a BetaBinomial likelihood is used, however the linear predictor is replaced by the 
+structured additive predictor $\eta$. The data model with logit link function is 
 
 $$y_t | n_t, \alpha_t, \beta_t \sim {\rm Beta\text{-}Binomial}(n_t, \alpha_t, \beta_t),$$
 $$ \alpha_t = \theta_t \phi, \qquad \beta_t = \theta_t (1 - \phi),$$
 $$ \log\left({\frac{\theta_t}{1 - \theta_t}}\right) = \eta_t = f_{\lambda}(\lambda_t) + f_\rho \left(\log{(v_t^{RATIO})}\right).$$
 
-The ${\rm Beta\text{-}Binomial}(n,\alpha,\beta)$ distribution can be thought of as a compound distribution resulting from a ${\rm Binomial}(n,p)$ distribution where $p \sim {\rm Beta}(\alpha,\beta)$. Rather than assuming a fixed probability of a majority party roll-call victory -- in which case a simple binomial model would suffice -- the beta-binomial distribution treats the underlying probability $p$ as unknown. The parameters $\alpha > 0$ and $\beta > 0$ govern the shape of the beta distribution, however it is both more intuitive and computationally attractive to reparameterize in terms of the mean $\theta$, which requires introducing a parameter $\phi$ as the sum of $\alpha$ and $\beta$.  This parameterization allows for modeling ${\rm logit}(\theta)$ by the semi-parametric structured additive predictor $\eta$ of the STAR model. 
+The ${\rm Beta\text{-}Binomial}(n,\alpha,\beta)$ distribution can be thought of as a compound 
+distribution resulting from a ${\rm Binomial}(n,p)$ distribution where $p \sim {\rm Beta}(\alpha,\beta)$. 
+Rather than assuming a fixed probability of a majority party roll-call victory -- in which case a simple 
+binomial model would suffice -- the beta-binomial distribution treats the underlying probability $p$ 
+as unknown. The parameters $\alpha > 0$ and $\beta > 0$ govern the shape of the beta distribution, 
+however it is both more intuitive and computationally attractive to reparameterize in terms of the 
+mean $\theta$, which requires introducing a parameter $\phi$ as the sum of $\alpha$ and $\beta$.  
+This parameterization allows for modeling ${\rm logit}(\theta)$ by the semi-parametric structured 
+additive predictor $\eta$ of the STAR model. 
 
-The hierarchical Bayesian STAR model entails estimating the unknown functions $f_\lambda$ and $f_\rho$. As discussed in \ref{star}, the vectors of function evaluations are the products 
+The hierarchical Bayesian STAR model entails estimating the unknown functions $f_\lambda$ and 
+$f_\rho$. As discussed in \ref{star}, the vectors of function evaluations are the products 
 
 \begin{equation*}
 \mathbf{f}^{eval}_\lambda = \mtrx{M}_\lambda \lambda, 
@@ -40,16 +82,23 @@ The hierarchical Bayesian STAR model entails estimating the unknown functions $f
 \mathbf{f}^{eval}_\rho =  \mtrx{M}_\rho \rho, 
 \end{equation*}
 %
-\noindent of the parameter vectors $\lambda \in \mathbb{R}^C$ and $\rho \in \mathbb{R}^C$ premultiplied by the  $N \times C$ design matrices  $\mathbf{M}_\lambda$ and  $\mathbf{M}_\rho$, where $N$ is the number of observations. The predictor $\eta$ can be written compactly in vector/matrix notation as 
+\noindent of the parameter vectors $\lambda \in \mathbb{R}^C$ and $\rho \in \mathbb{R}^C$ 
+premultiplied by the  $N \times C$ design matrices  $\mathbf{M}_\lambda$ and  $\mathbf{M}_\rho$, 
+where $N$ is the number of observations. The predictor $\eta$ can be written compactly in 
+vector/matrix notation as 
 
 \begin{equation*}
  \eta = f_\lambda(\lambda) +  f_\rho(\log{(v^{RATIO})}) = \mtrx{M}_\lambda \lambda  + \mtrx{M}_\rho \rho.
 \end{equation*}
-\indent The matrices $\mathbf{M}_\lambda$ and $\mathbf{M}_\rho$ are identical in structure but not content. The elements of $\mathbf{M}_\lambda$ are zeros and ones indicating the Congress to which each observation pertains. For $\mathbf{M}_\rho$ each element is either a zero or the appropriate value of $\log{(v^{RATIO})}$. 
+\indent The matrices $\mathbf{M}_\lambda$ and $\mathbf{M}_\rho$ are identical in structure but 
+not content. The elements of $\mathbf{M}_\lambda$ are zeros and ones indicating the Congress 
+to which each observation pertains. For $\mathbf{M}_\rho$ each element is either a zero or the 
+appropriate value of $\log{(v^{RATIO})}$. 
 
 % Discuss challenges with sparse matrices? Either here or in the lit review section
 
-Priors for $f_{\lambda}$ and $f_{\rho}$ are expressed as distributions over the random vectors $\lambda$ and $\rho$ as 
+Priors for $f_{\lambda}$ and $f_{\rho}$ are expressed as distributions over the random 
+vectors $\lambda$ and $\rho$ as 
 
 \begin{equation*}
 p(\lambda | \tau_\lambda^2, \bar{\lambda}) \propto \exp{\left\{-\frac{1}{2\tau_\lambda^2} \: \left(\lambda - \bar{\lambda}\right)^\intercal  \mtrx{P}   \left(\lambda - \bar{\lambda}\right) \right\}} \propto \mathcal{N} (\bar{\lambda}, \mtrx{Q}_\lambda^{-1}), 
@@ -58,15 +107,28 @@ p(\lambda | \tau_\lambda^2, \bar{\lambda}) \propto \exp{\left\{-\frac{1}{2\tau_\
 p(\rho | \tau_\rho^2, \bar{\rho}) \propto \exp{\left\{-\frac{1}{2\tau_\rho^2} \: \left(\rho - \bar{\rho}\right)^\intercal  \mtrx{P} \left(\rho-\bar{\rho}\right) \right\}} \propto \mathcal{N} (\bar{\rho}, \mtrx{Q}_\rho^{-1}), 
 \end{equation*}
 
-\noindent where the penalty matrix $\mathbf{P}$ encodes assumptions about the temporal dependence between Congresses.\footnote{As mentioned in \ref{hyperpriors}, several priors for $\tau^2_\lambda$ and $\tau^2_\rho$ were considered including inverse-gamma \shortcite{fahrmeir_bayesian_2001} and half-Cauchy \shortcite{gelman_prior_2006}, as well as half-normal. Parameter estimates were not sensitive to the choice of prior. For computational reasons (nicer tail behavior) half-normal priors are used for the final model presented below.}
+\noindent where the penalty matrix $\mathbf{P}$ encodes assumptions about the temporal 
+dependence between Congresses.\footnote{As mentioned in \ref{hyperpriors}, several priors 
+for $\tau^2_\lambda$ and $\tau^2_\rho$ were considered including inverse-gamma
+\shortcite{fahrmeir_bayesian_2001} and half-Cauchy \shortcite{gelman_prior_2006}, as well 
+as half-normal. Parameter estimates were not sensitive to the choice of prior. For computational 
+reasons (nicer tail behavior) half-normal priors are used for the final model presented below.}
 
-To model temporal dependence such that the neighbors of Congress $t$ also provide information about the values of the parameters of interest at time $t$, the undirected random walk (RW) prior discussed in \ref{penalty_matrix} is used. Using the notation introduced in \ref{undirected_graphs} we can define adjacency by specifying the neighborhoods for all Congresses (time periods) $t = 1, \dots, C$
+To model temporal dependence such that the neighbors of Congress $t$ also provide information
+about the values of the parameters of interest at time $t$, the undirected random walk (RW) 
+prior discussed in \ref{penalty_matrix} is used. Using the notation introduced in \ref{undirected_graphs} 
+we can define adjacency by specifying the neighborhoods for all Congresses (time periods) 
+$t = 1, \dots, C$
 
 \begin{equation*}
 \partial^\mathbf{G}_t = \{C_s : \left| s - t \right| <= \kappa \},
 \end{equation*}
 
-\noindent where $\kappa \leq C$ is a positive integer and $\mathbf{G}$ is the undirected graph with nodes $V = \{v_1, \dots, v_C\}$ and the edges implied by $\partial^\mathbf{G}$ (see Figure~\ref{fig:rw_undirected_graphs}). The results presented in section~\ref{results} use the $RW_1$ GMRF prior for $f_\lambda$ and $f_\rho$, which applies smoothing while allowing for slightly more abrupt shifts in $\lambda$ and $\rho$ between Congresses than a $RW_2$ prior. 
+\noindent where $\kappa \leq C$ is a positive integer and $\mathbf{G}$ is the undirected graph 
+with nodes $V = \{v_1, \dots, v_C\}$ and the edges implied by $\partial^\mathbf{G}$ 
+(see Figure~\ref{fig:rw_undirected_graphs}). The results presented in section~\ref{results} use 
+the $RW_1$ GMRF prior for $f_\lambda$ and $f_\rho$, which applies smoothing while allowing 
+for slightly more abrupt shifts in $\lambda$ and $\rho$ between Congresses than a $RW_2$ prior. 
 
 
 \begin{figure}[htb]
