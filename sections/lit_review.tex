@@ -47,6 +47,7 @@ or overfit the data \shortcite{gelman_bayesian_2013}. Hierarchical modeling prov
 compromise by allowing parameters to vary by group at lower levels of the hierarchical while 
 estimating population-level parameters at higher levels. 
 
+
 For example, consider a simple binomial model for the number of survey respondents $y$ in 
 favor of a particular policy. It might be reasonable to estimate separate underlying levels of 
 support $\theta$ for the policy for each of $R$ different geographical regions. However, it is 
@@ -110,10 +111,11 @@ share a common edge with $v_j$. The notation $\partial^{\mathbf{G}}_j$ will be u
 containing the neighborhoods for all nodes in $\mathbf{G}$.\footnote{$ \partial^\mathbf{G}_j = 
 \{v_{i \neq j} \in V \,\vert\, e_{ij} \in E\}$ and $\partial^\mathbf{G} = \{\partial^\mathbf{G}_j \,
 \vert\, v_j \in V\}$.} For example, in Figure~\ref{fig:undirected_graphs}, 
-$\partial^{\mtrx{A}}_1 = \{v_2, v_6\}$ and $\partial^{\mathbf{B}}_1 = \{v_2, v_3\}$.  For a more 
-comprehensive discussion of undirected graphs in the context of GMRFs see \citeA{rue_gaussian_2005}. 
+$\partial^{\mtrx{A}}_1 = \{v_2, v_6\}$ and $\partial^{\mathbf{B}}_1 = \{v_2, v_3\}$.  
+For a more comprehensive discussion of undirected graphs in the context of GMRFs 
+see \citeA{rue_gaussian_2005}. 
 
- \begin{figure}[htb]
+\begin{figure}[htb]
 \centering
 
 \textsc{graph $\mtrx{A}$} \hspace{6cm} \textsc{graph $\mathbf{B}$} 
@@ -309,6 +311,6 @@ simultaneous estimation of a smoothing function $f_j$ and the amount of smoothne
  \citeA{fahrmeir_bayesian_2001} and \citeA{brezger_bayesx:_2005} recommend  
  inverse-gamma priors for the $\tau_j^2$. However, in light of concerns about this type 
  of inverse-gamma prior raised by \citeA{gelman_prior_2006}, in this thesis several priors 
- for $\tau^2_j$ are used and compared to check the degree to which the results are sensitive 
- to the choice of prior.
+ for $\tau^2_j$ are used and compared to check the degree to which the results are 
+ sensitive to the choice of prior.
 

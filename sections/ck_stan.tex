@@ -1,6 +1,10 @@
  \subsection{Estimation using Stan}
 
-For notational convenience, let $x$ represent the observed $n$ and $v^{RATIO}$, $\psi = \big((\tau^2_\lambda, \bar{\lambda}), (\tau^2_\rho, \bar{\rho}), \phi \big)$ denote the hyperparameters of the model, and $\bm{f}$ the unknown functions  $f_\lambda$ and $f_\rho$. The joint posterior distribution for $(\bm{f}, \psi)$ given the data $(y, x)$ can the be more concisely expressed as 
+For notational convenience, let $x$ represent the observed $n$ and $v^{RATIO}$, 
+$\psi = \big((\tau^2_\lambda, \bar{\lambda}), (\tau^2_\rho, \bar{\rho}), \phi \big)$ denote 
+the hyperparameters of the model, and $\bm{f}$ the unknown functions  $f_\lambda$ and 
+$f_\rho$. The joint posterior distribution for $(\bm{f}, \psi)$ given the data $(y, x)$ can then 
+be more concisely expressed as 
 
 \begin{align*}
 p(\bm{f}, \psi | y, x) 
@@ -8,20 +12,69 @@ p(\bm{f}, \psi | y, x)
 &=p(\psi)  p(\bm{f} | \psi)   \prod_{n=1}^N L(y_n | \eta_n, x_n), 
 \end{align*}
 
-\noindent where the second line follows from assumptions of independence and conditional independence.\footnote{In particular it is assumed that hyperparameters are mutually independent in their priors, $p(f_\lambda | \tau^2_\lambda, \bar{\lambda})$ and $p(f_\rho | \tau^2_\rho, \bar{\rho})$ are conditionally independent, and the outcomes $y_i$ are independent conditional on parameters and $x$.}
+\noindent where the second line follows from assumptions of independence and conditional 
+independence.\footnote{In particular it is assumed that hyperparameters are mutually independent 
+in their priors, $p(f_\lambda | \tau^2_\lambda, \bar{\lambda})$ and $p(f_\rho | \tau^2_\rho, \bar{\rho})$ 
+are conditionally independent, and the outcomes $y_i$ are independent conditional on parameters 
+and $x$.}
 %\footnote{The absence of the previously mentioned parameters $\alpha$, $\beta$, and $\theta$ from the expression for the posterior distribution is due to the fact that their values are determined by the other parameters.} 
 
-Estimation is performed by Markov chain Monte Carlo (MCMC) approximation and implemented in RStan, the R interface to the probabilistic programming language and C++ library Stan \shortcite{rstan_software:2015}. Although other existing software including BayesX, JAGS, and OpenBugs can sometimes be used to fit similar models by MCMC, each has important limitations that Stan overcomes. Several of the many advantages to using Stan are discussed in the next section. Since there are few publicly available examples of fitting these models in Stan, the next section is written in the style of a technical vignette, introducing Stan and describing how the model is coded and estimated. 
+Estimation is performed by Markov chain Monte Carlo (MCMC) approximation and implemented in 
+RStan, the R interface to the probabilistic programming language and C++ library Stan 
+\shortcite{rstan_software:2015}. Although other existing software including BayesX, JAGS, and 
+OpenBugs can sometimes be used to fit similar models by MCMC, each has important limitations 
+that Stan overcomes. Several of the many advantages to using Stan are discussed in the next section. 
+Since there are few publicly available examples of fitting these models in Stan, the next section is 
+written in the style of a technical vignette, introducing Stan and describing how the model is coded 
+and estimated. 
 
 \subsubsection{Brief introduction to Stan}
 
-\citeA{wawro_designing_2014} uses software called BayesX \shortcite{bayesx_software}, which is appropriate and  efficient for certain models, but offers limited flexibility in the choice of priors, likelihoods, and link functions. To make the recommendations of Wawro and Katznelson more widely applicable will require software with greater versatility. \citeA{goodrich_designing_2012} advocates using Stan, which can fit a more diverse range of models than is currently possible with BayesX and other software packages, and allows for analyses in the spirit of \citeA{wawro_designing_2014} to be extended beyond the confines of their particular examples.  
+\citeA{wawro_designing_2014} uses software called BayesX \shortcite{bayesx_software}, which 
+is appropriate and  efficient for certain models, but offers limited flexibility in the choice of priors, 
+likelihoods, and link functions. To make the recommendations of Wawro and Katznelson more widely 
+applicable will require software with greater versatility. \citeA{goodrich_designing_2012} advocates 
+using Stan, which can fit a more diverse range of models than is currently possible with BayesX 
+and other software packages, and allows for analyses in the spirit of \citeA{wawro_designing_2014} 
+to be extended beyond the confines of their particular examples.  
 
-Stan is a probabilistic modeling language, MCMC sampler, and optimizer. The particular MCMC algorithm implemented in Stan is a variant of Hamiltonian Monte Carlo (HMC) called the No-U-Turn Sampler (NUTS) \shortcite{hoffman_2012}. Borrowing from physics the concepts and mathematics behind Hamiltonian dynamics, HMC treats the vector of unknown parameters as the position of a particle. In Hamiltonian dynamics, momentum and position change continuously over time, with the gradient of the particle's potential energy function --  which corresponds to the negative log posterior -- responsible for changes in momentum, and momentum governing changes in position. Stan works by simulating a discretization of this process, making necessary corrections to satisfy the detailed balance equations (that is, to ensure the resulting Markov chains are reversible).\footnote{Reversibility of the Markov chain is important because every reversible Markov chain has a stationary distribution (i.e. reversibility is a sufficient, but not necessary condition). Intuitively, reversibility means that for $x$ and $x^\prime$ generated from the target density $\pi(x)$, the probability of transitioning from state $x$ to $x^\prime$ is the same as from $x'$ to $x$.}  
+Stan is a probabilistic modeling language, MCMC sampler, and optimizer. The particular MCMC 
+algorithm implemented in Stan is a variant of Hamiltonian Monte Carlo (HMC) called the No-U-Turn 
+Sampler (NUTS) \shortcite{hoffman_2012}. Borrowing from physics the concepts and mathematics 
+behind Hamiltonian dynamics, HMC treats the vector of unknown parameters as the position of a 
+particle. In Hamiltonian dynamics, momentum and position change continuously over time, with the 
+gradient of the particle's potential energy function --  which corresponds to the negative log posterior 
+-- responsible for changes in momentum, and momentum governing changes in position. Stan works 
+by simulating a discretization of this process, making necessary corrections to satisfy the detailed 
+balance equations (that is, to ensure the resulting Markov chains are reversible).\footnote{Reversibility 
+of the Markov chain is important because every reversible Markov chain has a stationary distribution 
+(i.e. reversibility is a sufficient, but not necessary condition). Intuitively, reversibility means that for 
+$x$ and $x^\prime$ generated from the target density $\pi(x)$, the probability of the Markov chain 
+transitioning from state $x$ to $x^\prime$ is the same as from $x'$ to $x$.}  
 
-Several characteristics of HMC, and in particular Stan's implementation of HMC, make it a more appealing choice than traditional Metropolis-Hastings (M-H) and Gibbs samplers, especially for complex models with a large number of parameters to estimate \shortcite{hoffman_2012, stan_development_team_stan_2015}. Both M-H and Gibbs samplers suffer from random walk behavior that leads to inefficient exploration of the parameter space. M-H algorithms in particular also place the burden of tuning the sampler on the user. Gibbs samplers typically involve less tuning, but require specifying full conditional distributions for all parameters. Except in a limited number of cases, full conditionals are difficult or impossible to derive, which results in conjugate priors being used when other priors might be more believable or preferable for other reasons. 
+Several characteristics of HMC, and in particular Stan's implementation of HMC, make it a more 
+appealing choice than traditional Metropolis-Hastings (M-H) and Gibbs samplers, especially for 
+complex models with a large number of parameters to estimate \shortcite{hoffman_2012, stan_development_team_stan_2015}. Both M-H and Gibbs samplers suffer from random walk behavior 
+that leads to inefficient exploration of the parameter space. M-H algorithms in particular also place the 
+burden of tuning the sampler on the user. Gibbs samplers typically involve less tuning, but require 
+specifying full conditional distributions for all parameters. Except in a limited number of cases, full 
+conditionals are difficult or impossible to derive, which results in conjugate priors being used when 
+other priors might be more believable or preferable for other reasons. 
 
-Stan is designed to overcome each of these concerns. The random walk behavior that plagues both Gibbs and M-H is largely avoided because HMC uses gradient information to find posterior modes much more efficiently, thus greatly reducing the number of iterations required to obtain a sufficient effective posterior sample size \shortcite{hoffman_2012}.\footnote{Stan uses reverse-mode automatic differentiation.}  Although the theory behind HMC does not obviate the need for the user to specify tuning parameters, Stan's NUTS-based adaptation algorithm attempts to learn the optimal values of all such parameters (without user input) during a warmup period before sampling.\footnote{While the default settings are typically fine, for particularly complicated models it can sometimes be helpful for users to manually adjust tuning parameters to improve the performance of the algorithm. See \citeA{stan_development_team_stan_2015} for examples.} Finally, there is no advantage to conjugacy in Stan. Users are free to specify prior distributions that more accurately reflect current knowledge. For a more thorough introduction to Stan and NUTS see \citeA{stan_development_team_stan_2015} and \citeA{hoffman_2012}, respectively.\footnote{See also Appendix~\ref{AppendixD} for a simplified version of the HMC algorithm used by Stan.}
+Stan is designed to overcome each of these concerns. The random walk behavior that plagues both 
+Gibbs and M-H is largely avoided because HMC uses gradient information to find posterior modes 
+much more efficiently, thus greatly reducing the number of iterations required to obtain a sufficient 
+effective posterior sample size \shortcite{hoffman_2012}.\footnote{Stan uses reverse-mode automatic
+differentiation.}  Although the theory behind HMC does not obviate the need for the user to specify 
+tuning parameters, Stan's NUTS-based adaptation algorithm attempts to learn the optimal values 
+of all such parameters (without user input) during a warmup period before sampling.\footnote{While 
+the default settings are typically fine, for particularly complicated models it can sometimes be helpful 
+for users to manually adjust tuning parameters to improve the performance of the algorithm. See 
+\citeA{stan_development_team_stan_2015} for examples.} Finally, there is no advantage to conjugacy 
+in Stan. Users are free to specify prior distributions that more accurately reflect current knowledge. 
+For a more thorough introduction to Stan and NUTS see \citeA{stan_development_team_stan_2015} 
+and \citeA{hoffman_2012}, respectively.\footnote{See also Appendix~\ref{AppendixD} for a simplified 
+version of the HMC algorithm used by Stan.}
 
 \subsubsection{Stan program: data and transformed data}
 
