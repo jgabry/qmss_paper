@@ -48,12 +48,16 @@ compromise by allowing parameters to vary by group at lower levels of the hierar
 estimating population-level parameters at higher levels. 
 
 For example, consider the simple scenario in which survey respondents from many different
-geographic regions are asked if they are in favor of a particular policy. One approach for estimating
-the level of underlying support for the policy in each region would be to estimate separate
-models for the $R$ regions. However, it is also likely that there is some relationship between 
-regions that should be incorporated into the joint probability model. 
+geographic regions are asked if they are in favor of a particular policy $X$. One approach for estimating
+the level of underlying support for the policy in each region $r = 1, 2, \dots, R$ would be to estimate separate
+models for the $R$ regions. However, such an approach would ignore the relationship between
+support for $X$ across regions, which should be incorporated into the joint probability model. In 
+the United States, for example, estimating separate models would impose the assumption that
+support for $X$ in, say, New England is entirely uninformative about support for $X$ in all 
+other regions of the country. A hierarchical framework allows for a more realistic model in which 
+support for $X$ can vary across regions without disregarding interregional dependence.      
 
-Let $y_n = 1$ if the $n$th respondent supports the policy in question and $0$ otherwise, and let $r[n]$ 
+Let $y_n = 1$ if the $n$th respondent supports policy $X$ and $0$ otherwise, and let $r[n]$ 
 denote the region for the $n$th individual/observation. For simplicity, assume that there is a single 
 individual-level predictor $x$ (e.g. income, age, etc.) and a single region-level predictor $u$ 
 (e.g. average income). The hierarchical model
@@ -68,10 +72,9 @@ individual-level predictor $x$ (e.g. income, age, etc.) and a single region-leve
 \end{align*}
 
 \noindent is what \citeA{gelman_arm_2007} refer to as a {\it varying-intercept}, 
-{\it varying-slope model}. That is, both the intercepts and the slopes vary by group (region, in this example) 
-and are given probability models which depend on further levels of parameters (the hyperparameters). 
+{\it varying-slope model}. That is, both the intercepts and the slopes -- the effects associated with the variable $x$-- vary by group (region, in this example) and are given probability models which depend on further levels of parameters (the hyperparameters). 
 
-The model above estimates $R$ intercepts ($\alpha_1, \dots, \alpha_R$) and $R$ coefficients 
+The model above estimates $R$ intercepts ($\alpha_1, \dots, \alpha_R$) and $R$ slopes 
 ($\beta_1, \dots, \beta_R$). The hyperparameters
 $(\gamma^\alpha_0, \gamma^\alpha_1 \gamma^\beta_0, \gamma^\beta_1, \tau^2_\alpha, \tau^2_\beta)$ 
 are also estimated from the data and thus require prior distributions (hyperpriors) to be specified.\footnote{
@@ -83,7 +86,7 @@ computational considerations as well).
 
 Perhaps the most important feature of hierarchical models is that inference for each group-level 
 parameter is informed not only by the group-specific information contained in the data but also 
-by the data for other groups as well \shortcite{jackman_bayesian_2009}.\footnote{
+by the data for other groups as well.\footnote{
 The assumption of exchangeability is important here, but a sufficient discussion of exchangeability 
 is beyond the scope of this thesis. See \citeA{gelman_bayesian_2013}.} This is commonly referred 
 to as {\it borrowing strength} or {\it shrinkage}. In the example above, for instance, the 
@@ -91,10 +94,11 @@ estimates for each $\alpha_r$ are informed not only by the data from region $r$ 
 also by the observations from all other regions through the common hyperparameters.\footnote{
 In other words, the population-level hyperparameters are estimated from the data for all groups 
 and used to estimate the group-specific parameters $\alpha_r$ and $\beta_r$.} That is, {\it strength} is 
-borrowed from all groups when estimating the parameter(s) corresponding to each individual group. As a consequence the  estimates for the group-level parameters are {\it shrunk} toward each other, 
-with the amount of shrinkage depending on how far each is from the overall mean.\footnote{The term
+borrowed from all groups when estimating the parameter(s) corresponding to each individual group. As a 
+consequence the  estimates for the group-level parameters are {\it shrunk} toward each other, 
+with the amount of shrinkage depending on how far each is from the overall mean \shortcite{jackman_bayesian_2009}.\footnote{The term
 {\it shrinkage} is a bit of a misnomer. The values of the parameters themselves are not necessarily smaller, 
-but rather the distance from the common mean is smaller.}  
+but rather the distance from the common mean is smaller.}
 
 The term {\it hierarchical} is a suitable designation for a wide (theoretically unlimited) family of 
 models, from the simple example above to the semi-parameteric STAR models used by Wawro 
