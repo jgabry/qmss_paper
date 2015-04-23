@@ -44,41 +44,65 @@ heterogeneity can yield parameter estimates with low variance but high bias. Gro
 analyses, on the other hand, can reduce bias at the expense of high-variance estimates \shortcite{jackman_bayesian_2009}. While complete pooling or no pooling of data across 
 groups is sometimes called for, nonhierarchical models for hierarchical data tend to underfit 
 or overfit the data \shortcite{gelman_bayesian_2013}. Hierarchical modeling provides a 
-compromise by allowing parameters to vary by group at lower levels of the hierarchical while 
+compromise by allowing parameters to vary by group at lower levels of the hierarchy while 
 estimating population-level parameters at higher levels. 
 
+For example, consider the simple scenario in which survey respondents from many different
+geographic regions are asked if they are in favor of a particular policy. One approach for estimating
+the level of underlying support for the policy in each region would be to estimate separate
+models for the $R$ regions. However, it is also likely that there is some relationship between 
+regions that should be incorporated into the joint probability model. 
 
-For example, consider a simple binomial model for the number of survey respondents $y$ in 
-favor of a particular policy. It might be reasonable to estimate separate underlying levels of 
-support $\theta$ for the policy for each of $R$ different geographical regions. However, it is 
-also likely that there is some dependence between the $\theta$s that should be incorporated 
-into the joint probability model. This can be expressed with a prior distribution for the $\theta$s 
-conditional on shared hyperparameters $\phi$, potentially also estimating $\phi$ from the data 
+Let $y_n = 1$ if the $n$th respondent supports the policy in question and $0$ otherwise, and let $r[n]$ 
+denote the region for the $n$th individual/observation. For simplicity, assume that there is a single 
+individual-level predictor $x$ (e.g. income, age, etc.) and a single region-level predictor $u$ 
+(e.g. average income). The hierarchical model
 
+%
 \begin{align*}
-  y_r | \theta_r &\sim {\rm Bin}(N_r, \theta_r), \quad r = 1, \dots, R \\
-  \theta_r  | \phi &\sim p(\theta_r | \phi) \\
-  \phi | \xi & \sim p(\phi | \xi)  \\
-  \vdots
+ {\rm logit}\left(P(y_n = 1) \right) &= \alpha_{r[n]} + \beta_{r[n]} x_n, \qquad \text{for } n = 1, \dots, N \\[5pt]
+ \alpha_r &= \gamma^\alpha_0 + \gamma^\alpha_1 u_r + \epsilon^\alpha_r, \quad \text{ for } r = 1, \dots, R \\[5pt]
+  \beta_r &= \gamma^\beta_0 + \gamma^\beta_1 u_r + \epsilon^\beta_r, \qquad\qquad \vdots  \\[5pt]
+   \epsilon^\alpha_r &\sim N(0, \tau^2_\alpha) \\[5pt]
+   \epsilon^\beta_r &\sim N(0, \tau^2_\beta).
 \end{align*}
 
-In theory there is no limit to the number of levels in the hierarchy -- if the value of $\xi$ is not 
-fixed in the example above then it too must be modeled -- however, in practice the data are 
-informative only up to a point (and there are computational challenges to be considered as well). 
+\noindent is what \citeA{gelman_arm_2007} refer to as a {\it varying-intercept}, 
+{\it varying-slope model}. That is, both the intercepts and the slopes vary by group (region, in this example) 
+and are given probability models which depend on further levels of parameters (the hyperparameters). 
+
+The model above estimates $R$ intercepts ($\alpha_1, \dots, \alpha_R$) and $R$ coefficients 
+($\beta_1, \dots, \beta_R$). The hyperparameters
+$(\gamma^\alpha_0, \gamma^\alpha_1 \gamma^\beta_0, \gamma^\beta_1, \tau^2_\alpha, \tau^2_\beta)$ 
+are also estimated from the data and thus require prior distributions (hyperpriors) to be specified.\footnote{
+Typically a parameter representing the correlation between the error terms 
+$\epsilon_r^\alpha$ and $\epsilon_r^\beta$ is also estimated.} In theory there is no limit to the number 
+of levels in the hierarchy -- if the parameters of the hyperpriors are not fixed then they too must 
+be modeled -- however, in practice the data are informative only up to a point (and there are 
+computational considerations as well). 
 
 Perhaps the most important feature of hierarchical models is that inference for each group-level 
 parameter is informed not only by the group-specific information contained in the data but also 
-by the other groups as well \shortcite{jackman_bayesian_2009}.\footnote{
+by the data for other groups as well \shortcite{jackman_bayesian_2009}.\footnote{
 The assumption of exchangeability is important here, but a sufficient discussion of exchangeability 
 is beyond the scope of this thesis. See \citeA{gelman_bayesian_2013}.} This is commonly referred 
-to as borrowing strength. In the example above, for instance, inferences about each $\theta_r$ are 
-informed by $y_r$ but also by $y_{-r}$ through $\phi$.\footnote{The notation $y_{-r}$ is used here 
-to refer to all $y$'s other than $y_r$ (e.g. $y_{-1} =  \{y_2, y_3, \dots, y_R\}$ ).} 
+to as {\it borrowing strength} or {\it shrinkage}. In the example above, for instance, the 
+estimates for each $\alpha_r$ are informed not only by the data from region $r$ but 
+also by the observations from all other regions through the common hyperparameters.\footnote{
+In other words, the population-level hyperparameters are estimated from the data for all groups 
+and used to estimate the group-specific parameters $\alpha_r$ and $\beta_r$.} That is, {\it strength} is 
+borrowed from all groups when estimating the parameter(s) corresponding to each individual group. As a consequence the  estimates for the group-level parameters are {\it shrunk} toward each other, 
+with the amount of shrinkage depending on how far each is from the overall mean.\footnote{The term
+{\it shrinkage} is a bit of a misnomer. The values of the parameters themselves are not necessarily smaller, 
+but rather the distance from the common mean is smaller.}  
 
 The term {\it hierarchical} is a suitable designation for a wide (theoretically unlimited) family of 
-models, from the simple binomial example above to models with regressions at multiple levels 
-to the semi-parameteric STAR models used by Wawro and Katznelson and in this thesis. See \citeA{gelman_bayesian_2013} and \citeA{jackman_bayesian_2009} for more thorough and 
-formal introductions to the topic of hierarchical modeling.  
+models, from the simple example above to the semi-parameteric STAR models used by Wawro 
+and Katznelson and in this thesis. See \citeA{gelman_arm_2007}, \citeA{gelman_bayesian_2013} and 
+\citeA{jackman_bayesian_2009} for more thorough and formal introductions to the topic of hierarchical modeling.  
+
+
+
 
 
 
@@ -201,7 +225,7 @@ model (GLM) with a semiparametric structured additive predictor
 
 \noindent which can include nonlinear unknown functions of covariates as well as linear components 
 and is flexible enough to include the assorted mixed effects models familiar to social scientists as 
-special cases \shortcite{fahrmeir_bayesian_2001}. 
+special cases \shortcite{fahrmeir_bayesian_2001}.\footnote{The varying-intercept, varying-slope models described in \ref{hierarchical} are examples of mixed effects models and are also special cases of the STAR model.} 
 
 From the Bayesian perspective, the non-varying parameters $\gamma$ as well as the unknown 
 functions $f_1, \dots, f_J$ are treated as random variables distributed according to priors that must 

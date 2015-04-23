@@ -9,7 +9,10 @@ discarded draws) were simulated.\footnote{Newcomers to HMC, NUTS, and Stan are
 often surprised by how few iterations are typically required, as it is not uncommon for 
 Gibbs (and poorly tuned M-H) samplers to require hundreds of thousands of iterations 
 to converge. Simpler models fit in Stan often require only hundreds of iterations, including 
-warmup.} Figure~\ref{fig:ck_bias} (p.~\pageref{fig:ck_bias}) juxtaposes the estimates of 
+warmup. This is due in large part to the advantages of HMC discussed in \ref{stan_intro}, in
+particular the suppression of random walk behavior leading to more efficient exploration
+of the parameter space.} 
+Figure~\ref{fig:ck_bias} (p.~\pageref{fig:ck_bias}) juxtaposes the estimates of 
 bias towards the majority party over time from Cox and Katz's analysis and the reanalysis 
 using the Bayesian STAR model.
 

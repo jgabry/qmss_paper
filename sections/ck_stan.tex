@@ -1,4 +1,5 @@
  \subsection{Estimation using Stan}
+ \label{stan_intro}
 
 For notational convenience, let $x$ represent the observed $n$ and $v^{RATIO}$, 
 $\psi = \big((\tau^2_\lambda, \bar{\lambda}), (\tau^2_\rho, \bar{\rho}), \phi \big)$ denote 
@@ -285,9 +286,6 @@ the log probability must be incremented by the log absolute determinant of the c
 Jacobian matrix.\footnote{This is explained in greater detail and with examples in \citeA{stan_development_team_stan_2015}. 
 In brief, this adjustment is required to account for how the scale of the variable obtained by the 
 transformation varies with respect to the original variable.}
-
-
-
 
 
 
