@@ -122,7 +122,7 @@ available on GitHub.}
 
 The {\tt transformed data} block (also Figure~\ref{stan_data}) contains transformations of the 
 variables declared in the {\tt data} block and defines other fixed quantities to be used throughout 
-the rest of the program. In {\tt transformed data} the Cholesky decomposition of {\tt Pinverse} is 
+the rest of the program. The Cholesky decomposition of {\tt Pinverse} is 
 computed; it will be used for a more efficient implementation of the multivariate normal distributions 
 required for the GMRF priors. Values for the location and scale parameters of the Cauchy and 
 normal distributions (to be used for priors) are also set in {\tt transformed data}. 
@@ -133,19 +133,24 @@ normal distributions (to be used for priors) are also set in {\tt transformed da
 \begin{figure}[t]
 \begin{lstlisting}[language=Stan, frame=trBL]
 parameters {
+  real<lower=0> phi_noise ;    
   real          lambda_bar ;  # prior mean 
   real<lower=0> rho_bar ;     # prior mean 
-  vector[C]     lambda ;      
-  vector[C]     rho ;
-  real<lower=0> phi_noise ;    
+  vector[C]     lambda_noise ;      
+  vector[C]     rho_noise ;
   real<lower=0> tau_sq_lambda ;  
   real<lower=0> tau_sq_rho ;
 }
 transformed parameters {
   real<lower=0> phi ;
+  vector[C]     lambda ;
+  vector[C]     rho ;
   
   // inverse CDF method, standard normal --> half-Cauchy
-  phi <- phi_loc + phi_scale * tan(pi()*(Phi_approx(phi_noise) - 0.5)) ;
+  phi <- phi_loc + phi_scale * tan(pi() * (Phi_approx(phi_noise) - 0.5)) ;
+  // non-centered parameterization for lambda and rho
+  lambda  <- lambda_bar + (tau_sq_lambda * cholPinverse) * lambda_noise ;
+  rho  <- rho_bar + (tau_sq_rho * cholPinverse) * lambda_noise ;
 }
 \end{lstlisting}
 \caption{Stan: {\tt parameters} and {\tt transformed parameters} blocks}
@@ -162,16 +167,29 @@ distribution.\footnote{This is an extremely oversimplified description of an imp
 a thorough examination is beyond the scope of this thesis. See \citeA{betancourt_hamiltonian_2013} 
 and \citeA{stan_development_team_stan_2015}.} 
 
-In the {\tt transformed parameters} block, ${\tt phi\_noise}$ is transformed from a standard normal 
+In the {\tt transformed parameters}, ${\tt phi\_noise}$ is transformed from a standard normal 
 distribution using the inverse-CDF method such that ${\tt phi}$ has a half-Cauchy 
-distribution.\footnote{The inverse-CDF of the Cauchy distribution with location $\ell$ and scale 
-$s$ is $F^{-1}(p, \ell,s)  = \ell + s \tan{\{ \pi (p - 0.5)\}}$. Thus if $z \sim \mathcal{N}(0,1)$ with CDF 
-$\Phi$ then $\ell + s \tan{\{ \pi (\Phi(z) - 0.5)\}}$ is distributed Cauchy$(\ell, s)$. The transformation 
-above results in a half-Cauchy$({\tt phi\_loc}, {\tt phi\_scale})$ distribution due to the constraints 
-that ${\tt phi\_noise}$ and ${\tt phi}$ be positive.}\footnote{The Cauchy prior can be considered 
-weakly informative in that, while most of the mass is concentrated near the median, the tails are 
-fat enough to allow for considerable variation. In fact, the variance of a Cauchy distribution is infinite.}
-
+distribution.\footnote{The inverse cumulative distribution function of the Cauchy distribution with 
+location $\boldsymbol{\ell}$ and scale $\xi$ is $F^{-1}(p, \boldsymbol{\ell},\xi)  = \boldsymbol{\ell} 
++ \xi \tan{\{ \pi (p - 1/2)\}}$. Thus if $z \sim \mathcal{N}(0,1)$ with CDF $\Phi$ then 
+$\boldsymbol{\ell} + \xi \tan{\{ \pi (\Phi(z) - 1/2)\}}$ is distributed 
+Cauchy$(\boldsymbol{\ell}, \xi)$. The transformation above results in a 
+half-Cauchy$({\tt phi\_loc}, {\tt phi\_scale})$ 
+distribution due to the constraints that ${\tt phi\_noise}$ and ${\tt phi}$ be positive.}\footnote{
+The Cauchy prior can be considered weakly informative in that, while most of the mass is concentrated 
+near the median, the tails are fat enough to allow for considerable variation. 
+In fact, the variance of a Cauchy distribution is infinite.}
+The vectors ${\tt lambda\_noise}$ and ${\tt rho\_noise}$ represent variables to be given iid standard normal
+priors, which allows for the non-centered parameterization of the multivariate normal to be used for
+${\tt lambda}$ and ${\tt rho}$.\footnote{The non-centered parameterization works as follows. If
+$z$ is a $K$-vector of iid $\mathcal{N}(0,1)$ variables and $\theta = \mu + L z$, 
+where $LL' = \boldsymbol{\Sigma}$, 
+then $\theta \sim \mathcal{N}_K (\mu, \boldsymbol{\Sigma})$. This is analogous to the familiar univariate case 
+where $\theta = \mu + \sigma z$ and $z \sim \mathcal{N}(0,1)$ implies that 
+$\theta \sim \mathcal{N}(\mu, \sigma^2)$.} Unlike the elements of ${\tt lambda}$ and ${\tt rho}$, 
+the elements of ${\tt lambda\_noise}$ and ${\tt rho\_noise}$ are independent by definition, 
+which can lead to large gains in efficiency for MCMC algorithms in terms of effective sample 
+size \shortcite{stan_development_team_stan_2015, betancourt_hamiltonian_2013}. 
 
 
 
@@ -183,22 +201,16 @@ model {
   real                logPrior ;  # log prior
   vector<lower=0>[N]  alphas ;    # shape1 for beta_binomial 
   vector<lower=0>[N]  betas ;     # shape2 for beta_binomial
-  matrix[C,C]         L_lambda ;  # cholesky of covmat
-  matrix[C,C]         L_rho ;     # cholesky of covmat
-  
-  // cholesky factors of covariance matrices
-  L_lambda <-diag_pre_multiply(rep_vector(tau_sq_lambda,C),cholPinverse);
-  L_rho <-diag_pre_multiply(rep_vector(tau_sq_rho,C),cholPinverse);
   
   // priors
   logPrior <- (
-   normal_log(lambda_bar, 0, 1) + 
-   normal_log(rho_bar, 4, 2) + 
-   normal_log(phi_noise, 0, 1) +
-   normal_log(tau_sq_lambda, tau_loc, tau_scale) +
-   normal_log(tau_sq_rho, tau_loc, tau_scale) +
-   multi_normal_cholesky_log(lambda,rep_vector(lambda_bar,C),L_lambda) +
-   multi_normal_cholesky_log(rho,rep_vector(rho_bar,C),L_rho) 
+    normal_log(lambda_bar, 0, 1) + 
+    normal_log(rho_bar, 4, 2) + 
+    normal_log(phi_noise, 0, 1) +
+    normal_log(tau_sq_lambda, tau_loc, tau_scale) +
+    normal_log(tau_sq_rho, tau_loc, tau_scale) +
+    normal_log(lambda_noise, 0, 1) +  # vectorized
+    normal_log(rho_noise, 0, 1)       # vectorized
   ) ;
   
   // likelihood
@@ -210,9 +222,11 @@ model {
     alphas[n] <- theta_n * phi ;
     betas[n]  <- (1 - theta_n) * phi ;
   }
+  
   // vectorized BetaBinomial
   logLik <- beta_binomial_log(nWins, nVotes, alphas, betas) ; 
   
+  // logPrior + logLik = logPosterior (up to normalizing constant)
   increment_log_prob(logPrior + logLik) ; 
 }
 \end{lstlisting}
@@ -229,9 +243,9 @@ precisely, Stan requires the log-likelihood and log-priors, the sum of which equ
 up to an additive constant.\footnote{Stan works on the log scale for the same reason as most 
 other statistical software. Logarithms help avoid the loss of the numerical precision in addition to 
 greatly simplifying expressions for complicated probability distributions.}
-The priors include the standard normal on ${\tt phi\_noise}$ discussed above, normal priors for 
-${\tt lambda\_bar}$, ${\tt rho\_bar}$, ${\tt tau\_sq\_lambda}$, and ${\tt tau\_sq\_rho}$, and multivariate 
-normal priors on ${\tt lambda}$ and ${\tt rho}$.\footnote{The function names in the {\tt model} block 
+The priors include the standard normals on ${\tt phi\_noise}$, ${\tt lambda\_noise}$ and ${\tt rho\_noise}$ 
+discussed above, and normal priors for ${\tt lambda\_bar}$, ${\tt rho\_bar}$, ${\tt tau\_sq\_lambda}$, 
+and ${\tt tau\_sq\_rho}$.\footnote{The function names in the {\tt model} block 
 ending in ${\tt\_log}$ return the logarithm of the density function (e.g. ${\tt normal\_log(theta,0,1)}$ 
 returns the logarithm of the normal density of ${\tt theta}$  with location 0 and scale 1). While Stan 
 does support the familiar sampling statement notation (e.g. ${\tt theta \sim normal(0,1)}$), it is not 
@@ -243,19 +257,7 @@ explicitly using the ${\tt increment\_log\_prob}$ and ${\tt normal\_log}$ functi
 ${\tt increment\_log\_prob(normal\_log(theta,0,1))}$ more accurately reflects Stan's execution 
 under the hood. The only non-cosmetic difference between sampling statements and directly 
 incrementing the log probability is that the former drops all constant terms. For a more detailed 
-explanation see \citeA{stan_development_team_stan_2015}.} The Cholesky parameterization of the 
-multivariate normal distribution is used for computational efficiency.\footnote{Instead of using 
-{\tt multi\_normal\_cholesky} in the {\tt model} block, we could also specify the desired multivariate 
-normal distribution in {\tt transformed parameters} by defining ${\tt lambda}$ (and analogously 
-for ${\tt rho}$) to be  ${\tt lambda\_bar + (tau\_sq\_lambda * cholPinverse) * lambda\_noise}$, 
-where ${\tt lambda\_noise}$ is a vector of iid standard normals. This follows from the fact that if 
-$z$ is a $K$-vector of iid $N(0,1)$ variables and $\theta = \mu + L z$, where $LL' = \boldsymbol{\Sigma}$, 
-then $\theta \sim \mathcal{N}_K (\mu, \boldsymbol{\Sigma})$. This is analogous to the univariate case 
-where $\theta = \mu + \sigma z$ and $z \sim \mathcal{N}(0,1)$ implies that 
-$\theta \sim \mathcal{N}(\mu, \sigma^2)$. Unlike the elements of $\theta$, the elements of $z$ are 
-independent which can lead to large gains in efficiency for MCMC algorithms in terms of effective 
-sample size \shortcite{stan_development_team_stan_2015}. This strategy did not end up being 
-necessary for this model, but it is worth considering if effective sample sizes are low.} 
+explanation see \citeA{stan_development_team_stan_2015}.}  
 
 At the top of the {\tt model} block two vectors, {\tt alpha} and {\tt beta}, are also declared 
 and will be filled in while looping over observations. This allows for the BetaBinomial likelihood 
@@ -276,9 +278,9 @@ intuitive than incrementing the likelihood within the loop (and without creating
 \noindent but filling in the elements of {\tt alpha} and {\tt beta} inside the loop and then using the 
 vectorized version of the BetaBinomial is much more computationally effective. 
 
-Note also that in the {\tt model} block the prior distributions are placed only on variables declared 
+Note also that in the {\tt model} block prior distributions are placed only on variables declared 
 in {\tt parameters}  and not those defined in {\tt transformed parameters}. This is not a requirement, 
-but assigning distributions to parameters declared in {\tt transformed parameters} requires the 
+but assigning distributions to variables declared in {\tt transformed parameters} demands the 
 additional -- and potentially onerous -- step of accounting for changes in curvature due to the 
 change of variables. For scalar parameters this entails calculating the log absolute derivative of 
 the transform and incrementing the log probability by this value. For multivariate changes of variables 
