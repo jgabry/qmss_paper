@@ -18,11 +18,13 @@ using the Bayesian STAR model.
 
 \begin{figure}
 \centering
-\includegraphics[scale=0.75]{sections/figs/ck_replication}
-\caption{Estimated bias by Congress in Cox and Katz's analysis (top) and reanalysis (bottom). 
-Vertical bars represent 95\%  intervals, with the black line connecting medians. To produce the 
-graph on top the results from the Cox and Katz's original analysis were replicated (see Figure 
-3 in Cox and Katz (2007)).}
+\includegraphics[scale=0.75]{sections/figs/ck_replication_new}
+\caption{Estimated bias toward the majority party by Congress in 
+Cox and Katz's analysis (top) and the Bayesian reanalysis (bottom). 
+The thin and thick vertical segments represent 95\%  and 50\%
+intervals, respectively.  The black line connects medians.
+To produce the graph on top Cox and Katz's original analysis was 
+replicated (see Figure 3 in Cox and Katz (2007)).}
 \label{fig:ck_bias}
 \end{figure}
 
@@ -107,22 +109,24 @@ longer chains \shortcite{gelman_handbook_2011}.
 Panel ({\bf b}) shows the distribution of the ratio of effective sample size to the number of 
 iterations ($n_{\it eff}/N$). Roughly speaking, $n_{\it eff}$ is an estimate of the number of 
 {\it independent} draws from the posterior distribution that would have the same expected 
-variance as the $N$ {\it dependent} draws actually obtained from the Markov chains. In this 
-case $n_{\it eff}/N$ for all parameters is sufficiently large and for most parameters the 
-$n_{\it eff}/N$ is close to the ideal value of one, a reflection of Stan's efficiency. 
+variance as the $N$ {\it dependent} draws actually obtained from the 
+Markov chains. In the absence of autocorrelation $n_{\it eff} = N$, and so the ideal value of the ratio is one. 
+In this case $n_{\it eff}/N$ is sufficiently large -- it is at least 20\% for all parameters -- and 
+for most parameters the ratio is close to one, a reflection of Stan's efficiency. 
 
 
-And ({\bf c}) shows the distribution of the ratio of Monte Carlo error to the estimated standard 
-deviation ($mcse/sd$). Monte Carlo error is a measure of imprecision due to approximating 
+The distribution of the ratio of Monte Carlo error to the estimated standard 
+deviation ($mcse/sd$) is shown in panel ({\bf c}) Figure~\ref{fig:ck_diagnostics}. 
+Monte Carlo error is a measure of imprecision due to approximating 
 the posterior distribution by the MCMC simulations. As the number of iterations increases 
-$mcse$ goes to zero and the standard deviation of the draws converges to the posterior 
-standard deviation. The distribution in Figure~\ref{fig:ck_diagnostics} shows that for all parameters 
+$mcse$ tends toward zero and the standard deviation of the draws converges to the posterior 
+standard deviation. In this case, for all parameters 
 the relative error $mcse/sd$ is less than five percent, which, for the inferential goals of this 
-analysis is negligible. For instance, Figure~\ref{fig:ck_example_posterior} shows the estimated 
+analysis, is negligible. For instance, Figure~\ref{fig:ck_example_posterior} shows the estimated 
 posterior density for the parameter corresponding to bias towards the majority party in the 79th 
 congress.\footnote{There is nothing special about the 79th congress for this purpose. A single 
 congress was chosen at random to use as an example.} The posterior is approximately Gaussian, 
-with mean and standard deviation estimates of roughly $0.054$ and $0.0368$, respectively. The 
+with mean and standard deviation of roughly $0.054$ and $0.037$, respectively. The 
 estimated $mcse$ is $0.0007$, which is inconsequential when compared to the uncertainty about 
 the parameter in the posterior distribution.   
 
