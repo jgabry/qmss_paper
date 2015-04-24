@@ -24,7 +24,7 @@ Let $C$ denote the number of unique Congresses (time periods) in the data. The a
 conducted by Cox and Katz centers on estimating the parameters  
 $\lambda = (\lambda_t : t = 1, \dots, C)$ representing bias (on the logit scale) toward the majority 
 party in each Congress $t$. They do this using maximum likelihood estimation of grouped logit 
-models with linear predictor $ \lambda_t + \rho_t \log{\left(v_t^{RATIO} \right)}$. 
+models with linear predictor $ \lambda_t + \rho_t \log{\left(v_t^{Ratio} \right)}$. 
 
 The estimation of $\lambda$ and $\rho$ by grouped logit models follows naturally from 
 solving the seats-votes equation for the average seat share. In the legislative context of 
@@ -32,7 +32,7 @@ Cox and Katz's example this means solving for the expected roll-call win share f
 majority as
 
 \begin{equation*}
-  E(\pi_t)  = \left(1 + \exp{\left\{- \lambda_t - \rho_t \log{\left( v_t^{RATIO}  \right)}\right\}}\right)^{-1},
+  E(\pi_t)  = \left(1 + \exp{\left\{- \lambda_t - \rho_t \log{\left( v_t^{Ratio}  \right)}\right\}}\right)^{-1},
 \end{equation*}
 %
 \noindent which is the familiar logistic function. 
@@ -61,13 +61,13 @@ structured additive predictor $\eta$. The data model with logit link function is
 
 $$y_t | n_t, \alpha_t, \beta_t \sim {\rm Beta\text{-}Binomial}(n_t, \alpha_t, \beta_t),$$
 $$ \alpha_t = \theta_t \phi, \qquad \beta_t = \theta_t (1 - \phi),$$
-$$ \log\left({\frac{\theta_t}{1 - \theta_t}}\right) = \eta_t = f_{\lambda}(\lambda_t) + f_\rho \left(\log{(v_t^{RATIO})}\right).$$
+$$ \log\left({\frac{\theta_t}{1 - \theta_t}}\right) = \eta_t = f_{\lambda}(\lambda_t) + f_\rho \left(\log{(v_t^{Ratio})}\right).$$
 
 The ${\rm Beta\text{-}Binomial}(n,\alpha,\beta)$ distribution can be thought of as a compound 
 distribution resulting from a ${\rm Binomial}(n,p)$ distribution where $p \sim {\rm Beta}(\alpha,\beta)$. 
 Rather than assuming a fixed probability of a majority party roll-call victory -- in which case a simple 
 binomial model would suffice -- the beta-binomial distribution treats the underlying probability $p$ 
-as unknown. The parameters $\alpha > 0$ and $\beta > 0$ govern the shape of the beta distribution, 
+as a random variable. The parameters $\alpha > 0$ and $\beta > 0$ govern the shape of the beta distribution, 
 however it is both more intuitive and computationally attractive to reparameterize in terms of the 
 mean $\theta = \alpha / (\alpha + \beta)$, which requires introducing an auxiliary parameter 
 $\phi = \alpha + \beta$. This parameterization allows for modeling ${\rm logit}(\theta)$ by the semi-parametric structured additive predictor $\eta$ of the STAR model. 
@@ -87,12 +87,12 @@ where $N$ is the number of observations. The predictor $\eta$ can be written com
 vector/matrix notation as 
 
 \begin{equation*}
- \eta = f_\lambda(\lambda) +  f_\rho(\log{(v^{RATIO})}) = \mtrx{M}_\lambda \lambda  + \mtrx{M}_\rho \rho.
+ \eta = f_\lambda(\lambda) +  f_\rho(\log{(v^{Ratio})}) = \mtrx{M}_\lambda \lambda  + \mtrx{M}_\rho \rho.
 \end{equation*}
 \indent The matrices $\mathbf{M}_\lambda$ and $\mathbf{M}_\rho$ are identical in structure but 
 not content. The elements of $\mathbf{M}_\lambda$ are zeros and ones indicating the Congress 
 to which each observation pertains. For $\mathbf{M}_\rho$ each element is either a zero or the 
-appropriate value of $\log{(v^{RATIO})}$. 
+appropriate value of $\log{(v^{Ratio})}$. 
 
 % Discuss challenges with sparse matrices? Either here or in the lit review section
 

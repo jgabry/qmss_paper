@@ -125,51 +125,58 @@ When compared to Cox and Katz's results, the hierarchical Bayesian STAR model es
 a more believable trend in bias over time. This can be seen clearly by comparing the curves 
 in Figure~\ref{fig:ck_bias}. The smoothing prior shrinks each individual estimate slightly 
 towards its neighbors -- the amount of smoothing is related to the hierarchical variance 
-hyperparameter -- and all estimates are regularized to the common prior mean, which helps 
+hyperparameter -- and all estimates are shrunk to the common prior mean, which helps 
 avoid overfitting the data, while still allowing for substantial movement between Congresses 
 if strongly supported by the data. Although both sets of results agree on the direction of the 
-estimates in the post-czar period, while the Cox and Katz estimates show signs of overfitting 
-the data the new estimates are less volatile. 
+bias in the post-czar period, while the Cox and Katz estimates show signs of overfitting 
+the new estimates are less volatile. 
 
 
 \subsubsection{Problems with statistical significance}
 
-Cox and Katz present their results in terms of statistical significance, which is problematic 
-for several reasons. First, if the reported 
-standard errors understate the uncertainty in their estimates -- and this is presumably the case, as 
-emphasized above and in \ref{subsection_methods} -- then the results will be biased towards
-statistical significance (regardless of the threshold for determining significance). Second, in several
-cases, the difference between bias toward the majority being statistically significant in Congress $t$ 
-and not significant in Congress $t + 1$ (or vice-versa) is not itself statistically significant. 
+Cox and Katz proceed with inference by comparing the statistical significance of their 
+estimates. This is problematic for for several reasons.\footnote{``In the czar-rule era, 
+the running average bias is statistically significant in nine out of ten Congresses \dots", } 
+First, if the reported standard errors understate the uncertainty in their estimates 
+-- and this is presumably the case, as emphasized above and in \ref{subsection_methods} 
+-- then they will be more likely to find statistical significance than is justified from the data, 
+regardless of the arbitrary threshold selected for determining significance. Second, there
+are several cases in which the difference between statistically significant 
+bias in Congress $t$ and nonsignificant bias in Congress $t + 1$ (or vice-versa) is not itself 
+statistically significant. 
 
-One such example is given in Figure~\ref{fig:ck_signif}, which shows Cox and Katz's 
-point estimates and 95\% intervals for bias in the 100th and 101st Congresses. 
-The estimates (plus or minus one standard error) are $b_{100} = 0.0065 \pm 0.029$ 
+Three such examples are given in Figure~\ref{fig:ck_signif}. The plot on the left, for instance, 
+shows Cox and Katz's point estimates and 95\% intervals for bias in the 100th and 101st 
+Congresses. The estimates (plus or minus one standard error) are $b_{100} = 0.0065 \pm 0.029$ 
 and $b_{101} = 0.071 \pm 0.034$. Assuming the 95\% threshold for statistical significance 
 standard in the social sciences and used by Cox and Katz, $b_{101}$ is statistically significant 
 but $b_{100}$ is not. Though it is then tempting to conclude that one is signal while the other 
 is indistinguishable from noise, note that the difference between the two is 
 $0.0645$ with a standard error of $0.045$ and thus not close to statistically significant. 
-The general point is that nonsignificant changes can correspond to large changes 
+The general point is counter-intuitive: nonsignificant changes can correspond to large shifts 
 in significance levels.\footnote{A more detailed explanation of this issue -- which is not unique to this 
-example -- and its potential consequences can be found in Chapter 2 of \citeA{gelman_arm_2007}.} 
+example -- and its potential consequences can be found in Chapter 2 of 
+\citeA{gelman_arm_2007}.}\footnote{The same concern would arise to some extent if the filter 
+of statistical significance were imposed on the Bayesian analysis, but it is not the natural framework 
+for making inferences from a Bayesian perspective.} 
 
 
 \begin{figure}
 \centering
-\includegraphics[scale=0.75]{sections/figs/ck_signif}
-\caption{An example of when the difference between statistically significant and nonsignificant is 
-not itself statistically significant.}
+\includegraphics[scale=0.75]{sections/figs/ck_signif_all}%
+%\includegraphics[scale=0.5]{sections/figs/ck_signif2}
+\caption{Examples from Cox and Katz's results for which the difference between statistically 
+significant and nonsignificant is not itself statistically significant.}
 \label{fig:ck_signif}
 \end{figure}
 
-\subsubsection{Problems with rolling windows}
+\subsubsection{More on the ad-hoc rolling average approach}
 
 As discussed in \ref{subsection_methods}, Cox and Katz's results comprise estimates taken 
 from 61 separate models (one for each Congress). This results in the data for each Congress 
 $t$ being reused in up to six of the 60 models besides the model for Congress $t$ itself. It also 
 entails the exclusion of all data from Congresses outside each window. Furthermore, the 
-choice of using rolling windows of seven Congresses ($t \pm 3$) is also somewhat arbitrary. 
+choice of using rolling windows of seven Congresses ($t \pm 3$) is somewhat arbitrary. 
 
 The curves in Figure~\ref{fig:ck_hypothetical} (p.~\pageref{fig:ck_hypothetical}) show the 
 results Cox and Katz would have found had they chosen narrower or wider windows. As the 
@@ -204,9 +211,9 @@ Graphical posterior predictive checking is a valuable tool for examining how wel
 fits the available data \shortcite{gelman_bayesian_2013}. The idea is simple: if the model is a good fit 
 then it should be possible simulate data from the model that resembles the observed data. Let $\Theta$ 
 denote all parameters (including hyperparameters) in the hierarchical model. Following 
- \citeA{gelman_bayesian_2013}, $y^{\it rep}$ will be used to denote a replication of $y$ from the model.\footnote{\citeA{gelman_bayesian_2013} distinguishes between $y^{rep}$ and $\tilde{y}$. The former 
+ \citeA{gelman_bayesian_2013}, $y^{\it rep}$ will be used to denote a {\it replication} of $y$ from the model.\footnote{\citeA{gelman_bayesian_2013} distinguishes between $y^{rep}$ and $\tilde{y}$. The former 
  makes use of the same explanatory variables/predictors $x$ used to estimate $\Theta$, while the latter 
- refers predictions of future $y$ using potentially different variables $\tilde{x}$ (e.g. after collecting more data).}
+ refers to predictions of future $y$ using potentially different variables $\tilde{x}$ (e.g. after collecting more data).}
 
 For each draw of the parameters $\Theta$ from the posterior distribution $p(\Theta | y)$ an entire set 
 of data $y^{\it rep} $ is simulated from the posterior predictive distribution,
@@ -226,13 +233,13 @@ distribution of the observed data $y$ -- the number of roll-call votes won by th
 predictive replications. This is a casual but informative comparison; it is an easy way of checking 
 for inconsistencies due to poor model fit. In this case it shows that indeed the observed data are 
 plausible under the posterior predictive distribution implied by the model. 
-Figure~\ref{fig:ck_pp_nWins_hists} (p. \pageref{fig:ck_pp_nWins_hists}) is similar to 
-Figure~\ref{fig:ck_pp_hists} but shows the distribution of $y^{\it rep}$ by Congress. Again it is 
-evident that the observed data are consistent with the posterior predictive distribution. Finally, 
 Figure~\ref{fig:ck_pp_test_statistics} (p. \pageref{fig:ck_pp_test_statistics}) shows the distributions 
-of the mean and standard deviation over all replications, which nicely fit the observed values of 
-these statistics in the data. 
+of the mean and standard deviation over all replications, which nicely fit the observed values of these 
+statistics in the data. 
 
+In Figure~\ref{fig:ck_pp_nWins_hists} (p. \pageref{fig:ck_pp_nWins_hists}) shows the distribution 
+of $y^{\it rep}$ at the Congress-level. Again it is evident that the observed data are consistent 
+with the posterior predictive distribution. 
 % Should probably do pp checks after aggregating over the sub periods for each congress.  
 
 \begin{figure}[h]

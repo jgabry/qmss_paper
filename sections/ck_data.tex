@@ -26,28 +26,28 @@ RC_{it} =
 
 %\noindent Here, the Democratic position refers to the outcome preferred by the majority of Democrats.  The definition is analogous for the Republican position.
 
-%The outcomes of interest are the number of wins ($w_t^{DEM}$) and proportion of wins ($\pi_t^{DEM}$) for the Democratic position in each Congress $t$
+%The outcomes of interest are the number of wins ($w_t^{Dem}$) and proportion of wins ($\pi_t^{Dem}$) for the Democratic position in each Congress $t$
 %
-%$$ w_t^{DEM} = \sum_{i=1}^{n_t} RC_{it}, \qquad \pi_t^{DEM} = w_t^{DEM} / n_t.\footnote{The superscript {\it MAJ} (e.g. $y_t$) will be used later in the thesis as a general way of referring to the majority party in a specific time period. While the data is organized and more naturally described in terms of $w_t^{DEM}$ and $w_t^{REP}$ (which is just $n_t-w_t^{DEM}$), the proposed statistical model is more straightforward to implement in terms of $w_t^{MAJ.}$}$$
+%$$ w_t^{Dem} = \sum_{i=1}^{n_t} RC_{it}, \qquad \pi_t^{Dem} = w_t^{Dem} / n_t.\footnote{The superscript {\it Maj} (e.g. $y_t$) will be used later in the thesis as a general way of referring to the majority party in a specific time period. While the data is organized and more naturally described in terms of $w_t^{Dem}$ and $w_t^{Rep}$ (which is just $n_t-w_t^{Dem}$), the proposed statistical model is more straightforward to implement in terms of $w_t^{Maj.}$}$$
 %
 %Here $n_t$ is the number of roll-call votes in Congress $t$, which ranges from a minimum of 33 votes in the 70th Congress (1927-1929) to a maximum of 836 votes in the 104th Congress (1995-1997). The median number is 143 votes.  
 %
 %
-%The sole predictor of interest is $v^{RATIO}$, the ratio of the average vote share earned by the Democratic position to the average vote share earned by the Republican position in each Congress.  For each Congress the average is taken over all roll-call votes.  For vote $i$ in Congress $t$, let $\pi_{it}^{DEM}$ be the proportion of representatives who cast their vote in favor of the Democratic position.  Then the mean vote shares for the Democratic and Republican positions in Congress t is
+%The sole predictor of interest is $v^{Ratio}$, the ratio of the average vote share earned by the Democratic position to the average vote share earned by the Republican position in each Congress.  For each Congress the average is taken over all roll-call votes.  For vote $i$ in Congress $t$, let $\pi_{it}^{Dem}$ be the proportion of representatives who cast their vote in favor of the Democratic position.  Then the mean vote shares for the Democratic and Republican positions in Congress t is
 %
 %{\singlespacing
-%$$v_t^{DEM} = \frac{1}{n_t} \sum_{i=1}^{n_t} \pi_{it}^{DEM}, \qquad v_t^{REP} = 1 - v_t^{DEM}$$
+%$$v_t^{Dem} = \frac{1}{n_t} \sum_{i=1}^{n_t} \pi_{it}^{Dem}, \qquad v_t^{Rep} = 1 - v_t^{Dem}$$
 %}
 %%
-%\noindent and the ratio of Democratic to Republican vote shares is simply $v_t^{RATIO} = v_t^{DEM} / v_t^{REP}$. Figure~\ref{fig:log_vratio_vs_ptdem} shows $\log{(v^{RATIO} )}$ plotted against $\pi^{DEM}$. The shape of the curve is similar to the standard seats-votes curve used in analyses of bias and responsiveness in electoral contexts. The curve is analogous in the legislative context of Cox and Katz's example, although we are not concerned with seat shares in a given Congress but rather roll-call vote shares ($\pi_t^{DEM}$ and $\pi_t^{REP}$). This is discussed further in the Methods section. 
+%\noindent and the ratio of Democratic to Republican vote shares is simply $v_t^{Ratio} = v_t^{Dem} / v_t^{Rep}$. Figure~\ref{fig:log_vratio_vs_ptdem} shows $\log{(v^{Ratio} )}$ plotted against $\pi^{Dem}$. The shape of the curve is similar to the standard seats-votes curve used in analyses of bias and responsiveness in electoral contexts. The curve is analogous in the legislative context of Cox and Katz's example, although we are not concerned with seat shares in a given Congress but rather roll-call vote shares ($\pi_t^{Dem}$ and $\pi_t^{Rep}$). This is discussed further in the Methods section. 
 %
-%The trends of $\log{(v^{RATIO} )}$ and $\pi^{DEM}$ over time are shown in the visual summary of the data set in Figure~\ref{fig:data_summary}.
+%The trends of $\log{(v^{Ratio} )}$ and $\pi^{Dem}$ over time are shown in the visual summary of the data set in Figure~\ref{fig:data_summary}.
 %
 %%FIGURE
 %\begin{figure}
 %\centering
 %	\includegraphics[scale=0.75]{sections/figs/logvratio_vs_pdem}
-%\caption{$\log{(v^{RATIO} )}$  vs. $\pi^{DEM}$}
+%\caption{$\log{(v^{Ratio} )}$  vs. $\pi^{Dem}$}
 %\label{fig:log_vratio_vs_ptdem}
 %\end{figure}
 %%
@@ -76,20 +76,20 @@ The median number is 143 votes. See also Figure~\ref{fig:data_summary}
 The sole predictor is the ratio of the average vote share earned by the majority party position 
 to the average vote share earned by the minority party position in each Congress. For each 
 Congress the average is taken over all roll-call votes. For vote $i$ in Congress $t$, let 
-$p_{it}^{DEM}$ be the proportion of representatives who cast their vote in favor of the Democratic 
+$p_{it}^{Dem}$ be the proportion of representatives who cast their vote in favor of the Democratic 
 position.  Then the mean vote shares for the Democratic and Republican positions in Congress t are
 
 \begin{equation*}
-v_t^{DEM} = n_t^{-1} \sum_{i=1}^{n_t} p_{it}^{DEM}, \qquad v_t^{REP} = 1 - v_t^{DEM},
+v_t^{Dem} = n_t^{-1} \sum_{i=1}^{n_t} p_{it}^{Dem}, \qquad v_t^{Rep} = 1 - v_t^{Dem},
 \end{equation*}
 
-\noindent and the ratio of Democratic to Republican vote shares is simply $v_t^{DEM} / v_t^{REP}$. The notation $v_t^{RATIO}$ will be used as shorthand for the ratio $v_t^{MAJ} / v_t^{MIN}$, that is 
+\noindent and the ratio of Democratic to Republican vote shares is simply $v_t^{Dem} / v_t^{Rep}$. The notation $v_t^{Ratio}$ will be used as shorthand for the ratio $v_t^{Maj} / v_t^{Min}$, that is 
 
 \begin{equation*}
-v^{RATIO} = 
+v_t^{Ratio} = 
 \begin{cases} 
-v^{DEM} / v^{REP}, & \text{ if Democrats hold the majority,} \\[10pt]
-v^{REP} / v^{DEM}, & \text{ if Republicans hold the majority.} \\
+v_t^{Dem} / v_t^{Rep}, & \text{ if Democrats hold the majority in Congress $t$,} \\[10pt]
+v_t^{Rep} / v_t^{Dem}, & \text{ if Republicans hold the majority in Congress $t$.} \\
 \end{cases}
 \end{equation*}
 ~\\[-12pt]
@@ -99,12 +99,12 @@ v^{REP} / v^{DEM}, & \text{ if Republicans hold the majority.} \\
 \begin{figure}
 \centering
 	\includegraphics[scale=0.75]{sections/figs/vdem_vs_pdem}
-\caption{Average Democratic vote-share $(v^{\it DEM})$ in Congress $t$ vs. Total proportion of votes won $(\pi^{DEM})$ in Congress $t$. Each point represents a Congress. Dashed lines show estimated seats-votes curves. (See also Figure~2 in \protect\citeA{cox_gerrymandering_2007}.)}
+\caption{Average Democratic vote-share $(v^{\it Dem})$ in Congress $t$ vs. Total proportion of votes won $(\pi^{Dem})$ in Congress $t$. Each point represents a Congress. Dashed lines show estimated seats-votes curves. (See also Figure~2 in \protect\citeA{cox_gerrymandering_2007}.)}
 \label{fig:log_vratio_vs_ptdem}
 \end{figure}
 
 
-Figure~\ref{fig:log_vratio_vs_ptdem} shows $v^{\it DEM}$ plotted against $\pi^{DEM}$. The shape of the curve is suggestive of the standard seats-votes curve  
+Figure~\ref{fig:log_vratio_vs_ptdem} shows $v^{\it Dem}$ plotted against $\pi^{Dem}$. The shape of the curve is suggestive of the standard seats-votes curve  
 
 \begin{equation*}
  \frac{s}{1-s} = \exp{(\lambda)}\left(\frac{v}{1-v}\right)^\rho 
@@ -118,11 +118,11 @@ $\pi$ rather than seat shares $s$. This is discussed further in section \ref{sub
 The terminology is unfortunately overloaded in this section. {\it Vote} refers to both (1) the individual 
 {\it vote} cast by a single representative on a single occasion and (2) a roll-call {\it vote} when
 all representatives cast their individual {\it votes}. {\it Vote share} is used for the proportion of
-votes cast for a particular party's position in a single roll-call vote (e.g., $p^{\it DEM}_{it}$ is the 
+votes cast for a particular party's position in a single roll-call vote (e.g., $p^{\it Dem}_{it}$ is the 
 vote share for the Democratic position in the $i$th roll-call vote occurring in Congress $t$). The 
-value of $v_t^{\it DEM}$ is the {\it average} vote share for the Democratic position over the $n_t$ roll-call votes in Congress $t$ (i.e. the average, over $i$, of $p^{\it dem}_{it}$). }  
+value of $v_t^{\it Dem}$ is the {\it average} vote share for the Democratic position over the $n_t$ roll-call votes in Congress $t$ (i.e. the average, over $i$, of $p^{\it Dem}_{it}$). }  
 
-The trends of $\log{(v^{\it RATIO})}$ and $\pi^{MAJ}$ over time are shown in the visual summary 
+The trends of $\log{(v^{\it Ratio})}$ and $\pi^{Maj}$ over time are shown in the visual summary 
 of the dataset in Figure~\ref{fig:data_summary} (p.~\pageref{fig:data_summary}). \\[10pt]
 
 
@@ -130,14 +130,14 @@ of the dataset in Figure~\ref{fig:data_summary} (p.~\pageref{fig:data_summary}).
 \begin{figure}[p]
 \centering
 	\includegraphics[scale=0.75]{sections/figs/vis_summary}
-\caption{Visual summary of the data. The trends of $\log{(v^{\it RATIO} )}$ and $\pi^{MAJ}$ by 
+\caption{Visual summary of the data. The trends of $\log{(v^{\it Ratio} )}$ and $\pi^{Maj}$ by 
 Congress are plotted on top, with the number of roll-call votes per Congress below. Background 
 shading is used to differentiate between Democratic and Republican majorities.}
 \label{fig:data_summary}
 \end{figure}
 %
 
-%One method of identifying bias toward or against the majority party is to estimate $E[p_t |v_t^{MAJ}=0.5]$, the proportion of majority party victories conditional on equal vote share, and compare the estimate to $0.5$, the expected proportion of majority party victories in the absence of bias.  There are many close votes in the data -- that is, votes where $v_t^{MAJ} \approx 0$ -- which can be used to estimate $E[p_t |v_t^{MAJ}=0.5]$.  Figure 2, below, shows the proportion of majority party victories under four different definitions of a close votes corresponding to margins of victory of 0.125\%, 0.25\%, 0.5\%, and 1.0\%. 
+%One method of identifying bias toward or against the majority party is to estimate $E[p_t |v_t^{Maj}=0.5]$, the proportion of majority party victories conditional on equal vote share, and compare the estimate to $0.5$, the expected proportion of majority party victories in the absence of bias.  There are many close votes in the data -- that is, votes where $v_t^{Maj} \approx 0$ -- which can be used to estimate $E[p_t |v_t^{Maj}=0.5]$.  Figure 2, below, shows the proportion of majority party victories under four different definitions of a close votes corresponding to margins of victory of 0.125\%, 0.25\%, 0.5\%, and 1.0\%. 
 %
 %\vskip1cm
 %FIGURE
