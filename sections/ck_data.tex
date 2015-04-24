@@ -74,8 +74,8 @@ The median number is 143 votes. See also Figure~\ref{fig:data_summary}
 
 
 The sole predictor is the ratio of the average vote share earned by the majority party position 
-to the average vote share earned by the minority party position in each Congress.  (For each 
-Congress the average is taken over all roll-call votes.)  For vote $i$ in Congress $t$, let 
+to the average vote share earned by the minority party position in each Congress. For each 
+Congress the average is taken over all roll-call votes. For vote $i$ in Congress $t$, let 
 $p_{it}^{DEM}$ be the proportion of representatives who cast their vote in favor of the Democratic 
 position.  Then the mean vote shares for the Democratic and Republican positions in Congress t are
 
@@ -114,7 +114,13 @@ Figure~\ref{fig:log_vratio_vs_ptdem} shows $v^{\it DEM}$ plotted against $\pi^{D
 analogous in the legislative context of Cox and Katz's example but for roll-call vote shares 
 $\pi$ rather than seat shares $s$. This is discussed further in section \ref{subsection_methods}
  in relation to the statistical model.\footnote{See also Appendix~\ref{AppendixB} for visual 
- examples of seats-votes curves.}
+ examples of seats-votes curves.}\footnote{
+The terminology is unfortunately overloaded in this section. {\it Vote} refers to both (1) the individual 
+{\it vote} cast by a single representative on a single occasion and (2) a roll-call {\it vote} when
+all representatives cast their individual {\it votes}. {\it Vote share} is used for the proportion of
+votes cast for a particular party's position in a single roll-call vote (e.g., $p^{\it DEM}_{it}$ is the 
+vote share for the Democratic position in the $i$th roll-call vote occurring in Congress $t$). The 
+value of $v_t^{\it DEM}$ is the {\it average} vote share for the Democratic position over the $n_t$ roll-call votes in Congress $t$ (i.e. the average, over $i$, of $p^{\it dem}_{it}$). }  
 
 The trends of $\log{(v^{\it RATIO})}$ and $\pi^{MAJ}$ over time are shown in the visual summary 
 of the dataset in Figure~\ref{fig:data_summary} (p.~\pageref{fig:data_summary}). \\[10pt]

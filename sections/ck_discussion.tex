@@ -1,0 +1,26 @@
+\section{Discussion}
+\label{ck_discussion}
+
+\subsubsection{Different interpretations}
+
+Although Figure~\ref{fig:ck_bias} appears to be showing two versions of the same plot with
+slightly different estimates, Cox and Katz's results (obtained by maximum likelihood estimation) 
+and the results from the Bayesian model must be interpreted differently. The former are point estimates 
+and confidence intervals, whereas the full Bayesian model provides an estimate of the marginal posterior 
+{\it distribution} for each parameter. That is, the estimates obtained from the Bayesian model are the 
+distributions themselves; presenting the results as point estimates and intervals is simply convenient for 
+making comparisons to Cox and Katz's results. 
+
+In the classical approach taken by Cox and Katz, a single value is obtained for each parameter and 
+assessed in relation to infinitely many confidence intervals constructed from infinitely many hypothetical 
+datasets. While in many situations it is possible to imagine repeating an experiment (e.g. coin flipping), 
+such an interpretation makes less sense in the context of the historical events of interest to this analysis. 
+For each confidence interval obtained from Cox and Katz's analysis, all that can be said is that it either 
+contains the (theoretical) true parameter value or it does not. This is a consequence of taking the 
+philosophical position that the parameter is fixed while the data and interval bounds are 
+random variables. 
+
+On the contrary, from the Bayesian perspective the parameter is treated as a random variable while 
+the data and interval bounds are fixed. As a result, the estimates from the  Bayesian model have a 
+more intuitive interpretation. Conditional on the model and data, there is a $p\%$ probability that the 
+(theoretical) true value of the parameter lies in the $p\%$ interval. 
