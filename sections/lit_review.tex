@@ -43,32 +43,32 @@ confronting the tradeoff between bias and variance. An analysis that disregards 
 heterogeneity can yield parameter estimates with low variance but high bias. Group-by-group 
 analyses, on the other hand, can reduce bias at the expense of high-variance estimates \shortcite{jackman_bayesian_2009}. While complete pooling or no pooling of data across 
 groups is sometimes called for, nonhierarchical models for hierarchical data tend to underfit 
-or overfit the data \shortcite{gelman_bayesian_2013}. Hierarchical modeling provides a 
+or overfit the data \shortcite{gelman_bayesian_2013}. Hierarchical (or multilevel) modeling provides a 
 compromise by allowing parameters to vary by group at lower levels of the hierarchy while 
 estimating population-level parameters at higher levels. 
 
 For example, consider the simple scenario in which survey respondents from many different
-geographic regions are asked if they are in favor of a particular policy $X$. One approach for estimating
+geographic regions are asked if they are in favor of a particular policy $P$. One approach for estimating
 the level of underlying support for the policy in each region $r = 1, 2, \dots, R$ would be to estimate separate
 models for the $R$ regions. However, such an approach would ignore the relationship between
-support for $X$ across regions, which should be incorporated into the joint probability model. In 
+support for $P$ across regions, which should be incorporated into the joint probability model. In 
 the United States, for example, estimating separate models would impose the assumption that
-support for $X$ in, say, New England is entirely uninformative about support for $X$ in all 
+support for $P$ in, say, New England is entirely uninformative about support for $X$ in all 
 other regions of the country. A hierarchical framework allows for a more realistic model in which 
-support for $X$ can vary across regions without disregarding interregional dependence.      
+support for $P$ can vary across regions without disregarding interregional dependence.      
 
-Let $y_n = 1$ if the $n$th respondent supports policy $X$ and $0$ otherwise, and let $r[n]$ 
-denote the region for the $n$th individual/observation. For simplicity, assume that there is a single 
-individual-level predictor $x$ (e.g. income, age, etc.) and a single region-level predictor $u$ 
-(e.g. average income). The hierarchical model
+For the $n$th observation, let $r[n]$ denote the respondent's region and $\theta_n = P(y_n = 1)$ the probability
+the respondent expresses support for policy $P$. For simplicity, assume that there is a single individual-level 
+predictor $x$ (e.g. income) and a single region-level predictor $w$ (e.g. average income). 
+The hierarchical model
 
 %
 \begin{align*}
- {\rm logit}\left(P(y_n = 1) \right) &= \alpha_{r[n]} + \beta_{r[n]} x_n, \qquad \text{for } n = 1, \dots, N \\[5pt]
- \alpha_r &= \gamma^\alpha_0 + \gamma^\alpha_1 u_r + \epsilon^\alpha_r, \quad \text{ for } r = 1, \dots, R \\[5pt]
-  \beta_r &= \gamma^\beta_0 + \gamma^\beta_1 u_r + \epsilon^\beta_r, \qquad\qquad \vdots  \\[5pt]
-   \epsilon^\alpha_r &\sim N(0, \tau^2_\alpha) \\[5pt]
-   \epsilon^\beta_r &\sim N(0, \tau^2_\beta).
+\theta_n &= {\rm logit}^{-1}\left(\alpha_{r[n]} + \beta_{r[n]} x_n\right), \quad \text{for } n = 1, \dots, N \\[5pt]
+ \alpha_r &= \gamma^\alpha_0 + \gamma^\alpha_1 w_r + \epsilon^\alpha_r, \quad \text{ for } r = 1, \dots, R \\[5pt]
+  \beta_r &= \gamma^\beta_0 + \gamma^\beta_1 w_r + \epsilon^\beta_r, \qquad\qquad \vdots  \\[5pt]
+   \epsilon^\alpha_r &\sim \mathcal{N}(0, \tau^2_\alpha), \\[5pt]
+   \epsilon^\beta_r &\sim \mathcal{N}(0, \tau^2_\beta).
 \end{align*}
 
 \noindent is what \citeA{gelman_arm_2007} refer to as a {\it varying-intercept}, 
@@ -93,17 +93,19 @@ to as {\it borrowing strength} or {\it shrinkage}. In the example above, for ins
 estimates for each $\alpha_r$ are informed not only by the data from region $r$ but 
 also by the observations from all other regions through the common hyperparameters.\footnote{
 In other words, the population-level hyperparameters are estimated from the data for all groups 
-and used to estimate the group-specific parameters $\alpha_r$ and $\beta_r$.} That is, {\it strength} is 
+and used to estimate the group-specific parameters $\alpha_r$ and $\beta_r$.} This describes
+the general way in which the levels in a hierarchical model are connected in the data. The unit (individual) level 
+observations are the points from which the higher-level group distributions are estimated. That is, {\it strength} is 
 borrowed from all groups when estimating the parameter(s) corresponding to each individual group. As a 
 consequence the  estimates for the group-level parameters are {\it shrunk} toward each other, 
-with the amount of shrinkage depending on how far each is from the overall mean \shortcite{jackman_bayesian_2009}.\footnote{The term
+with the amount of shrinkage depending on how far each is from the overall mean \shortcite{jackman_bayesian_2009, lipsky_shrinkage_2010}.\footnote{The term
 {\it shrinkage} is a bit of a misnomer. The values of the parameters themselves are not necessarily smaller, 
 but rather the distance from the common mean is smaller.}
 
 The term {\it hierarchical} is a suitable designation for a wide (theoretically unlimited) family of 
 models, from the simple example above to the semi-parameteric STAR models used by Wawro 
-and Katznelson and in this thesis. See \citeA{gelman_arm_2007}, \citeA{gelman_bayesian_2013} and 
-\citeA{jackman_bayesian_2009} for more thorough and formal introductions to the topic of hierarchical modeling.  
+and Katznelson and in this thesis. See \citeA{lipsky_shrinkage_2010} for an excellent introduction to shrinkage 
+in multilevel modeling, and \citeA{gelman_arm_2007} and \citeA{jackman_bayesian_2009} for more thorough and formal treatments of hierarchical modeling. 
 
 
 
@@ -116,70 +118,102 @@ and Katznelson and in this thesis. See \citeA{gelman_arm_2007}, \citeA{gelman_ba
 
 The prior distributions of particular interest in this thesis are known as Gaussian Markov random 
 field (GMRF) priors. The literature on GMRFs is vast, as they are frequently used in image processing 
-and spatial statistics, however GMRFs appear only rarely in quantitative social science, and \citeA{wawro_designing_2014} is the first example extending the applications of GMRFs to historical 
+and spatial statistics, however GMRFs appear only rarely in quantitative social science, and 
+\citeA{wawro_designing_2014} is the first example extending the applications of GMRFs to historical 
 social scientific inquiry.\footnote{This is actually only somewhat true. Many special cases of GMRFs  
 (e.g. autoregressive processes) are commonly used by researchers applying statistics in many different 
 fields including all of the social sciences. This is because GMRFs are  multivariate normal distributions. 
 It is the particular use advocated by Wawro and Katznelson that is unfamiliar in the social sciences.} 
-Before defining GMRFs it is first necessary to introduce some basic concepts from graph theory, 
-particular the idea of an undirected graph. 
+Before defining GMRFs it is first necessary to introduce some concepts from graph theory, particularly undirected graphs. 
 
 \subsection{Undirected graphs}
 \label{undirected_graphs}
 
 An undirected graph $\mathbf{G} = (V,E)$ is simply an ordered pair of sets containing the 
 vertices (or nodes) and edges of the graph, respectively. In what follows assume that $V$ 
-and $E$ are finite and let $e_{ij} \in E$ denote the element in $E$ corresponding to the 
-edge connecting vertices $v_i$ and $v_j$ in $V$. The term {\it undirected} refers to the fact 
+and $E$ are finite and let $\bar{e}_{ij} \in E$ denote the element in $E$ corresponding to the 
+edge connecting vertices $\nu_i$ and $\nu_j$ in $V$. The term {\it undirected} refers to the fact 
 that the edges lack orientation.\footnote{Intuitively, it is helpful to think of the edges of an 
 undirected graph as line segments with no implied direction, whereas the edges in a directed 
-graph can be thought of as arrows.} The {\it neighbors} of node $v_j$ are all of the nodes that 
-share a common edge with $v_j$. The notation $\partial^{\mathbf{G}}_j$ will be used for the 
-{\it neighborhood} of node $v_j$ in graph  $\mathbf{G}$ and $\partial^\mathbf{G}$ for the set 
+graph can be thought of as arrows.} The {\it neighbors} of node $\nu_j$ are all of the nodes that 
+share a common edge with $\nu_j$. The notation $\partial^{\mathbf{G}}_j$ will be used for the 
+{\it neighborhood} of node $\nu_j$ in graph  $\mathbf{G}$ and $\partial^\mathbf{G}$ for the set 
 containing the neighborhoods for all nodes in $\mathbf{G}$.\footnote{$ \partial^\mathbf{G}_j = 
-\{v_{i \neq j} \in V \,\vert\, e_{ij} \in E\}$ and $\partial^\mathbf{G} = \{\partial^\mathbf{G}_j \,
-\vert\, v_j \in V\}$.} For example, in Figure~\ref{fig:undirected_graphs}, 
-$\partial^{\mtrx{A}}_1 = \{v_2, v_6\}$ and $\partial^{\mathbf{B}}_1 = \{v_2, v_3\}$.  
+\{\nu_{i \neq j} \in V \,\vert\, \bar{e}_{ij} \in E\}$ and $\partial^\mathbf{G} = \{\partial^\mathbf{G}_j \,
+\vert\, \nu_j \in V\}$.} For example, in Figure~\ref{fig:undirected_graphs}, 
+$\partial^{\mtrx{A}}_1 = \{\nu_2, \nu_6\}$ and $\partial^{\mathbf{B}}_1 = \{\nu_2, \nu_3\}$.  
 For a more comprehensive discussion of undirected graphs in the context of GMRFs 
 see \citeA{rue_gaussian_2005}. 
 
 \begin{figure}[htb]
+\textsc{graph $\mtrx{A}$} \hspace{3cm} \textsc{graph $\mtrx{B}$} \hspace{4.5cm} \textsc{graph $\mtrx{C}$} \hfill 
+
 \centering
 
-\textsc{graph $\mtrx{A}$} \hspace{6cm} \textsc{graph $\mathbf{B}$} 
 
 \vspace{.5cm}
 
 \begin{tikzpicture}
-\node[obs, fill=DarkSalmon] (r1) {$v_1$};
-\node[obs, below left=of r1, fill=DarkSalmon] (r2) {$v_2$};
-\node[obs, below=of r2, fill=DarkSalmon] (r3) {$v_3$};
-\node[obs, below right=of r3, fill=DarkSalmon] (r4) {$v_4$};
-\node[obs, above right=of r4, fill=DarkSalmon] (r5) {$v_5$};
-\node[obs, above=of r5, fill=DarkSalmon] (r6) {$v_6$};
-\edge [-, color=MidnightBlue, bend right=30] {r1} {r2} ;
-\edge [-, color=MidnightBlue, bend left=30] {r1} {r6} ;
-\edge [-, color=MidnightBlue] {r2} {r3} ;
-\edge [-, color=MidnightBlue, bend right=30] {r3} {r4} ;
-\edge [-, color=MidnightBlue, bend right=30] {r4} {r5} ;
-\edge [-, color=MidnightBlue] {r5} {r6} ;
+\node[obs, color=Sepia, text=Thistle] (r1) {$\nu_1$};
+\node[obs, below left=of r1, color=Sepia, text=Thistle] (r2) {$\nu_2$};
+\node[obs, below=of r2, color=Sepia, text=Thistle] (r3) {$\nu_3$};
+\node[obs, below right=of r3, color=Sepia, text=Thistle] (r4) {$\nu_4$};
+\node[obs, above right=of r4, color=Sepia, text=Thistle] (r5) {$\nu_5$};
+\node[obs, above=of r5, color=Sepia, text=Thistle] (r6) {$\nu_6$};
+\edge [-, color=Thistle, bend right=30] {r1} {r2} ;
+\edge [-, color=Thistle, bend left=30] {r1} {r6} ;
+\edge [-, color=Thistle] {r2} {r3} ;
+\edge [-, color=Thistle, bend right=30] {r3} {r4} ;
+\edge [-, color=Thistle, bend right=30] {r4} {r5} ;
+\edge [-, color=Thistle] {r5} {r6} ;
 \end{tikzpicture}
 %
- \hspace{4cm} 
+ \hspace{1cm} 
  %
 \begin{tikzpicture}
-\node[obs, fill=SkyBlue] (r1) {$v_1$};
-\node[obs, below right=of r1, fill=SkyBlue] (r2) {$v_2$};
-\node[obs, below right=of r2,  fill=SkyBlue] (r3) {$v_3$};
-\node[obs, below right=of r3,  fill=SkyBlue] (r4) {$v_4$};
-\edge [-, color=DarkRed] {r1} {r2} ;
-\edge [-, color=DarkRed, bend right=30] {r1} {r3} ;
-\edge [-, color=DarkRed] {r2} {r3} ;
+\node[obs, color=ProcessBlue, text = black] (r1) {$\nu_1$};
+\node[obs, below right=of r1, color=ProcessBlue, text = black] (r2) {$\nu_2$};
+\node[obs, below right=of r2,  color=ProcessBlue, text = black] (r3) {$\nu_3$};
+\node[obs, below right=of r3,  color=ProcessBlue, text = black] (r4) {$\nu_4$};
+\edge [-, color=Melon] {r1} {r2} ;
+\edge [-, color=Melon, bend right=30] {r1} {r3} ;
+\edge [-, color=Melon] {r2} {r3} ;
 %\edge [-, color=DarkRed, bend left=30] {r2} {r4} ;
-\edge [-, color=DarkRed] {r3} {r4} ;
+\edge [-, color=Melon] {r3} {r4} ;
+\end{tikzpicture}
+%
+ \hspace{1cm} 
+ %
+\begin{tikzpicture}
+\node[obs, color=PineGreen, fill = white, text=PineGreen] (r1) {$\nu_1$};
+\node[obs, right=of r1, color=gray, fill=white] (r2) {$\nu_2$};
+\node[obs, right=of r2,  color=gray, fill=white] (r3) {$\nu_3$};
+\node[obs, right=of r3,  color=gray, fill=white] (r4) {$\nu_4$};
+\node[obs, below=of r1, color=gray, fill=white] (r5) {$\nu_5$};
+\node[obs, below=of r2, color=PineGreen,  fill=white, text=PineGreen] (r6) {$\nu_6$};
+\node[obs, below=of r3,  color=PineGreen, fill=white, text=PineGreen] (r7) {$\nu_7$};
+\node[obs, below=of r4,  color=gray, fill=white] (r8) {$\nu_8$};
+\node[obs, below=of r5, color=gray, fill=white] (r9) {$\nu_9$};
+\node[obs, below=of r6,  color=PineGreen, fill=white, text=PineGreen] (r10) {$\nu_{10}$};
+\node[obs, below=of r7,  color=PineGreen, text=white] (r11) {$\nu_{11}$};
+\node[obs, below=of r8,  color=PineGreen, fill=white, text=PineGreen] (r12) {$\nu_{12}$};
+\edge [-, color=gray] {r1} {r2} ; \edge [-, color=gray] {r1} {r5} ;
+\edge [-, color=gray] {r2} {r3} ; \edge [-, color=gray] {r2} {r6} ;
+\edge [-, color=gray] {r3} {r4} ; \edge [-, color=gray] {r3} {r7} ;
+\edge [-, color=gray] {r4} {r8} ; 
+\edge [-, color=gray] {r5} {r6} ; \edge [-, color=gray] {r5} {r9} ;
+\edge [-, color=gray] {r6} {r7} ; \edge [-, color=gray] {r6} {r10} ;
+\edge [-, color=gray] {r7} {r8} ; \edge [-, color=PineGreen] {r7} {r11} ;
+\edge [-, color=gray] {r8} {r12} ; 
+\edge [-, color=gray] {r9} {r10} ; \edge [-, color=PineGreen] {r10} {r11} ; \edge [-, color=PineGreen] {r11} {r12} ; 
+
+\edge [-, color=gray] {r4} {r7} ; \edge [-, color=gray] {r2} {r7} ; 
+\edge [-, color=gray] {r5} {r10} ; \edge [-, color=PineGreen] {r6} {r11} ; 
+\edge [-, color=gray, bend right=30] {r4} {r12} ; \edge [-, color=PineGreen, bend left=30] {r1} {r11} ;
+
 \end{tikzpicture}
 \vspace{.5cm}
-\caption{Examples of simple undirected graphs. In \textsc{graph A} each node has two neighbors. In \textsc{graph B} node $v_4$ has only a single neighbor while the others each have two neighbors.}
+\caption{Examples of simple undirected graphs. In \textsc{graph A} each node has two neighbors. In \textsc{graph B} node $\nu_4$ has only a single neighbor while the others each have two neighbors. In \textsc{graph C} the node $\nu_{11}$ and its neighborhood $\partial^\mtrx{G}_{11}$ are highlighted.}
 \label{fig:undirected_graphs}
 \end{figure}
 
@@ -191,9 +225,9 @@ see \citeA{rue_gaussian_2005}.
 Let $\theta \in \mathbb{R}^D$ have a multivariate normal distribution with probability 
 density $p(\theta | \mu, \boldsymbol{\Sigma}) = \mathcal{N}_D (\theta | \mu, \boldsymbol{\Sigma})$. 
 The random vector $\theta$ is said to form a GMRF with respect to the graph $\mathbf{G} = (V,E)$ if 
-for each element in $\theta$ there is a corresponding node in $V$, and no edge $e_{ij}$ between 
-nodes $v_i$ and $v_j$ \emph{if and only if} $\theta_i$ and $\theta_j$ are conditionally independent 
-given all other elements of $\theta$ \shortcite{rue_gaussian_2005}.\footnote{$v_i \notin 
+for each element in $\theta$ there is a corresponding node in $V$, and no edge $\bar{e}_{ij}$ between 
+nodes $\nu_i$ and $\nu_j$ \emph{if and only if} $\theta_i$ and $\theta_j$ are conditionally independent 
+given all other elements of $\theta$ \shortcite{rue_gaussian_2005}.\footnote{$\nu_i \notin 
 \partial^\mathbf{G}_{j} \iff \theta_i \bot \theta_j \mid \theta_{-ij}.$}\footnote{This definition is consistent 
 with the definition of Markov random fields in general. The random variables $\theta_1, \dots, \theta_D$ 
 obey the requisite Markov properties describing pairwise, local, and global conditional independencies \shortcite{rue_gaussian_2005}.} 
@@ -204,8 +238,8 @@ obvious from the individual elements of $\boldsymbol{\Sigma}$.\footnote{Nothing 
 independencies among the elements of $\theta$ can be inferred from the mean vector $\mu$.} It is 
 more useful to instead consider the precision (inverse covariance) matrix 
 $\mtrx{Q} =\boldsymbol{\Sigma}^{-1}$, for which it can be shown that conditional independence between 
-$\theta_i$ and $\theta_j$ (no edge between nodes $v_i$ and $v_j$) always corresponds to a zero in 
-cell $ij$ of the precision matrix, and vice-versa.\footnote{$\forall i \neq j, \:\: v_i \in \partial_j \iff q_{ij} = 0$}.  
+$\theta_i$ and $\theta_j$ (no edge between nodes $\nu_i$ and $\nu_j$) always corresponds to a zero in 
+cell $ij$ of the precision matrix, and vice-versa.\footnote{$\forall i \neq j, \:\: \nu_i \in \partial_j \iff q_{ij} = 0$}.  
 For a simple proof see \citeA{rue_gaussian_2005}.\footnote{For intuition, the following interpretations of 
 the elements of a precision matrix may also be helpful to keep in mind. For $i = j$ (the diagonal),  
 $q_{ij} = Var(\theta_i | \theta_{-i})$, the variance of $\theta_i$ conditional all the variables except 
@@ -258,7 +292,7 @@ for a discussion of ways to deal with the impropriety of this prior under certai
 
 To provide some intuition, suppose we are interested in learning about an effect with assumed 
 variation over geographic regions.  A simple map with $R$ distinct regions $r_1, r_2, \dots r_R$ can 
-be represented as an undirected graph $\mtrx{G}$ with vertices $V = \{v_1, v_2, \dots, v_R\}$ and 
+be represented as an undirected graph $\mtrx{G}$ with vertices $V = \{\nu_1, \nu_2, \dots, \nu_R\}$ and 
 edges $E$ connecting vertices corresponding to neighboring (or proximate) regions. A prior on a 
 parameter vector $\theta = (\theta_1, \dots, \theta_r)$ can be constructed such that the matrix 
 $\mtrx{P}$ has a zero in the $ij$th cell if and only if $\theta_i$ and $\theta_j$ (the parameters 
@@ -297,8 +331,8 @@ $f(z^{[t+1]})$ -- one step into the future -- forms an undirected $RW_1$, where
 the neighbors of time $t$ are both $t-1$ and $t+1$.\footnote{Unless otherwise 
 noted, the notation $RW$ will refer to an {\it undirected} random walk throughout 
 the remainder of this thesis.} The associated graph $\mtrx{G}$ therefore has vertices 
-$V=\{v_t : t=1,\dots,T\}$, each of which has two neighbors, with the exception of 
-$v_1$ and $v_T$, which have one neighbor.\footnote{$\partial_t = \{v_{s} : t - 1 \leq s \leq t + 1\}.$}  
+$V=\{\nu_t : t=1,\dots,T\}$, each of which has two neighbors, with the exception of 
+$\nu_1$ and $\nu_T$, which have one neighbor.\footnote{$\partial_t = \{\nu_{s} : t - 1 \leq s \leq t + 1\}.$}  
 The penalty matrix $\mtrx{P}$ corresponding to the $RW_1$ prior with equally 
 spaced observations is the tridiagonal matrix
 

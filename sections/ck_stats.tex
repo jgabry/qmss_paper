@@ -69,9 +69,8 @@ Rather than assuming a fixed probability of a majority party roll-call victory -
 binomial model would suffice -- the beta-binomial distribution treats the underlying probability $p$ 
 as unknown. The parameters $\alpha > 0$ and $\beta > 0$ govern the shape of the beta distribution, 
 however it is both more intuitive and computationally attractive to reparameterize in terms of the 
-mean $\theta$, which requires introducing a parameter $\phi$ as the sum of $\alpha$ and $\beta$.  
-This parameterization allows for modeling ${\rm logit}(\theta)$ by the semi-parametric structured 
-additive predictor $\eta$ of the STAR model. 
+mean $\theta = \alpha / (\alpha + \beta)$, which requires introducing an auxiliary parameter 
+$\phi = \alpha + \beta$. This parameterization allows for modeling ${\rm logit}(\theta)$ by the semi-parametric structured additive predictor $\eta$ of the STAR model. 
 
 The hierarchical Bayesian STAR model entails estimating the unknown functions $f_\lambda$ and 
 $f_\rho$. As discussed in \ref{star}, the vectors of function evaluations are the products 
@@ -125,7 +124,7 @@ $t = 1, \dots, C$
 \end{equation*}
 
 \noindent where $\kappa \leq C$ is a positive integer and $\mathbf{G}$ is the undirected graph 
-with nodes $V = \{v_1, \dots, v_C\}$ and the edges implied by $\partial^\mathbf{G}$ 
+with nodes $V = \{\nu_1, \dots, \nu_C\}$ and the edges implied by $\partial^\mathbf{G}$ 
 (see Figure~\ref{fig:rw_undirected_graphs}). The results presented in section~\ref{results} use 
 the $RW_1$ GMRF prior for $f_\lambda$ and $f_\rho$, which applies smoothing while allowing 
 for slightly more abrupt shifts in $\lambda$ and $\rho$ between Congresses than a $RW_2$ prior. 
@@ -134,16 +133,16 @@ for slightly more abrupt shifts in $\lambda$ and $\rho$ between Congresses than 
 \begin{figure}[htb]
 \centering
 
-\vspace{.5cm}
+\vspace{2cm}
 
 \begin{tikzpicture}
 \node[const] (name) {$\mathbf{G}_1$} ;
-\node[obs, right=of name,  fill=LightYellow] (r1) {$v_{1}$};
-\node[obs, right=of r1, fill=LightYellow] (r2) {$v_{2}$};
-\node[obs, right=of r2, fill=LightYellow] (r3) {$v_{3}$};
-\node[obs, right=of r3, fill=LightYellow] (r4) {$v_{4}$};
-\node[obs, right=of r4, fill=LightYellow] (r5) {$v_{5}$};
-\node[obs, right=of r5, fill=LightYellow] (r6) {$v_{6}$};
+\node[obs, right=of name,  fill=LightYellow] (r1) {$\nu_{1}$};
+\node[obs, right=of r1, fill=LightYellow] (r2) {$\nu_{2}$};
+\node[obs, right=of r2, fill=LightYellow] (r3) {$\nu_{3}$};
+\node[obs, right=of r3, fill=LightYellow] (r4) {$\nu_{4}$};
+\node[obs, right=of r4, fill=LightYellow] (r5) {$\nu_{5}$};
+\node[obs, right=of r5, fill=LightYellow] (r6) {$\nu_{6}$};
 \node[const, right=of r6] (dots1) {$\hspace{.33cm}$};
 \node[const, right=of dots1] (dots2) {$\hspace{.33cm}$};
 \node[const, right=of dots2] (dots3) {$$};
@@ -159,12 +158,12 @@ for slightly more abrupt shifts in $\lambda$ and $\rho$ between Congresses than 
  %
 \begin{tikzpicture}
 \node[const] (name) {$\mathbf{G}_2$} ;
-\node[obs, right=of name,  fill=Azure] (r1) {$v_{1}$};
-\node[obs, right=of r1, fill=Azure] (r2) {$v_{2}$};
-\node[obs, right=of r2, fill=Azure] (r3) {$v_{3}$};
-\node[obs, right=of r3, fill=Azure] (r4) {$v_{4}$};
-\node[obs, right=of r4, fill=Azure] (r5) {$v_{5}$};
-\node[obs, right=of r5, fill=Azure] (r6) {$v_{6}$};
+\node[obs, right=of name,  fill=Azure] (r1) {$\nu_{1}$};
+\node[obs, right=of r1, fill=Azure] (r2) {$\nu_{2}$};
+\node[obs, right=of r2, fill=Azure] (r3) {$\nu_{3}$};
+\node[obs, right=of r3, fill=Azure] (r4) {$\nu_{4}$};
+\node[obs, right=of r4, fill=Azure] (r5) {$\nu_{5}$};
+\node[obs, right=of r5, fill=Azure] (r6) {$\nu_{6}$};
 \node[const, right=of r6] (dots1) {$\hspace{.33cm}$};
 \node[const, right=of dots1] (dots2) {$\hspace{.33cm}$};
 \node[const, right=of dots2] (dots3) {$$};
@@ -186,12 +185,12 @@ for slightly more abrupt shifts in $\lambda$ and $\rho$ between Congresses than 
  %
 \begin{tikzpicture}
 \node[const] (name) {$\mathbf{G}_3$} ;
-\node[obs, right=of name,  fill=Honeydew] (r1) {$v_{1}$};
-\node[obs, right=of r1, fill=Honeydew] (r2) {$v_{2}$};
-\node[obs, right=of r2, fill=Honeydew] (r3) {$v_{3}$};
-\node[obs, right=of r3, fill=Honeydew] (r4) {$v_{4}$};
-\node[obs, right=of r4, fill=Honeydew] (r5) {$v_{5}$};
-\node[obs, right=of r5, fill=Honeydew] (r6) {$v_{6}$};
+\node[obs, right=of name,  fill=Honeydew] (r1) {$\nu_{1}$};
+\node[obs, right=of r1, fill=Honeydew] (r2) {$\nu_{2}$};
+\node[obs, right=of r2, fill=Honeydew] (r3) {$\nu_{3}$};
+\node[obs, right=of r3, fill=Honeydew] (r4) {$\nu_{4}$};
+\node[obs, right=of r4, fill=Honeydew] (r5) {$\nu_{5}$};
+\node[obs, right=of r5, fill=Honeydew] (r6) {$\nu_{6}$};
 \node[const, right=of r6] (dots1) {$\hspace{.33cm}$};
 \node[const, right=of dots1] (dots2) {$\hspace{.33cm}$};
 \node[const, right=of dots2] (dots3) {$$};
@@ -231,7 +230,7 @@ for slightly more abrupt shifts in $\lambda$ and $\rho$ between Congresses than 
 %
 %are treated as independent and identically distributed standard normal random variables. 
 %
-%While this formulation of the $RW_1$ prior is {\it directed}, conditioning also on $f(x^{[t+1]})$ -- one step into the future -- forms an undirected $RW_1$, where the neighbors of time $t$ are both $t-1$ and $t+1$.  The associated graph $G$ therefore has vertices $V=\{v_t : t=1,\dots,T\}$, each of which has two neighbors, with the exception of $v_1$ and $v_T$, which have one neighbor. The penalty matrix $\mathbf{P}$ corresponding to the $RW_1$ prior with equally with equally spaced observations is the tridiagonal matrix
+%While this formulation of the $RW_1$ prior is {\it directed}, conditioning also on $f(x^{[t+1]})$ -- one step into the future -- forms an undirected $RW_1$, where the neighbors of time $t$ are both $t-1$ and $t+1$.  The associated graph $G$ therefore has vertices $V=\{\nu_t : t=1,\dots,T\}$, each of which has two neighbors, with the exception of $\nu_1$ and $\nu_T$, which have one neighbor. The penalty matrix $\mathbf{P}$ corresponding to the $RW_1$ prior with equally with equally spaced observations is the tridiagonal matrix
 %
 %$$ \mathbf{P} = \mathbf{D} - \mathbf{A} =  \begin{bmatrix}
 %1  	& -1 	& 		& 	& \\
