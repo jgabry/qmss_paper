@@ -220,29 +220,30 @@ denote all parameters (including hyperparameters) in the hierarchical model. Fol
  refers to predictions of future $y$ using potentially different variables $\tilde{x}$ (e.g. after collecting more data).}
 
 For each draw of the parameters $\Theta$ from the posterior distribution $p(\Theta | y)$ an entire set 
-of data $y^{\it rep} $ is simulated from the posterior predictive distribution,
+of data $y^{\it rep} $ is simulated from the posterior predictive distribution
 
 \begin{equation*}
- p(y^{\it rep} | y) = \int p(y^{\it rep}, \Theta | y) d\Theta = \int p(y^{\it rep} | \Theta) p(\Theta | y) d\Theta,
+ p(y^{\it rep} | y) = \int p(y^{\it rep}, \Theta | y) d\Theta = \int p(y^{\it rep} | \Theta) p(\Theta | y) d\Theta.
 \end{equation*}
 
-\noindent which can be viewed as the likelihood for the new data $y^{\it rep}$ averaged over 
-the posterior distribution for the parameters $\Theta$.\footnote{For instance, if $y$ is an $N$-vector 
-and there are $D$ draws of $\Theta$ from $p(\Theta | y)$, then $D$ replicated data sets $y^{rep}$ 
-will be simulated, each of which is also an $N$-vector.}
+\noindent The posterior predictive distribution can thus be viewed as the likelihood for the new data 
+$p(y^{\it rep} | \Theta)$ averaged over the posterior distribution  $p(\Theta | y)$.\footnote{
+Intuitively, this corresponds to using the information about the parameters $\Theta$ learned from 
+the observed $y$ to generate other plausible $y$'s.}
 
 The twelve histograms in Figure~\ref{fig:ck_pp_hists} (p. \pageref{fig:ck_pp_hists}) show the 
 distribution of the observed data $y$ -- the number of roll-call votes won by the majority party 
 -- alongside eleven replicated data sets $y^{\it rep}$ randomly selected from all of the posterior 
-predictive replications. This is a casual but informative comparison; it is an easy way of checking 
-for inconsistencies due to poor model fit. In this case it shows that indeed the observed data are 
-plausible under the posterior predictive distribution implied by the model. 
+predictive replications.\footnote{For instance, if $y$ is an $N$-vector and there are $D$ draws of 
+$\Theta$ from $p(\Theta | y)$, then $D$ replicated data sets $y^{rep}$ will be simulated, 
+each of which is also an $N$-vector.} This is a casual but informative comparison; it is an easy way 
+of checking for inconsistencies due to poor model fit. In this case it shows that indeed the observed 
+data are plausible under the posterior predictive distribution implied by the model. 
+
 Figure~\ref{fig:ck_pp_test_statistics} (p. \pageref{fig:ck_pp_test_statistics}) shows the distributions 
-of the mean and standard deviation over all replications, which nicely fit the observed values of these 
-statistics in the data. Figure~\ref{fig:ck_pp_nWins_hists} (p. \pageref{fig:ck_pp_nWins_hists}) shows 
-the distribution of $y^{\it rep}$ at the Congress-level. Again it is evident that the observed data are consistent 
-with the posterior predictive distribution. 
-% Should probably do pp checks after aggregating over the sub periods for each congress.  
+of the mean and standard deviation over all replications. These test statistics, denoted $T(y^{\it rep})$, 
+are compared the observed values of the statistic $T(y)$ computed from the data. 
+In this case the observed values are consistent with the posterior predictive simulations.
 
 \begin{figure}[h]
 \centering
@@ -253,15 +254,23 @@ with the posterior predictive distribution.
 
 \begin{figure}[h]
 \centering
-	\includegraphics[scale=0.75]{sections/figs/test_stats_mean}
-	\includegraphics[scale=0.75]{sections/figs/test_stats_sd}
+	\includegraphics[scale=0.7]{sections/figs/test_stats_mean}
+	\includegraphics[scale=0.7]{sections/figs/test_stats_sd}
 \caption{Distributions of test statistics $T(y_{rep})$. The vertical bar is the observed value $T(y)$.}
 \label{fig:ck_pp_test_statistics}
 \end{figure}
 
+
+We can also look at the posterior predictive replications at the level of individual Congresses. 
+Figure~\ref{fig:ck_pp_nWins_hists} (p. \pageref{fig:ck_pp_nWins_hists}) shows 
+the distribution of $y^{\it rep}$ for each of the Congresses (i.e., time periods) in the data. 
+Again it is evident that the observations are consistent with the posterior predictive distribution.
+% Should probably do pp checks after aggregating over the sub periods for each congress.  
+
+
 \begin{figure}
 \centering
-	\includegraphics[scale=0.8]{sections/figs/ck_pp_nWins_hists}
+	\includegraphics[scale=0.7]{sections/figs/ck_pp_nWins_hists}
 \caption{Distributions of $y^{\it rep}$ by Congress. Vertical lines show observed values from the data.}
 \label{fig:ck_pp_nWins_hists}
 \end{figure}
