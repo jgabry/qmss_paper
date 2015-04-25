@@ -1,6 +1,6 @@
 
 
-\chapter[Improper priors]{Appendix A} \label{AppendixA}
+\section[Improper priors]{Improper priors} \label{AppendixA}
 
 The penalty matrix $\mathbf{P}$ corresponding to an undirected $RW_\kappa$ prior over 
 parameter vector $\lambda \in \mathbb{R}^C$ has rank $C - \kappa$ and the resulting 
@@ -26,7 +26,7 @@ in future work to sidestep the matrix singularity problems.
 
 
 \clearpage
-\chapter[Seats-votes curves]{Appendix B}\label{AppendixB}
+\section[Seats-votes curves]{Seats-votes curves}\label{AppendixB}
 
 Seats-votes curves for various values of $\lambda$ (bias) and $\rho$ (responsiveness). 
 In the first plot $\lambda$ is fixed at 0 and the value of $\rho$ varies. In the second plot $\rho$ is fixed at 1 
@@ -41,7 +41,7 @@ and the value of $\lambda$ varies.
 
 
 \clearpage
-\chapter[Parameter estimates]{Appendix C}\label{AppendixC}
+\chapter[Parameter estimates]{Parameter estimates}\label{AppendixC}
 
 Raw estimates from the Bayesian STAR model on the logit scale. The darker ribbons show 50\% posterior 
 intervals and the lighter ribbons are 95\% intervals. The connected points are posterior medians. (Note that the $y$-axis is scaled differently for each plot.) 
@@ -56,7 +56,7 @@ intervals and the lighter ribbons are 95\% intervals. The connected points are p
 
 
 \clearpage
-\chapter[Hamiltonian Monte Carlo]{Appendix D}\label{AppendixD}
+\chapter[Hamiltonian Monte Carlo]{Hamiltonian Monte Carlo}\label{AppendixD}
 
 A simplified version of the Hamiltonian Monte Carlo algorithm used by Stan. 
 
@@ -146,6 +146,34 @@ used by Stan is designed to automatically tune $L$ and $\epsilon$ for each chain
 See \citeA{hoffman_2012} for the technical details and \citeA{stan_development_team_stan_2015} for more 
 on Stan's implementation. 
 
+
+
+
+\clearpage
+\chapter[Different Interpretations]{Different interpretations}\label{AppendixE}
+
+Although Figure~\ref{fig:ck_bias} (p.~~\pageref{fig:ck_bias}) appears to show two versions of the same plot with
+slightly different estimates, Cox and Katz's results -- obtained by maximum likelihood estimation --
+and the results from the Bayesian model must be interpreted differently. The former are point estimates 
+and confidence intervals, whereas the full Bayesian model provides an estimate of the marginal posterior 
+{\it distribution} for each parameter. That is, the estimates obtained from the Bayesian model are the 
+distributions themselves, which are representations of our uncertainty about the parameters 
+given the data. 
+
+The methods used by Cox and Katz come from the classical approach where a single point 
+estimate is obtained for each parameter and assessed in relation to infinitely many intervals 
+constructed from datasets obtained from hypothetical, endless repeated sampling. While in many 
+situations it is natural to imagine repeating an experiment (e.g. coin flipping) or resampling from 
+a population, such an interpretation makes less sense in the context of the historical 
+events of interest to this analysis. For each confidence interval obtained from Cox and Katz's analysis, 
+what can be said is that it either contains the (theoretical) true parameter value or it does not. This is 
+a consequence of accepting (explicitly or implicitly) the classical position that the parameter is fixed 
+while the data and confidence interval bounds are random variables. 
+
+On the contrary, from the Bayesian perspective the parameter is treated as a random variable while 
+the data and interval bounds are fixed. As a result, any so-called credible intervals computed from the 
+posterior distribution have a more intuitive interpretation: the probability that the true parameter value lies 
+in the $p\%$ interval  -- conditional on the model and data -- is $p$. 
 
 
 

@@ -22,7 +22,14 @@ warmup. This is due in large part to the advantages of HMC discussed in \ref{sta
 particular the suppression of random walk behavior leading to more efficient exploration
 of the parameter space.} 
 
-\begin{figure}[t]
+In Figure~\ref{fig:ck_diagnostics}, panel ({\bf a}) shows the distribution of the estimates of 
+the potential scale reduction statistic $\hat{R}$  \shortcite{gelman_rhat_1992}. The $\hat{R}$ 
+statistic is a comparison of the variance of the simulations within individual chains to that of 
+the simulations when chains are pooled. Here, the distribution of $\hat{R}$ shows that for 
+all parameters the value is approximately one, indicating that little would be gained by running 
+longer chains \shortcite{gelman_handbook_2011}. 
+
+\begin{figure}
 \centering
 	\includegraphics[scale=0.7]{sections/figs/rhat}
 	\includegraphics[scale=0.7]{sections/figs/neff}
@@ -33,13 +40,6 @@ Ratio of effective sample size to total sample size ($n_{\it eff}/N$) \newline (
 Monte Carlo error to posterior standard deviation ($mcse/sd$)}
 \label{fig:ck_diagnostics}
 \end{figure}
-
-In Figure~\ref{fig:ck_diagnostics}, panel ({\bf a}) shows the distribution of the estimates of 
-the potential scale reduction statistic $\hat{R}$  \shortcite{gelman_rhat_1992}. The $\hat{R}$ 
-statistic is a comparison of the variance of the simulations within individual chains to that of 
-the simulations when chains are pooled. Here, the distribution of $\hat{R}$ shows that for 
-all parameters the value is approximately one, indicating that little would be gained by running 
-longer chains \shortcite{gelman_handbook_2011}. 
 
 Panel ({\bf b}) shows the distribution of the ratio of effective sample size to the number of 
 iterations ($n_{\it eff}/N$). Roughly speaking, $n_{\it eff}$ is an estimate of the number of 
@@ -57,7 +57,9 @@ the posterior distribution by the MCMC simulations. As the number of iterations 
 $mcse$ tends toward zero and the standard deviation of the draws converges to the posterior 
 standard deviation. In this case, for all parameters 
 the relative error $mcse/sd$ is less than five percent, which, for the inferential goals of this 
-analysis, is negligible. For instance, Figure~\ref{fig:ck_example_posterior} shows the estimated 
+analysis, is negligible. 
+
+For instance, Figure~\ref{fig:ck_example_posterior} shows the estimated 
 posterior density for the parameter corresponding to bias towards the majority party in the 79th 
 congress.\footnote{There is nothing special about the 79th congress for this purpose. A single 
 congress was chosen at random to use as an example.} The posterior is approximately Gaussian, 
@@ -235,10 +237,8 @@ for inconsistencies due to poor model fit. In this case it shows that indeed the
 plausible under the posterior predictive distribution implied by the model. 
 Figure~\ref{fig:ck_pp_test_statistics} (p. \pageref{fig:ck_pp_test_statistics}) shows the distributions 
 of the mean and standard deviation over all replications, which nicely fit the observed values of these 
-statistics in the data. 
-
-In Figure~\ref{fig:ck_pp_nWins_hists} (p. \pageref{fig:ck_pp_nWins_hists}) shows the distribution 
-of $y^{\it rep}$ at the Congress-level. Again it is evident that the observed data are consistent 
+statistics in the data. Figure~\ref{fig:ck_pp_nWins_hists} (p. \pageref{fig:ck_pp_nWins_hists}) shows 
+the distribution of $y^{\it rep}$ at the Congress-level. Again it is evident that the observed data are consistent 
 with the posterior predictive distribution. 
 % Should probably do pp checks after aggregating over the sub periods for each congress.  
 

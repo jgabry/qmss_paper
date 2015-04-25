@@ -160,13 +160,15 @@ xrightmargin=2em
 
 
 \begin{document}
-\pagenumbering{roman} 
+%\pagenumbering{roman} 
+
 
 \titleGM % This command includes the title page
 
 \thispagestyle{empty}
 \clearpage
 
+\frontmatter
 
 \begin{abstract}
 %\singlespacing
@@ -221,8 +223,10 @@ Raya, Amelia and Silvia. \\
 \tableofcontents
 }
 \clearpage
-\pagenumbering{arabic}
-\setcounter{page}{1}
+%\pagenumbering{arabic}
+%\setcounter{page}{1}
+
+\mainmatter
 
 \input{sections/introduction}
 \input{sections/lit_review}
@@ -231,7 +235,6 @@ Raya, Amelia and Silvia. \\
 \input{sections/ck_stats}
 \input{sections/ck_stan}
 \input{sections/ck_results}
-\input{sections/ck_discussion}
 \input{sections/conclusion}
 %\include{sections/farhang_katznelson}
 
@@ -248,8 +251,9 @@ Raya, Amelia and Silvia. \\
 %     \addcontentsline{toc}{chapter}{References}
 \endgroup
 
-
+\backmatter
 \begin{appendices}
+\noappendicestocpagenum
 \input{sections/appendices}
 \end{appendices}
 
