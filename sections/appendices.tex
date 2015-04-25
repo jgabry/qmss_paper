@@ -1,5 +1,6 @@
 
 
+\renewcommand\thesection{\Alph{section}}
 \section[Improper priors]{Improper priors} \label{AppendixA}
 
 The penalty matrix $\mathbf{P}$ corresponding to an undirected $RW_\kappa$ prior over 
@@ -41,10 +42,12 @@ and the value of $\lambda$ varies.
 
 
 \clearpage
-\chapter[Parameter estimates]{Parameter estimates}\label{AppendixC}
+\section[Parameter estimates]{Parameter estimates}\label{AppendixC}
 
-Raw estimates from the Bayesian STAR model on the logit scale. The darker ribbons show 50\% posterior 
-intervals and the lighter ribbons are 95\% intervals. The connected points are posterior medians. (Note that the $y$-axis is scaled differently for each plot.) 
+Estimates (on the logit scale) of $\lambda$ and $\rho$ from the Bayesian STAR model. 
+The darker ribbons show 50\% posterior intervals and the lighter ribbons are 95\% intervals. 
+The connected points are posterior medians. 
+(Note that the $y$-axis is scaled differently for each parameter.) 
 
 \vspace{.5cm}
 
@@ -56,7 +59,7 @@ intervals and the lighter ribbons are 95\% intervals. The connected points are p
 
 
 \clearpage
-\chapter[Hamiltonian Monte Carlo]{Hamiltonian Monte Carlo}\label{AppendixD}
+\section[Hamiltonian Monte Carlo]{Hamiltonian Monte Carlo}\label{AppendixD}
 
 A simplified version of the Hamiltonian Monte Carlo algorithm used by Stan. 
 
@@ -150,7 +153,7 @@ on Stan's implementation.
 
 
 \clearpage
-\chapter[Different Interpretations]{Different interpretations}\label{AppendixE}
+\section[Different Interpretations]{Different interpretations}\label{AppendixE}
 
 Although Figure~\ref{fig:ck_bias} (p.~~\pageref{fig:ck_bias}) appears to show two versions of the same plot with
 slightly different estimates, Cox and Katz's results -- obtained by maximum likelihood estimation --

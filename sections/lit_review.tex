@@ -72,7 +72,7 @@ The hierarchical model
 \end{align*}
 
 \noindent is what \citeA{gelman_arm_2007} refer to as a {\it varying-intercept}, 
-{\it varying-slope model}. That is, both the intercepts and the slopes -- the effects associated with the variable $x$-- vary by group (region, in this example) and are given probability models which depend on further levels of parameters (the hyperparameters). 
+{\it varying-slope} model. That is, both the intercepts and the slopes -- the effects associated with the variable $x$-- vary by group (region, in this example) and are given probability models conditional on a further level of parameters called hyperparameters. 
 
 The model above estimates $R$ intercepts ($\alpha_1, \dots, \alpha_R$) and $R$ slopes 
 ($\beta_1, \dots, \beta_R$). The hyperparameters
@@ -89,27 +89,22 @@ parameter is informed not only by the group-specific information contained in th
 by the data for other groups as well.\footnote{
 The assumption of exchangeability is important here, but a sufficient discussion of exchangeability 
 is beyond the scope of this thesis. See \citeA{gelman_bayesian_2013}.} This is commonly referred 
-to as {\it borrowing strength} or {\it shrinkage}. In the example above, for instance, the 
+to as borrowing strength or shrinkage. In the example above, for instance, the 
 estimates for each $\alpha_r$ are informed not only by the data from region $r$ but 
 also by the observations from all other regions through the common hyperparameters.\footnote{
 In other words, the population-level hyperparameters are estimated from the data for all groups 
 and used to estimate the group-specific parameters $\alpha_r$ and $\beta_r$.} This describes
 the general way in which the levels in a hierarchical model are connected in the data. The unit (individual) level 
 observations are the points from which the higher-level group distributions are estimated. That is, {\it strength} is 
-borrowed from all groups when estimating the parameter(s) corresponding to each individual group. As a 
-consequence the  estimates for the group-level parameters are {\it shrunk} toward each other, 
-with the amount of shrinkage depending on how far each is from the overall mean \shortcite{jackman_bayesian_2009, lipsky_shrinkage_2010}.\footnote{The term
-{\it shrinkage} is a bit of a misnomer. The values of the parameters themselves are not necessarily smaller, 
-but rather the distance from the common mean is smaller.}
+{\it borrowed} from all groups when estimating the parameter(s) corresponding to each individual group. As a 
+consequence the estimates for the group-level parameters {\it shrink} toward their common mean, 
+with the amount of shrinkage a function of the distance from that mean 
+\shortcite{jackman_bayesian_2009, lipsky_shrinkage_2010}.
 
-The term {\it hierarchical} is a suitable designation for a wide (theoretically unlimited) family of 
-models, from the simple example above to the semi-parameteric STAR models used by Wawro 
-and Katznelson and in this thesis. See \citeA{lipsky_shrinkage_2010} for an excellent introduction to shrinkage 
-in multilevel modeling, and \citeA{gelman_arm_2007} and \citeA{jackman_bayesian_2009} for more thorough and formal treatments of hierarchical modeling. 
-
-
-
-
+The term {\it hierarchical} is a suitable designation for a diverse family of 
+models. See \citeA{gelman_arm_2007} and \citeA{jackman_bayesian_2009} for more 
+thorough and formal treatments of hierarchical modeling. Also see \citeA{lipsky_shrinkage_2010} 
+for an intuitive explanation of shrinkage in multilevel models.
 
 
 
@@ -126,7 +121,7 @@ fields including all of the social sciences. This is because GMRFs are  multivar
 It is the particular use advocated by Wawro and Katznelson that is unfamiliar in the social sciences.} 
 Before defining GMRFs it is first necessary to introduce some concepts from graph theory, particularly undirected graphs. 
 
-\subsection{Undirected graphs}
+\subsection{Preliminaries (undirected graphs)}
 \label{undirected_graphs}
 
 An undirected graph $\mathbf{G} = (V,E)$ is simply an ordered pair of sets containing the 
@@ -142,9 +137,10 @@ containing the neighborhoods for all nodes in $\mathbf{G}$.\footnote{$ \partial^
 \{\nu_{i \neq j} \in V \,\vert\, \bar{e}_{ij} \in E\}$ and $\partial^\mathbf{G} = \{\partial^\mathbf{G}_j \,
 \vert\, \nu_j \in V\}$.} For example, in Figure~\ref{fig:undirected_graphs}, 
 $\partial^{\mtrx{A}}_1 = \{\nu_2, \nu_6\}$ and $\partial^{\mathbf{B}}_1 = \{\nu_2, \nu_3\}$. 
-In \textsc{graph $\mtrx{C}$}, the node $v_{11}$ and its neighborhood $\partial^\mtrx{C}_{11}$ are
-highlighted. For a more comprehensive discussion of undirected graphs in the context of GMRFs 
-see \citeA{rue_gaussian_2005}. 
+Also in Figure~\ref{fig:undirected_graphs}, the node $\nu_{11}$ and its neighborhood 
+$\partial^\mtrx{G}_{11}$ are highlighted in \textsc{graph $\mtrx{C}$}. 
+For a more comprehensive treatment of undirected graphs in the context of GMRFs see 
+\citeA{rue_gaussian_2005}. 
 
 \begin{figure}[htb]
 \vspace{1cm}
@@ -216,7 +212,9 @@ see \citeA{rue_gaussian_2005}.
 
 \end{tikzpicture}
 \vspace{.5cm}
-\caption{Examples of simple undirected graphs. In \textsc{graph A} each node has two neighbors. In \textsc{graph B} node $\nu_4$ has only a single neighbor while the others each have two neighbors. In \textsc{graph C} the node $\nu_{11}$ and its neighborhood $\partial^\mtrx{G}_{11}$ are highlighted.}
+\caption{Examples of simple undirected graphs. In \textsc{graph A} each node has two neighbors. 
+In \textsc{graph B} node $\nu_4$ has only a single neighbor while the others each have two neighbors. 
+In \textsc{graph C} the node $\nu_{11}$ and its neighborhood $\partial^\mtrx{G}_{11}$ are highlighted.}
 \label{fig:undirected_graphs}
 \end{figure}
 
@@ -224,7 +222,8 @@ see \citeA{rue_gaussian_2005}.
 
 
 
-\subsection{GMRFs}
+\subsection{Definition}
+
 Let $\theta \in \mathbb{R}^D$ have a multivariate normal distribution with probability 
 density $p(\theta | \mu, \boldsymbol{\Sigma}) = \mathcal{N}_D (\theta | \mu, \boldsymbol{\Sigma})$. 
 The random vector $\theta$ is said to form a GMRF with respect to the graph $\mathbf{G} = (V,E)$ if 
@@ -256,6 +255,8 @@ $\theta_i$. For $i \neq j$ (the off-diagonal), $q_{ij}  = -Cov(\theta_i, \theta_
 
 \section{Bayesian STAR models}
 \label{star}
+
+\subsection{Definition}
 
 The structured additive regression (STAR) model replaces the linear predictor of the generalized linear 
 model (GLM) with a semiparametric structured additive predictor

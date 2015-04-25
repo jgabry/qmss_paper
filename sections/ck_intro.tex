@@ -1,7 +1,9 @@
-\chapter[Empirical example: Bias and Responsiveness in Congressional Roll-Call Votes]{Empirical example \\[-30pt]\large Bias and responsiveness in congressional roll-call votes}
+\chapter[Empirical example: Bias and Responsiveness in Congressional Roll-Call Votes]{Empirical example \\[-20pt]\large Bias and responsiveness in congressional roll-call votes}
 \label{cox_katz}
 
-{\Large }
+\vspace{-1cm}
+\section{Background}
+\label{ck_background}
 
 To demonstrate the benefits of the kinds of methods proposed by \citeA{wawro_designing_2014}, 
 we conduct a reanalysis of \citeA{cox_gerrymandering_2007}, a study of bias and responsiveness 
@@ -12,7 +14,8 @@ in the efficiency with which its votes translate into legislative victories. For
 a majority party with only a small advantage in the number of seats its members occupy. If the 
 majority is well-organized and unified it may win a much larger proportion of votes than its slim 
 seat advantage would typically suggest. Responsiveness is defined as the degree to which the 
-majority party's rate of roll-call victories is sensitive to variations in its mean vote share. \shortcite{cox_gerrymandering_2007}. 
+majority party's rate of roll-call victories is sensitive to variations in its mean vote share 
+\shortcite{cox_gerrymandering_2007}. 
 
 Cox and Katz hypothesize and find evidence of persistent bias towards the majority party during 
 the periods from 1889-1910 and 1961-2000, known as the period of ``czar rule" and the post-packing 
@@ -23,6 +26,13 @@ much more than the single analysis discussed in this thesis. The use of Cox and 
 is not intended to single it out for criticism. It simply happens to be a good candidate for applying the 
 approach advocated by Wawro and Katznelson.} 
 
+The rest of Part~\ref{cox_katz} is organized as follows. First, the data is described and visualized 
+in \ref{ckdata}. Section~\ref{ck_stats} begins with a description of Cox and Katz's methods of analysis 
+and proposes an alternative analysis using the Bayesian STAR models reviewed in Part~\ref{lit_review}. 
+The second half of \ref{ck_stats} is dedicated to introducing the Stan language and C++ library for 
+probabilistic programming used to estimate the model. Finally, in \ref{results_convergence_checking}  
+Cox and Katz's results are compared to the results from the Bayesian analysis and the fit of the STAR model
+to the data is assessed graphically.  
 
 
 
