@@ -38,33 +38,151 @@ by maximum likelihood methods.
 \section{Hierarchical Bayesian models}
 \label{hierarchical}
 
+%\begin{figure}
+%\begin{align*}
+%y_n &\sim \mathcal{N}(\theta_{j[n]}, \sigma^2_{j[n]}), \quad \text{for } n = 1, \dots, N \\
+%\theta_j &\sim \mathcal{N}(\mu, \tau^2), \quad \text{for } j = 1, \dots, J \\
+%(\mu, \tau^2) &\sim p(\mu, \tau^2)
+%\end{align*}
+%\caption{Example of a simple hierarchical model.}
+%\end{figure}
+%
+%\begin{figure}
+%%\begin{tikzpicture}
+%%\node[const] (y1) {$y_1, y_2, y_3$};
+%%\node[const, below=of y1] (theta1) {$\theta_1$};
+%%\node[const, right=of y1] (y2) {$y_4, y_5, y_6$};
+%%\node[const, below=of y2] (theta2) {$\theta_2$};
+%%\node[const, right=of y2] (ydots) {$\dots$};
+%%\node[const, below=of ydots] (thetadots) {$\dots$};
+%%\node[latent, right=of ydots] (yN1) {$y_{N-5}, y_{N-4}, y_{N-3}$};
+%%\node[const, below=of yN1] (thetaJ1) {$\theta_{J-1}$};
+%%\node[const, right=of yN1] (yN) {$y_{N-2}, y_{N-1}, y_N$};
+%%\node[const, below=of yN] (thetaJ) {$\theta_J$};
+%%\node[const, below=of thetadots] (mu) {$\mu, \tau^2$};
+%%%\node[const, right =of mu] (tau) {$\tau^2$};
+%%\factoredge [->, color=black] {theta1} {y1} ;
+%%\edge [->, color=black]  {thetaJ} {yN};
+%%\edge [->, color=black] {theta2} {y2} ;
+%%\edge [->, color=black]  {thetaJ1} {yN1};
+%%\edge [->, color=black] {thetadots} {ydots} ;
+%%\edge [->, color=black] {mu} {theta1} ;
+%%\edge [->, color=black] {mu} {theta2} ;
+%%\edge [->, color=black] {mu} {thetaJ1} ;
+%%\edge [->, color=black] {mu} {thetaJ} ;
+%%\edge [->, color=black] {mu} {thetadots} ;
+%%\end{tikzpicture}
+%\begin{forest}
+%for tree={
+%  edge={->,>=latex},
+%  parent anchor=south,
+%  child anchor=north,
+%  content format={\ensuremath{\forestoption{content}}},
+%  }
+%[{\mu,\tau^{2}},name=level0
+%  [\theta_{1},name=level1
+%    [\{y_{i} : {j[i] = 1}\},name=level2]
+%  ]
+%  [\theta_{2}
+%    [\{y_{i} : {j[i] = 2}\}]
+%  ]
+%  [\cdots
+%    [\cdots]
+%  ]
+%  [\theta_{J}
+%    [\{y_{i} : {j[i] = J}\}]
+%  ]
+%]
+%%\foreach \Name/\Label in {level2/parameters,level1/observations,level0/model}
+%%  \node[anchor=east] at ([xshift=-30pt]\Name) {\Label};   
+%\end{forest}
+%\end{figure}
+
+%CREATE FIGURE SHOWING HIERARCHY with ys on top with each connected below to a theta, and then all thetas connected to mu and tau below%
+
 One of the many challenges of fitting models to data comprising multiple groupings is 
 confronting the tradeoff between bias and variance. An analysis that disregards between-group 
 heterogeneity can yield parameter estimates with low variance but high bias. Group-by-group 
 analyses, on the other hand, can reduce bias at the expense of high-variance estimates \shortcite{jackman_bayesian_2009}. While complete pooling or no pooling of data across 
 groups is sometimes called for, nonhierarchical models for hierarchical data tend to underfit 
-or overfit the data \shortcite{gelman_bayesian_2013}. Hierarchical (or multilevel) modeling provides a 
+or overfit the data \shortcite{gelman_bayesian_2013}. Hierarchical modeling provides a 
 compromise by allowing parameters to vary by group at lower levels of the hierarchy while 
 estimating population-level parameters at higher levels. 
 
-For example, consider the simple scenario in which survey respondents from many different
+A simple hierarchical model for data $y = (y_1, \dots, y_N)$ organizes the observations into $J \leq N$ groups, 
+with group-level parameters $\theta = (\theta_1, \dots, \theta_J)$ and global parameter(s) $\phi$ 
+(see Figure~\ref{fig:hierarchical_model}) and can be written
+
+\begin{align*}
+y_n &\sim p(y_n | \theta_{j[n]}) \\
+\theta_j &\sim p(\theta_j | \phi) \\
+\phi &\sim p(\phi).
+\end{align*}
+
+\noindent Observations are assumed to be conditionally independent given the group-level parameters, and the group-level parameters conditionally independent given the global parameters.\footnote{
+The assumption of exchangeability is also important here, but a sufficient discussion of exchangeability 
+is beyond the scope of this thesis. See \citeA{gelman_bayesian_2013}.} The joint posterior distribution for all parameters then factors nicely as
+
+\begin{equation*}
+ p(\theta, \phi | y) \propto p(\phi) \prod_{j=1}^J p(\theta_j | \phi) \prod_{n=1}^N p(y_n | \theta_{j[n]}). 
+\end{equation*} 
+
+\begin{figure}
+\centering
+\begin{forest}
+for tree={
+  edge={->,>=latex},
+  parent anchor=south,
+  child anchor=north,
+  content format={\ensuremath{\forestoption{content}}},
+  }
+[{\phi},name=level0
+  [\theta_{1},name=level1
+    [\{y_{n} : {j[n] = 1}\},name=level2]
+  ]
+  [\theta_{2}
+    [\{y_{n} : {j[n] = 2}\}]
+  ]
+  [\cdots
+    [\cdots]
+  ]
+  [\theta_{J}
+    [\{y_{n} : {j[n] = J}\}]
+  ]
+]
+%\foreach \Name/\Label in {level2/$p(y_{n}|\theta_{j[n]})$,level1/$p(\theta_j|\phi)$,level0/$p(\phi)$}
+%  \node[anchor=west] at ([xshift=60pt]\Name) {\Label};   
+\end{forest}
+\caption{A simple hierarchical structure with $N$ observations $y_1, \dots, y_N$ organized in to $J$ groups, with group-level parameters $\theta_1, \dots, \theta_J$ and global parameter (hyperparameter)  $\phi$.}
+\label{fig:hierarchical_model} 
+\end{figure}
+
+
+
+%parameters $\theta_1
+%Hierarchical models [1] are defined by the organization of a model?s parameters into exchangeable groups, and the resulting conditional independencies between those groups. simple hierarchical model 
+
+The term {\it hierarchical} is a suitable designation for a diverse family of 
+models. When parameters are grouped into multiple different hierarchical structures it is common to 
+refer to the resulting models as {\it multilevel models} \shortcite{gelman_arm_2007}.  For example, 
+consider the simple scenario in which survey respondents from many different
 geographic regions are asked if they are in favor of a particular policy $P$. One approach for estimating
 the level of underlying support for the policy in each region $r = 1, 2, \dots, R$ would be to estimate separate
 models for the $R$ regions. However, such an approach would ignore the relationship between
 support for $P$ across regions, which should be incorporated into the joint probability model. In 
 the United States, for example, estimating separate models would impose the assumption that
-support for $P$ in, say, New England is entirely uninformative about support for $X$ in all 
+support for $P$ in, say, New England is entirely uninformative about support for $P$ in all 
 other regions of the country. A hierarchical framework allows for a more realistic model in which 
 support for $P$ can vary across regions without disregarding interregional dependence.      
 
-For the $n$th observation, let $r[n]$ denote the respondent's region and $\theta_n = P(y_n = 1)$ the probability
-the respondent expresses support for policy $P$. For simplicity, assume that there is a single individual-level 
-predictor $x$ (e.g. income) and a single region-level predictor $w$ (e.g. average income). 
-The hierarchical model
+For the $n$th observation, let $r[n]$ denote the respondent's region and $p_n = {\rm Pr}(y_n = 1)$ 
+be the probability the respondent expresses support for policy $P$. For simplicity, assume that there 
+is a single individual-level predictor $x$ (e.g. income) and a single region-level predictor $w$ 
+(e.g. average income). The hierarchical (multilevel) model
 
 %
 \begin{align*}
-\theta_n &= {\rm logit}^{-1}\left(\alpha_{r[n]} + \beta_{r[n]} x_n\right), \quad \text{for } n = 1, \dots, N \\[5pt]
+p_n &= {\rm logit}^{-1}\left(\alpha_{r[n]} + \beta_{r[n]} x_n\right), \quad \text{for } n = 1, \dots, N \\[5pt]
  \alpha_r &= \gamma^\alpha_0 + \gamma^\alpha_1 w_r + \epsilon^\alpha_r, \quad \text{ for } r = 1, \dots, R \\[5pt]
   \beta_r &= \gamma^\beta_0 + \gamma^\beta_1 w_r + \epsilon^\beta_r, \qquad\qquad \vdots  \\[5pt]
    \epsilon^\alpha_r &\sim \mathcal{N}(0, \tau^2_\alpha), \\[5pt]
@@ -81,19 +199,18 @@ are also estimated from the data and thus require prior distributions (hyperprio
 Typically a parameter representing the correlation between the error terms 
 $\epsilon_r^\alpha$ and $\epsilon_r^\beta$ is also estimated.} In theory there is no limit to the number 
 of levels in the hierarchy -- if the parameters of the hyperpriors are not fixed then they too must 
-be modeled -- however, in practice the data are informative only up to a point (and there are 
-computational considerations as well). 
+be modeled. In practice, the appropriate depth of the hierarchy depends on both the hierarchical 
+structures present in the data as well as computational considerations \shortcite{gelman_bayesian_2013}. 
 
 Perhaps the most important feature of hierarchical models is that inference for each group-level 
 parameter is informed not only by the group-specific information contained in the data but also 
-by the data for other groups as well.\footnote{
-The assumption of exchangeability is important here, but a sufficient discussion of exchangeability 
-is beyond the scope of this thesis. See \citeA{gelman_bayesian_2013}.} This is commonly referred 
-to as borrowing strength or shrinkage. In the example above, for instance, the 
-estimates for each $\alpha_r$ are informed not only by the data from region $r$ but 
-also by the observations from all other regions through the common hyperparameters.\footnote{
-In other words, the population-level hyperparameters are estimated from the data for all groups 
-and used to estimate the group-specific parameters $\alpha_r$ and $\beta_r$.} This describes
+by the data for other groups as well. This is commonly referred to as borrowing strength or shrinkage. 
+
+In the first example above, inference for $\theta_j$ is directly informed by the observations in
+group $j$ but also indirectly by the observations from all other groups due to the common dependence
+on the global parameter $\phi$. In the survey example, the 
+estimates for each $\alpha_r$, for instance, are informed not only by the data from region $r$ but 
+also by the observations from all other regions through the common hyperparameters. This describes
 the general way in which the levels in a hierarchical model are connected in the data. The unit (individual) level 
 observations are the points from which the higher-level group distributions are estimated. That is, {\it strength} is 
 {\it borrowed} from all groups when estimating the parameter(s) corresponding to each individual group. As a 
@@ -101,8 +218,7 @@ consequence the estimates for the group-level parameters {\it shrink} toward the
 with the amount of shrinkage a function of the distance from that mean 
 \shortcite{jackman_bayesian_2009, lipsky_shrinkage_2010}.
 
-The term {\it hierarchical} is a suitable designation for a diverse family of 
-models. See \citeA{gelman_arm_2007} and \citeA{jackman_bayesian_2009} for more 
+See \citeA{gelman_arm_2007} and \citeA{jackman_bayesian_2009} for more 
 thorough and formal treatments of hierarchical modeling. Also see \citeA{lipsky_shrinkage_2010} 
 for an intuitive explanation of shrinkage in multilevel models.
 

@@ -182,15 +182,6 @@ $t$ being reused in up to six of the 60 models besides the model for Congress $t
 entails the exclusion of all data from Congresses outside each window. Furthermore, the 
 choice of using rolling windows of seven Congresses ($t \pm 3$) is somewhat arbitrary. 
 
-The curves in Figure~\ref{fig:ck_hypothetical} (p.~\pageref{fig:ck_hypothetical}) show the 
-results Cox and Katz would have found had they chosen narrower or wider windows. As the 
-set of Congresses included in each model grows, the resulting curve necessarily becomes 
-smoother because Cox and Katz's method is less and less distinguishable from simply 
-estimating a common bias parameter for all Congresses (that is, assuming no variation in 
-bias over time). Conversely, the single Bayesian model allows for bias in each Congress to 
-depend on neighboring Congresses while using the entire dataset only once, obviating the 
-need to dubiously subset the data. 
-
 \begin{figure}
 \centering
 \includegraphics[scale=0.75]{sections/figs/ck_hypothetical}
@@ -204,6 +195,17 @@ pooling the data from all Congresses. Error bars are excluded so that difference
 smoothness of the curves are more perceptible.}
 \label{fig:ck_hypothetical}
 \end{figure}
+
+
+The curves in Figure~\ref{fig:ck_hypothetical} (p.~\pageref{fig:ck_hypothetical}) show the 
+results Cox and Katz would have found had they chosen narrower or wider windows. As the 
+set of Congresses included in each model grows, the resulting curve necessarily becomes 
+smoother because Cox and Katz's method is less and less distinguishable from simply 
+estimating a common bias parameter for all Congresses (that is, assuming no variation in 
+bias over time). Conversely, the single Bayesian model allows for bias in each Congress to 
+depend on neighboring Congresses while using the entire dataset only once, obviating the 
+need to dubiously subset the data. 
+
 
 
 
@@ -227,30 +229,33 @@ of data $y^{\it rep} $ is simulated from the posterior predictive distribution
 \end{equation*}
 
 \noindent The posterior predictive distribution can thus be viewed as the likelihood for the new data 
-$p(y^{\it rep} | \Theta)$ averaged over the posterior distribution  $p(\Theta | y)$.\footnote{
+$y^{\it rep}$ averaged over the posterior distribution  $p(\Theta | y)$.\footnote{
 Intuitively, this corresponds to using the information about the parameters $\Theta$ learned from 
 the observed $y$ to generate other plausible $y$'s.}
 
-The twelve histograms in Figure~\ref{fig:ck_pp_hists} (p. \pageref{fig:ck_pp_hists}) show the 
+The histograms in Figure~\ref{fig:ck_pp_hists} (p. \pageref{fig:ck_pp_hists}) show the 
 distribution of the observed data $y$ -- the number of roll-call votes won by the majority party 
--- alongside eleven replicated data sets $y^{\it rep}$ randomly selected from all of the posterior 
-predictive replications.\footnote{For instance, if $y$ is an $N$-vector and there are $D$ draws of 
+-- alongside a selection replicated data sets $y^{\it rep}$ randomly chosen from all of the posterior 
+predictive replications.\footnote{If $y$ is an $N$-vector and there are $D$ draws of 
 $\Theta$ from $p(\Theta | y)$, then $D$ replicated data sets $y^{rep}$ will be simulated, 
-each of which is also an $N$-vector.} This is a casual but informative comparison; it is an easy way 
+each of which is also an $N$-vector. Figure~\ref{fig:ck_pp_hists} shows the distribution of $y$ and the
+distributions of 15 of the $D$ replications.} This is a casual but informative comparison; it is an easy way 
 of checking for inconsistencies due to poor model fit. In this case it shows that indeed the observed 
 data are plausible under the posterior predictive distribution implied by the model. 
+
+
+\begin{figure}[h]
+\centering
+	\includegraphics[scale=0.7]{sections/figs/ck_pp_y_vs_yrep_new}
+\caption{Replications from posterior predictive distribution vs. observed data}
+\label{fig:ck_pp_hists}
+\end{figure}
+
 
 Figure~\ref{fig:ck_pp_test_statistics} (p. \pageref{fig:ck_pp_test_statistics}) shows the distributions 
 of the mean and standard deviation over all replications. These test statistics, denoted $T(y^{\it rep})$, 
 are compared the observed values of the statistic $T(y)$ computed from the data. 
 In this case the observed values are consistent with the posterior predictive simulations.
-
-\begin{figure}[h]
-\centering
-	\includegraphics[scale=0.6]{sections/figs/ck_pp_y_vs_yrep_hists}
-\caption{Replications from posterior predictive distribution vs. observed data}
-\label{fig:ck_pp_hists}
-\end{figure}
 
 \begin{figure}[h]
 \centering
@@ -261,16 +266,15 @@ In this case the observed values are consistent with the posterior predictive si
 \end{figure}
 
 
-We can also look at the posterior predictive replications at the level of individual Congresses. 
+We should also look at the posterior predictive replications at the level of individual Congresses. 
 Figure~\ref{fig:ck_pp_nWins_hists} (p. \pageref{fig:ck_pp_nWins_hists}) shows 
 the distribution of $y^{\it rep}$ for each of the Congresses (i.e., time periods) in the data. 
-Again it is evident that the observations are consistent with the posterior predictive distribution.
+Again, it is evident that the observations are consistent with the posterior predictive distribution.
 % Should probably do pp checks after aggregating over the sub periods for each congress.  
-
 
 \begin{figure}
 \centering
-	\includegraphics[scale=0.7]{sections/figs/ck_pp_nWins_hists}
+	\includegraphics[scale=0.55]{sections/figs/ck_pp_by_cong}
 \caption{Distributions of $y^{\it rep}$ by Congress. Vertical lines show observed values from the data.}
 \label{fig:ck_pp_nWins_hists}
 \end{figure}
