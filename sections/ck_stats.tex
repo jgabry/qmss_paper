@@ -59,11 +59,7 @@ $t > C- 3$, but the idea is the same regardless of the exact number.}
 The alternative analysis presented below overcomes both of these concerns by employing 
 a hierarchical Bayesian framework which takes advantage of partial pooling. Following Cox 
 and Katz, a BetaBinomial likelihood is used, however the linear predictor is replaced by the 
-structured additive predictor $\eta$. The data model with logit link function is 
-
-$$y_t | n_t, \alpha_t, \beta_t \sim {\rm Beta\text{-}Binomial}(n_t, \alpha_t, \beta_t),$$
-$$ \alpha_t = \theta_t \phi, \qquad \beta_t = \theta_t (1 - \phi),$$
-$$ \log\left({\frac{\theta_t}{1 - \theta_t}}\right) = \eta_t = f_{\lambda}(\lambda_t) + f_\rho \left(\log{(v_t^{Ratio})}\right).$$
+structured additive predictor $\eta$. 
 
 The ${\rm Beta\text{-}Binomial}(n,\alpha,\beta)$ distribution can be thought of as a compound 
 distribution resulting from a ${\rm Binomial}(n,p)$ distribution where $p \sim {\rm Beta}(\alpha,\beta)$. 
@@ -72,10 +68,17 @@ binomial model would suffice -- the beta-binomial distribution treats the underl
 as a random variable. The parameters $\alpha > 0$ and $\beta > 0$ govern the shape of the beta distribution, 
 however it is both more intuitive and computationally attractive to reparameterize in terms of the 
 mean $\theta = \alpha / (\alpha + \beta)$, which requires introducing an auxiliary parameter 
-$\phi = \alpha + \beta$. This parameterization allows for modeling ${\rm logit}(\theta)$ by the semi-parametric structured additive predictor $\eta$ of the STAR model. 
+$\phi = \alpha + \beta$. 
 
-The hierarchical Bayesian STAR model entails estimating the unknown functions $f_\lambda$ and 
-$f_\rho$. As discussed in \ref{star}, the vectors of function evaluations are the products 
+This parameterization allows for modeling ${\rm logit}(\theta)$ by the semi-parametric structured 
+additive predictor $\eta$ of the STAR model, which can be written in vector/matrix notation 
+as 
+
+\begin{equation*}
+ \eta = f_\lambda(\lambda) +  f_\rho(\log{(v^{Ratio})}). 
+\end{equation*}
+
+\noindent As discussed in \ref{star}, the vectors of function evaluations are expressed as the products 
 
 \begin{equation*}
 \mathbf{f}^{eval}_\lambda = \mtrx{M}_\lambda \lambda, 
@@ -84,13 +87,9 @@ $f_\rho$. As discussed in \ref{star}, the vectors of function evaluations are th
 \end{equation*}
 %
 \noindent of the parameter vectors $\lambda \in \mathbb{R}^C$ and $\rho \in \mathbb{R}^C$ 
-premultiplied by the  $N \times C$ design matrices  $\mathbf{M}_\lambda$ and  $\mathbf{M}_\rho$, 
-where $N$ is the number of observations. The predictor $\eta$ can be written compactly in 
-vector/matrix notation as 
+premultiplied by the $N \times C$ design matrices  $\mathbf{M}_\lambda$ and  $\mathbf{M}_\rho$ 
+($N$ is the number of observations). 
 
-\begin{equation*}
- \eta = f_\lambda(\lambda) +  f_\rho(\log{(v^{Ratio})}) = \mtrx{M}_\lambda \lambda  + \mtrx{M}_\rho \rho.
-\end{equation*}
 \indent The matrices $\mathbf{M}_\lambda$ and $\mathbf{M}_\rho$ are identical in structure but 
 not content. The elements of $\mathbf{M}_\lambda$ are zeros and ones indicating the Congress 
 to which each observation pertains. For $\mathbf{M}_\rho$ each element is either a zero or the 
@@ -217,7 +216,7 @@ for slightly more abrupt shifts in $\lambda$ and $\rho$ between Congresses than 
 \end{tikzpicture}
 \vspace{.25cm}
 
-\caption{The undirected graphs corresponding to $\kappa = 1$, $\kappa = 2$ and $\kappa = 3$. Each node represents a Congress.}
+\caption{The undirected graphs corresponding to $\kappa = 1$, $\kappa = 2$ and $\kappa = 3$. Each node represents a Congress. The dashed lines indicate that only part of the graph is shown due to space constraints.}
 \label{fig:rw_undirected_graphs}
 \end{figure}
 

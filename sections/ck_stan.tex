@@ -1,7 +1,8 @@
  \subsection{Estimation using Stan}
  \label{stan_intro}
 
-For notational convenience, let $x$ represent the observed $n$ and $v^{Ratio}$, 
+For notational convenience, let $x$ represent the observed $n$ (number of roll-call votes) 
+and $v^{Ratio}$ (ratio of majority to minority average vote-share).  And let 
 $\psi = \big((\tau^2_\lambda, \bar{\lambda}), (\tau^2_\rho, \bar{\rho}), \phi \big)$ denote 
 the hyperparameters of the model, and $\bm{f}$ the unknown functions  $f_\lambda$ and 
 $f_\rho$. The joint posterior distribution for $(\bm{f}, \psi)$ given the data $(y, x)$ can then 
@@ -16,7 +17,7 @@ p(\bm{f}, \psi | y, x)
 \noindent where the second line follows from assumptions of independence and conditional 
 independence.\footnote{In particular it is assumed that hyperparameters are mutually independent 
 in their priors, $p(f_\lambda | \tau^2_\lambda, \bar{\lambda})$ and $p(f_\rho | \tau^2_\rho, \bar{\rho})$ 
-are conditionally independent, and the outcomes $y_i$ are independent conditional on parameters 
+are conditionally independent, and the observations are independent conditional on parameters 
 and $x$.}
 %\footnote{The absence of the previously mentioned parameters $\alpha$, $\beta$, and $\theta$ from the expression for the posterior distribution is due to the fact that their values are determined by the other parameters.} 
 
@@ -79,7 +80,13 @@ version of the HMC algorithm used by Stan.}
 
 \subsubsection{Stan program: data and transformed data}
 
-\begin{figure}[t]
+In the {\tt data} block of a Stan program (Figure~\ref{stan_data}) we declare the data that will 
+be passed to Stan. In this case, the declarations are all straightforward, defining the dimensions 
+and variables discussed in section~\ref{ckdata}. The exception is {\tt Pinverse}, the inverse of 
+the penalty matrix, which is precomputed and passed in as data.\footnote{All R and Stan code 
+will be made publicly available on GitHub.}
+
+\begin{figure}[h]
 \begin{lstlisting}[language=Stan, frame=trBL]
 data {
   // dimensions 
@@ -113,17 +120,12 @@ transformed data {
 \label{stan_data}
 \end{figure}
 
-In the {\tt data} block of a Stan program (Figure~\ref{stan_data}) we declare the data that will 
-be passed to Stan. In this case, the declarations are all straightforward, defining the dimensions 
-and variables discussed in section~\ref{ckdata}. The exception is {\tt Pinverse}, the inverse of 
-the penalty matrix, which is precomputed and passed in as data 
-(see Appendix~\ref{AppendixA}).\footnote{All R and Stan code will be made publicly 
-available on GitHub.}
+
 
 The {\tt transformed data} block (also Figure~\ref{stan_data}) contains transformations of the 
 variables declared in the {\tt data} block and defines other fixed quantities to be used throughout 
 the rest of the program. The Cholesky decomposition of {\tt Pinverse} is 
-computed; it will be used for a more efficient implementation of the multivariate normal distributions 
+computed and will be used for a more efficient implementation of the multivariate normal distributions 
 required for the GMRF priors. Values for the location and scale parameters of the Cauchy and 
 normal distributions (to be used for priors) are also set in {\tt transformed data}. 
 
@@ -245,18 +247,17 @@ other statistical software. Logarithms help avoid the loss of the numerical prec
 greatly simplifying expressions for complicated probability distributions.}
 The priors include the standard normals on ${\tt phi\_noise}$, ${\tt lambda\_noise}$ and ${\tt rho\_noise}$ 
 discussed above, and normal priors for ${\tt lambda\_bar}$, ${\tt rho\_bar}$, ${\tt tau\_sq\_lambda}$, 
-and ${\tt tau\_sq\_rho}$.\footnote{The function names in the {\tt model} block 
+and ${\tt tau\_sq\_rho}$.\footnote{The function names in {\tt model} 
 ending in ${\tt\_log}$ return the logarithm of the density function (e.g. ${\tt normal\_log(theta,0,1)}$ 
-returns the logarithm of the normal density of ${\tt theta}$  with location 0 and scale 1). While Stan 
-does support the familiar sampling statement notation (e.g. ${\tt theta \sim normal(0,1)}$), it is not 
-used here because such notation is somewhat misleading. Using a sampling statement like 
-${\tt theta \sim normal(0,1)}$ does {\it not} mean that ${\tt theta}$ will be drawn from the standard 
-normal distribution; it means that the logarithm of the standard normal density (up to a constant) 
+returns the logarithm of the normal density of ${\tt theta}$  with location 0 and scale 1). While Stan  
+supports the familiar sampling statement notation (e.g. ${\tt theta \sim normal(0,1)}$), it is not 
+used here because such notation is somewhat misleading. A sampling statement like 
+${\tt theta \sim normal(0,1)}$ does {\it not} result in ${\tt theta}$ being drawn from the standard 
+normal distribution. Rather, it means that the logarithm of the standard normal density (up to a constant) 
 evaluated at ${\tt theta}$ will be added to the total log probability accumulator. This can be expressed 
-explicitly using the ${\tt increment\_log\_prob}$ and ${\tt normal\_log}$ functions; the statement 
-${\tt increment\_log\_prob(normal\_log(theta,0,1))}$ more accurately reflects Stan's execution 
-under the hood. The only non-cosmetic difference between sampling statements and directly 
-incrementing the log probability is that the former drops all constant terms. For a more detailed 
+explicitly with ${\tt increment\_log\_prob(normal\_log(theta,0,1))}$, which more accurately reflects 
+Stan's execution under the hood. The only non-cosmetic difference between sampling statements and directly 
+incrementing the log probability is that the former drops the unneeded constant terms. For a more detailed 
 explanation see \citeA{stan_development_team_stan_2015}.}  
 
 At the top of the {\tt model} block two vectors, {\tt alpha} and {\tt beta}, are also declared 
@@ -285,15 +286,25 @@ additional -- and potentially onerous -- step of accounting for changes in curva
 change of variables. For scalar parameters this entails calculating the log absolute derivative of 
 the transform and incrementing the log probability by this value. For multivariate changes of variables 
 the log probability must be incremented by the log absolute determinant of the corresponding 
-Jacobian matrix.\footnote{This is explained in greater detail and with examples in \citeA{stan_development_team_stan_2015}. 
-In brief, this adjustment is required to account for how the scale of the variable obtained by the 
-transformation varies with respect to the original variable.}
+Jacobian matrix.\footnote{This is explained in detail and with examples in 
+\citeA{stan_development_team_stan_2015}. In brief, the adjustment accounts for how 
+the scale of the variable obtained by the transformation varies with respect to the 
+original variable.}
 
 
 
 \subsubsection{Stan program: generated quantities}
 
-\begin{figure}[t]
+The {\tt generated quantities} block (Figure~\ref{stan_generated_quantities}) allows for the computation 
+of distributions of quantities of interest without affecting the log posterior specified in the model block. 
+In this case the estimated bias towards the majority party in each congress is computed. For model 
+checking (section~\ref{subsection_model_checking}), simulations from the posterior predictive distribution 
+are also generated.\footnote{The call to ${\tt beta\_binomial\_rng}$ is inside the loop in the 
+{\tt generated quantities} block unlike the call to ${\tt beta\_binomial\_log}$ in the {\tt model} block because 
+random number generating functions are not currently vectorized in Stan.} 
+
+
+\begin{figure}[h]
 \begin{lstlisting}[language=Stan, frame=trBL]
 generated quantities {
   real        bias[C] ;  # bias toward majority party
@@ -321,12 +332,5 @@ generated quantities {
 \label{stan_generated_quantities}
 \end{figure}
 
-The {\tt generated quantities} block (Figure~\ref{stan_generated_quantities}) allows for the computation 
-of distributions of quantities of interest without affecting the log posterior specified in the model block. 
-In this case the estimated bias towards the majority party in each congress is computed. For model 
-checking (section~\ref{subsection_model_checking}), simulations from the posterior predictive distribution 
-are also generated.\footnote{The call to ${\tt beta\_binomial\_rng}$ is inside the loop in the 
-{\tt generated quantities} block unlike the call to ${\tt beta\_binomial\_log}$ in the {\tt model} block because 
-random number generating functions are not currently vectorized in Stan.} 
-
+\clearpage
 
