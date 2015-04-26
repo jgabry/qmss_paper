@@ -165,8 +165,8 @@ for tree={
 The term {\it hierarchical} is a suitable designation for a diverse family of 
 models. When parameters are grouped into multiple different hierarchical structures it is common to 
 refer to the resulting models as {\it multilevel models} \shortcite{gelman_arm_2007}.  For example, 
-consider the simple scenario in which survey respondents from many different
-geographic regions are asked if they are in favor of a particular policy $P$. One approach for estimating
+consider a scenario in which survey respondents from many different
+geographical regions are asked if they are in favor of a particular policy $P$. One approach for estimating
 the level of underlying support for the policy in each region $r = 1, 2, \dots, R$ would be to estimate separate
 models for the $R$ regions. However, such an approach would ignore the relationship between
 support for $P$ across regions, which should be incorporated into the joint probability model. In 
@@ -369,7 +369,7 @@ $\theta_i$. For $i \neq j$ (the off-diagonal), $q_{ij}  = -Cov(\theta_i, \theta_
 
 
 
-\section{Bayesian STAR models}
+\section{Hierarchical Bayesian STAR models}
 \label{star}
 
 \subsection{Definition}
@@ -378,12 +378,13 @@ The structured additive regression (STAR) model replaces the linear predictor of
 model (GLM) with a semiparametric structured additive predictor
 
 \begin{equation*}
-  \eta =  u^\intercal\gamma + f_1(x_1) + \ldots + f_j(x_j) + \ldots + f_J(x_J) =  u^\intercal\gamma + \sum_{j} f_j (x_j) ,
+  \eta_n =  w_n^\intercal\gamma + f_1(x_{n1}) + \ldots + f_j(x_{nj}) + \ldots + f_J(x_{nJ}), \quad n = 1, \dots, N 
 \end{equation*}
 
-\noindent which can include nonlinear unknown functions of covariates as well as linear components 
+\noindent which can include linear components, nonlinear unknown functions of covariates, 
 and is flexible enough to include the assorted mixed effects models familiar to social scientists as 
-special cases \shortcite{fahrmeir_bayesian_2001}.\footnote{The varying-intercept, varying-slope models described in \ref{hierarchical} are examples of mixed effects models and are also special cases of the STAR model.} 
+special cases \shortcite{fahrmeir_bayesian_2001}.\footnote{\citeA{brezger_star_2005} provide a detailed
+list of the various possible roles for the functions $f_j$: ``\dots usual nonlinear effects of continuous covariates, time trends and seasonal effects, two-dimensional surfaces, varying coefficient terms, i.i.d. random intercepts and slopes, spatially correlated effects, and geographically weighted regression" (p. 2). }\footnote{The varying-intercept, varying-slope models described in \ref{hierarchical} are examples of mixed effects models and are also special cases of the STAR model. Other familiar special cases include generalized additive mixed models.} 
 
 From the Bayesian perspective, the non-varying parameters $\gamma$ as well as the unknown 
 functions $f_1, \dots, f_J$ are treated as random variables distributed according to priors that must 
@@ -391,13 +392,13 @@ be specified. For an unknown function $f_j(x_j)$ let $\mtrx{f}_j^{eval}$ denote 
 evaluations of $f_j$ at each of the $N$ observed values of $x_j$ 
 
 \begin{equation*}
-\mtrx{f}_j^{eval} = \left(f_j(x_{1j}), \dots f_j(x_{Nj})\right)^\intercal.  
+\mtrx{f}_j^{eval} = \left(f_j(x_{1j}), \dots, f_j(x_{nj}), \dots f_j(x_{Nj})\right)^\intercal.  
  \end{equation*}
  
 \noindent Then $\mathbf{f}_j^{eval}$ is treated as a random vector, which, following 
 \citeA{brezger_generalized_2006}, can conveniently be expressed as the matrix product 
-$\mtrx{M}_j \theta_j$ of a design matrix $\mtrx{M}_j \in \mathbb{R}^{N \times D}$ and a 
-parameter vector $\theta_j$. The GMRF prior for each $\theta_j$ takes the general form
+$\mtrx{M}_j \theta_j$ of a design matrix $\mtrx{M}_j \in \mathbb{R}^{N \times D}$ and an 
+unknown parameter vector $\theta_j$. The prior for each $\theta_j$  takes the general form
 
 \begin{equation*}
 p(\theta_j | \tau^2_j) 
@@ -407,27 +408,27 @@ p(\theta_j | \tau^2_j)
 \end{equation*}
 
 \noindent where $\mtrx{P}$ is a penalty matrix whereby we operationalize our prior assumptions 
-about the smoothness of the unknown function $f_j$.\footnote{See Appendix~\ref{AppendixA} 
+about the smoothness of the unknown function $f_j$, and the hyperparameter $\tau^2_j$
+informs the amount of smoothing.\footnote{See Appendix~\ref{AppendixA} 
 for a discussion of ways to deal with the impropriety of this prior under certain conditions.}
 
 To provide some intuition, suppose we are interested in learning about an effect with assumed 
 variation over geographic regions.  A simple map with $R$ distinct regions $r_1, r_2, \dots r_R$ can 
 be represented as an undirected graph $\mtrx{G}$ with vertices $V = \{\nu_1, \nu_2, \dots, \nu_R\}$ and 
 edges $E$ connecting vertices corresponding to neighboring (or proximate) regions. A prior on a 
-parameter vector $\theta = (\theta_1, \dots, \theta_r)$ can be constructed such that the matrix 
+parameter vector $\theta = (\theta_1, \dots, \theta_R)$ can be constructed such that the matrix 
 $\mtrx{P}$ has a zero in the $ij$th cell if and only if $\theta_i$ and $\theta_j$ (the parameters 
 corresponding to regions $r_i$ and $r_j$) are assumed to be independent conditional on 
-$\theta_{-ij}$. Then $\theta$ is a GMRF with respect to $G$ with 
+$\theta_{-ij}$. Then $\theta$ is a GMRF with respect to $\mtrx{G}$ with 
 $\boldsymbol{\Sigma}^{-1} = \mtrx{Q} = \mtrx{P}/\tau^2$. 
 
 
 \subsection{The penalty matrix} 
 \label{penalty_matrix}
 
-More specifically, the penalty matrix $\mtrx{P}$ can be constructed as  
-$\mtrx{P} = \mtrx{D} - \mtrx{A}$, where $\mtrx{A}$ is a symmetric matrix with 
-$a_{ij} = 1$ if temporal or spatial units $i$ and $j$ are considered neighbors 
-(the associated graph $\mtrx{G}$ has an edge between nodes $i$ and $j$) and 
+The penalty matrices of interest in this thesis 
+can be constructed as $\mtrx{P} = \mtrx{D} - \mtrx{A}$, where $\mtrx{A}$ is a symmetric 
+matrix with $a_{ij} = 1$ if temporal or spatial units $i$ and $j$ are considered neighbors and 
 0 otherwise, and $\mtrx{D}$ is a diagonal matrix such that 
 $\forall i = j, \: d_{ij} = \sum_j a_{ij}$. The matrices $\mtrx{A}$ and $\mtrx{D}$ are 
 commonly referred to as the adjacency and degree matrices because encoded in 
@@ -439,10 +440,10 @@ graph $\mtrx{G}$.
 To illustrate why this form of $\mtrx{P}$ captures these particular assumptions, 
 consider $N$ measurements of a variable $z$, with each measurement made at 
 one of $T$ evenly spaced points in time. For simplicity, but without loss of generality,  
-assume that $z$ is a unit of time and there is exactly one measurement per time period.  
+assume there is exactly one measurement per time period (i.e., $N = T$).  
 The sequence $(z^{[t]})_{t=1}^T$ then corresponds to a grid of points on a line. 
-\citeA{fahrmeir_bayesian_2001} suggest several possible choices for a prior on a smooth f
-unction $f(z)$, the simplest of which is a first order random walk ($RW_1$) prior.  Under 
+\citeA{fahrmeir_bayesian_2001} suggest several possible choices for a prior on a smooth
+function $f(z)$, the simplest of which is a first order random walk ($RW_1$) prior.  Under 
 the $RW_1$ prior, the first differences $\Delta_t = f(z^{[t]}) - f(z^{[t-1]})$ are treated as 
 independent and identically distributed standard normal random variables. 
 
@@ -480,17 +481,17 @@ refer to models with the same structure but different parameterizations. In the 
 term CAR tends to be reserved for the model when expressed in terms of conditional 
 distributions (for each random variable given its neighborhood) rather than the joint distribution \shortcite{banerjee_hierarchical_2004}. 
 See also Appendix~\ref{AppendixA} for more details.\label{footnote_car}} 
-The $RW_1$ can be extended to an $RW_2$ prior by also considering the 
-measurements $z^{[t-2]}$  and $z^{[t+2]}$ to be neighbors of $z^{[t]}$. 
+The $RW_1$ can be extended to an $RW_2$ prior by also considering  
+times $t-2$ and $t+2$ as neighbors of $t$. 
 
 
 \subsection{Hyperpriors}
 \label{hyperpriors}
 
 To complete the hierarchical model requires also specifying hyperpriors $p(\tau_j^2)$.  
-Assigning a prior distribution to the variance hyperparameter $\tau_j^2$ allows for the 
-simultaneous estimation of a smoothing function $f_j$ and the amount of smoothness.
- \citeA{fahrmeir_bayesian_2001} and \citeA{brezger_bayesx:_2005} recommend  
+By estimating -- rather than fixing -- the variance hyperparameter $\tau_j^2$, the smoothing function $f_j$ 
+and the amount of smoothness are estimated simultaneously. 
+ \citeA{fahrmeir_bayesian_2001} and \citeA{brezger_star_2005} recommend  
  inverse-gamma priors for the $\tau_j^2$. However, in light of concerns about this type 
  of inverse-gamma prior raised by \citeA{gelman_prior_2006}, in this thesis several priors 
  for $\tau^2_j$ are used and compared to check the degree to which the results are 
