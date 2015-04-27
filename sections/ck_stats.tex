@@ -99,10 +99,10 @@ Priors for $f_{\lambda}$ and $f_{\rho}$ are expressed as distributions over the 
 vectors $\lambda$ and $\rho$ as 
 
 \begin{equation*}
-p(\lambda | \tau_\lambda^2, \bar{\lambda}) \propto \exp{\left\{-\frac{1}{2\tau_\lambda^2} \: \left(\lambda - \bar{\lambda}\right)^\intercal  \mtrx{P}   \left(\lambda - \bar{\lambda}\right) \right\}} \propto \mathcal{N} (\bar{\lambda}, \mtrx{Q}_\lambda^{-1}), 
+p(\lambda | \tau_\lambda^2, \bar{\lambda}) \propto \exp{\left\{-\frac{1}{2\tau_\lambda^2} \: \left(\lambda - \bar{\lambda}\right)^\intercal  \mtrx{P}   \left(\lambda - \bar{\lambda}\right) \right\}} \propto \mathcal{N} (\lambda | \bar{\lambda}, \mtrx{Q}_\lambda^{-1}), 
 \end{equation*}
 \begin{equation*}
-p(\rho | \tau_\rho^2, \bar{\rho}) \propto \exp{\left\{-\frac{1}{2\tau_\rho^2} \: \left(\rho - \bar{\rho}\right)^\intercal  \mtrx{P} \left(\rho-\bar{\rho}\right) \right\}} \propto \mathcal{N} (\bar{\rho}, \mtrx{Q}_\rho^{-1}), 
+p(\rho | \tau_\rho^2, \bar{\rho}) \propto \exp{\left\{-\frac{1}{2\tau_\rho^2} \: \left(\rho - \bar{\rho}\right)^\intercal  \mtrx{P} \left(\rho-\bar{\rho}\right) \right\}} \propto \mathcal{N} (\rho | \bar{\rho}, \mtrx{Q}_\rho^{-1}), 
 \end{equation*}
 
 \noindent where $\mathbf{P}$ is the penalty matrix.
@@ -114,7 +114,7 @@ we can define adjacency by specifying the neighborhoods for all Congresses (time
 $t = 1, \dots, C$
 
 \begin{equation*}
-\partial^\mathbf{G}_t = \{C_s : \left| s - t \right| <= \kappa \},
+\partial^\mathbf{G}_t = \left\{C_s : \left| s - t \right| \leq \kappa \right\},
 \end{equation*}
 
 \noindent where $\kappa \leq C$ is a positive integer and $\mathbf{G}$ is the undirected graph 

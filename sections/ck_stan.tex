@@ -10,8 +10,8 @@ be more concisely expressed as
 
 \begin{align*}
 p(\bm{f}, \psi | y, x) 
-&\propto p(\bm{f}, \psi)  L(y | x, \bm{f}, \psi)  \\
-&=p(\psi)  p(\bm{f} | \psi)   \prod_{n=1}^N L(y_n | \eta_n, x_n), 
+&\propto p(\bm{f}, \psi)  p(y | x, \bm{f}, \psi)  \\
+&=p(\psi)  p(\bm{f} | \psi)   \prod_{n=1}^N p(y_n | \eta_n, x_n), 
 \end{align*}
 
 \noindent where the second line follows from assumptions of independence and conditional 
@@ -56,8 +56,11 @@ transitioning from state $x$ to $x^\prime$ is the same as from $x'$ to $x$.}
 
 Several characteristics of HMC, and in particular Stan's implementation of HMC, make it a more 
 appealing choice than traditional Metropolis-Hastings (M-H) and Gibbs samplers, especially for 
-complex models with a large number of parameters to estimate \shortcite{hoffman_2012, stan_development_team_stan_2015}. Both M-H and Gibbs samplers suffer from random walk behavior 
-that leads to inefficient exploration of the parameter space. M-H algorithms in particular also place the 
+complex models with a large number of parameters to estimate \shortcite{hoffman_2012, stan_development_team_stan_2015}. Both M-H and Gibbs samplers suffer from random walk 
+behavior that leads to inefficient exploration of the parameter space. This problem is exacerbated 
+for hierarchical models with complex structures \shortcite{betancourt_hamiltonian_2013}.
+
+M-H algorithms in particular also place the 
 burden of tuning the sampler on the user. Gibbs samplers typically involve less tuning, but require 
 specifying full conditional distributions for all parameters. Except in a limited number of cases, full 
 conditionals are difficult or impossible to derive, which results in conjugate priors being used when 
@@ -66,14 +69,16 @@ other priors might be more believable or preferable for other reasons.
 Stan is designed to overcome each of these concerns. The random walk behavior that plagues both 
 Gibbs and M-H is largely avoided because HMC uses gradient information to find posterior modes 
 much more efficiently, thus greatly reducing the number of iterations required to obtain a sufficient 
-effective posterior sample size \shortcite{hoffman_2012}.\footnote{Stan uses reverse-mode automatic
-differentiation.}  Although the theory behind HMC does not obviate the need for the user to specify 
-tuning parameters, Stan's NUTS-based adaptation algorithm attempts to learn the optimal values 
-of all such parameters (without user input) during a warmup period before sampling.\footnote{While 
-the default settings are typically fine, for particularly complicated models it can sometimes be helpful 
-for users to manually adjust tuning parameters to improve the performance of the algorithm. See 
-\citeA{stan_development_team_stan_2015} for examples.} Finally, there is no advantage to conjugacy 
-in Stan. Users are free to specify prior distributions that more accurately reflect current knowledge. 
+effective posterior sample size \shortcite{hoffman_2012}.\footnote{Stan computes gradients using 
+reverse-mode automatic differentiation. A paper on the details of Stan's especially efficient 
+implementation of automatic differentiation is forthcoming.}  Although the theory behind HMC does 
+not obviate the need for the user to specify tuning parameters, Stan's NUTS-based adaptation algorithm 
+attempts to learn appropriate values of all such parameters (without user input) during a warmup 
+period before sampling.\footnote{While the default settings are typically fine, for particularly complicated 
+models it can sometimes be helpful for users to manually adjust tuning parameters to improve the 
+performance of the algorithm. See \citeA{stan_development_team_stan_2015} for examples.} 
+Finally, there is no advantage to conjugacy in Stan. 
+Users are free to specify prior distributions that more accurately reflect current knowledge. 
 For a more thorough introduction to Stan and NUTS see \citeA{stan_development_team_stan_2015} 
 and \citeA{hoffman_2012}, respectively.\footnote{See also Appendix~\ref{AppendixD} for a simplified 
 version of the HMC algorithm used by Stan.}
@@ -116,7 +121,7 @@ transformed data {
   cholPinverse <- cholesky_decompose(Pinverse) ;
 }
 \end{lstlisting}
-\caption{Stan: {\tt data} and {\tt transformed\_data} blocks}
+\caption{Stan code: {\tt data} and {\tt transformed\_data} blocks}
 \label{stan_data}
 \end{figure}
 
@@ -155,7 +160,7 @@ parameters {
   real<lower=0> tau_sq_rho ;
 }
 \end{lstlisting}
-\caption{Stan: {\tt parameters} block}
+\caption{Stan code: {\tt parameters} block}
 \label{stan_parameters}
 \end{figure}
 
@@ -163,10 +168,10 @@ In {\tt transformed parameters},
 ${\tt phi\_noise}$ is transformed from a standard normal 
 distribution using the inverse-CDF method such that ${\tt phi}$ has a half-Cauchy 
 distribution.\footnote{The inverse cumulative distribution function of the Cauchy distribution with 
-location $\boldsymbol{\ell}$ and scale $\xi$ is $F^{-1}(p, \boldsymbol{\ell},\xi)  = \boldsymbol{\ell} 
-+ \xi \tan{\{ \pi (p - 1/2)\}}$. Thus if $z \sim \mathcal{N}(0,1)$ with CDF $\Phi$ then 
-$\boldsymbol{\ell} + \xi \tan{\{ \pi (\Phi(z) - 1/2)\}}$ is distributed 
-Cauchy$(\boldsymbol{\ell}, \xi)$. The transformation above results in a 
+location $\gamma$ and scale $\zeta$ is $F^{-1}(p, \gamma,\zeta)  = \gamma
++ \zeta \tan{\{ \pi (p - 1/2)\}}$. Thus if $z \sim \mathcal{N}(0,1)$ with CDF $\Phi$ then 
+$\gamma + \zeta \tan{\{ \pi (\Phi(z) - 1/2)\}}$ is distributed 
+Cauchy$(\gamma, \zeta)$. The transformation above results in a 
 half-Cauchy$({\tt phi\_loc}, {\tt phi\_scale})$ 
 distribution due to the constraints that ${\tt phi\_noise}$ and ${\tt phi}$ be positive.}\footnote{
 The Cauchy prior can be considered weakly informative in that, while most of the mass is concentrated 
@@ -198,7 +203,7 @@ transformed parameters {
   rho  <- rho_bar + (tau_sq_rho * cholPinverse) * lambda_noise ;
 }
 \end{lstlisting}
-\caption{Stan: {\tt transformed parameters} block}
+\caption{Stan code: {\tt transformed parameters} block}
 \label{stan_trans_parameters}
 \end{figure}
 
@@ -241,7 +246,7 @@ model {
   increment_log_prob(logPrior + logLik) ; 
 }
 \end{lstlisting}
-\caption{Stan: {\tt model} block}
+\caption{Stan code: {\tt model} block}
 \label{stan_model}
 \end{figure}
 %
@@ -337,7 +342,7 @@ generated quantities {
   }
 }
 \end{lstlisting}
-\caption{Stan: {\tt generated quantities} block}
+\caption{Stan code: {\tt generated quantities} block}
 \label{stan_generated_quantities}
 \end{figure}
 

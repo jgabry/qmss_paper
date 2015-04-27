@@ -16,10 +16,25 @@
 \BeforeBeginEnvironment{quote}{\begin{singlespace}}
 \AfterEndEnvironment{quote}{\end{singlespace}\noindent\ignorespaces}
 
+
+\usepackage[]{hyperref}
+\hypersetup{
+    pdftitle={Bayesian Structured Additive Regression Models for 
+    		Quantitative Historical Social Scientific Inquiry},    % title
+    pdfauthor={Jonah Gabry},     % author
+    colorlinks=true,       % false: boxed links; true: colored links
+    linkcolor=black,          % color of internal links (change box color with linkbordercolor)
+    citecolor=black,        % color of links to bibliography
+    filecolor=black,      % color of file links
+    urlcolor=black           % color of external links
+}
+
+
+
 %\usepackage{pslatex} %Times font
 %\usepackage[T1]{fontenc}
 %\usepackage[utf8]{inputenc}
-\usepackage[slantedGreek]{mathptmx}
+\usepackage[]{mathptmx} % can use option [slantedGreek] for slanted capital greek letters
 \usepackage[bibnewpage, nosectionbib]{apacite} %apa citation style
 \bibliographystyle{apacite}
 %\usepackage[pdfborder={0 0 0}]{hyperref}%for hyperlinks without ugly boxes
@@ -30,6 +45,8 @@
 \usepackage[bottom, multiple, flushmargin]{footmisc} % 'multiple' to allow multiple footnotes separated by comma, 'flushmargin' to remove indentation of footnotes
 %\raggedbottom
 \renewcommand\footnotelayout{\small}
+
+
 
 %\raggedbottom 
 %\addtolength{\topskip}{0pt plus 10pt}
@@ -250,6 +267,7 @@ Raya, Amelia and Silvia. \\
 \backmatter
 \nocite{r_software}
 \nocite{breslow_approximate_1993}
+\nocite{papaspiliopoulos_general_2007}
 
 \begingroup
     \setstretch{1}
