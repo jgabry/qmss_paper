@@ -1,14 +1,19 @@
 
 
-\renewcommand\thesection{\Alph{section}}
-\section[Improper priors]{Improper priors} \label{AppendixA}
+%\renewcommand\thesection{\Alph{section}}
+%\section[Improper priors]{Improper priors} 
+%\titleformat{\chapter}
+\chapter*{Appendix A}\label{AppendixA}
+
+\vspace{-1.75cm}
+\subsection*{Improper priors}
 
 The penalty matrix $\mathbf{P}$ corresponding to an undirected $RW_\kappa$ prior over 
 parameter vector $\lambda \in \mathbb{R}^C$ has rank $C - \kappa$ and the resulting 
-matrix $\Sigma^{-1} = \mathbf{Q} = \mathbf{P}/\tau^2$ is not a valid precision matrix. In the 
-$RW_1$ case this can be mitigated by jittering the elements of $\mathbf{P}$. For $\kappa > 1$ 
-a possibility is to estimate only $C - \kappa$ of the $C$ parameters in $\lambda$,  from 
-which the remaining $\kappa$ so-called {\it pinned} parameters (each of which has a 
+matrix $\Sigma^{-1} = \mathbf{Q} = \mathbf{P}/\tau^2$ is singular and thus not a valid precision 
+matrix. In the $RW_1$ case this can be mitigated by jittering the elements of $\mathbf{P}$. 
+For $\kappa > 1$ a possibility is to estimate only $C - \kappa$ of the $C$ parameters in $\lambda$,  
+from which the remaining $\kappa$ so-called {\it pinned} parameters (each of which has a 
 conditional variance of zero) can be computed following the properties of the multivariate 
 normal distribution. This strategy amounts to  constraining the relevant linear combinations 
 to have zero variance, from which a proper prior on a lower dimensional subspace is 
@@ -26,13 +31,14 @@ correlations and standard deviations. This is possible to do in Stan and should 
 in future work to sidestep the matrix singularity problems. 
 
 
-\clearpage
-\section[Seats-votes curves]{Seats-votes curves}\label{AppendixB}
+\chapter*{Appendix B}\label{AppendixB}
+\vspace{-1.75cm}
+
+\subsection*{Seats-votes curves}
 
 Seats-votes curves for various values of $\lambda$ (bias) and $\rho$ (responsiveness). 
-In the first plot $\lambda$ is fixed at 0 and the value of $\rho$ varies. In the second plot $\rho$ is fixed at 1 
-and the value of $\lambda$ varies. 
-
+In the first plot $\lambda$ is fixed at 0 and the value of $\rho$ varies. In the second plot 
+$\rho$ is fixed at 1 and the value of $\lambda$ varies. 
 
 \begin{figure}[h]
 \centering
@@ -41,12 +47,13 @@ and the value of $\lambda$ varies.
 \end{figure}
 
 
-\clearpage
-\section[Parameter estimates]{Parameter estimates}\label{AppendixC}
+\chapter*{Appendix C}\label{AppendixC}
+\vspace{-1.75cm}
+\subsection*{Parameter estimates}
 
 Estimates (on the logit scale) of $\lambda$ and $\rho$ from the Bayesian STAR model. 
-The darker ribbons show 50\% posterior intervals and the lighter ribbons are 95\% intervals. 
-The connected points are posterior medians. 
+The darker ribbons show 50\% posterior intervals and the lighter ribbons are 95\% 
+intervals. The connected points are posterior medians. 
 (Note that the $y$-axis is scaled differently for each parameter.) 
 
 \vspace{.5cm}
@@ -58,10 +65,14 @@ The connected points are posterior medians.
 \end{figure}
 
 
-\clearpage
-\section[Hamiltonian Monte Carlo]{Hamiltonian Monte Carlo}\label{AppendixD}
 
-A simplified version of the Hamiltonian Monte Carlo algorithm used by Stan. 
+
+
+\chapter*{Appendix D}\label{AppendixD}
+\vspace{-1.75cm}
+\subsection*{Hamiltonian Monte Carlo}
+
+The following is a simplified version of the HMC algorithm employed by Stan. 
 
 {\singlespacing
 \subsubsection{Notation}
@@ -75,13 +86,13 @@ $\mathcal{L}$ & Natural logarithm of joint probability density for $\theta$ (up 
 
 $\nabla_\theta$ & Gradient with respect to $\theta$ \\
 
-$x^{[t]}$ & The value of $x$ at time $t$ \\
+$x^{[t]}$ & Value of $x$ at time $t$ \\
 
-$N$ & The number of iterations to run the algorithm \\
+$N$ & Number of iterations to run the algorithm \\
 
-$ L $ & number of ``leapfrog" steps (to run simulated Hamiltonian system) per iteration\\
+$L$ & Number of ``leapfrog" steps (to run the simulated Hamiltonian system) per iteration\\
 
-$ \epsilon$ & The size of the leapfrog steps
+$\epsilon$ & Size of the leapfrog steps
 \end{tabular}
 }
 \vskip.5cm
@@ -111,7 +122,7 @@ $\}$
 \subsubsection{Pseudo-code for HMC algorithm}
 
 
-\noindent Set $\theta^{[0]}$, $N$, $\epsilon$ and $L$.
+\noindent Set $N$, $\theta^{[0]}$, $\epsilon$, and $L$.
 
 \noindent For $n = 1, \dots, N \quad \{$ 
 
@@ -135,10 +146,11 @@ $ \qquad p^\star = \min{\left\{1, \exp{\left( q^{\it new} - q^{\it old} \right)}
 
 \end{tabular}
 
-\noindent $\}$
+\noindent $\}$d
 
-\noindent Technically in {\bf (iv)} the proposal for $m$ is accepted or rejected along with the proposal for 
-$\theta$, but in practice we only care about $\theta$. 
+Technically in {\bf (iv)} the proposal for $m$ is accepted or rejected along with the proposal for 
+$\theta$, but in practice we only care about $\theta$. The momentum variables are introduced out of necessity 
+in order to simulate Hamiltonian dynamics, but they are not themselves quantities of interest.
 
 Note that the above procedure requires $\epsilon$ (step-size) and $L$ (number of steps) to be specified in 
 advance. Very roughly speaking, if $L$ and/or $\epsilon$ is too small proposals for $\theta^{[n]}$ will be too 
@@ -152,10 +164,11 @@ on Stan's implementation.
 
 
 
-\clearpage
-\section[Different Interpretations]{Different interpretations}\label{AppendixE}
+\chapter*{Appendix E}\label{AppendixE}
+\vspace{-1.75cm}
+\subsection*{Different Interpretations}
 
-Although Figure~\ref{fig:ck_bias} (p.~~\pageref{fig:ck_bias}) appears to show two versions of the same plot with
+Although Figure~\ref{fig:ck_bias} (p.~\pageref{fig:ck_bias}) appears to show two versions of the same plot with
 slightly different estimates, Cox and Katz's results -- obtained by maximum likelihood estimation --
 and the results from the Bayesian model must be interpreted differently. The former are point estimates 
 and confidence intervals, whereas the full Bayesian model provides an estimate of the marginal posterior 

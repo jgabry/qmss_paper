@@ -238,7 +238,7 @@ distribution of the observed data $y$ -- the number of roll-call votes won by th
 predictive replications.\footnote{If $y$ is an $N$-vector and there are $D$ draws of 
 $\Theta$ from $p(\Theta | y)$, then $D$ replicated data sets $y^{rep}$ will be simulated, 
 each of which is also an $N$-vector. Figure~\ref{fig:ck_pp_hists} shows the distribution of $y$ and the
-distributions of 15 of the $D$ replications.} This is a casual but informative comparison; it is an easy way 
+distributions of 15 of the replications.} This is a casual but informative comparison; it is an easy way 
 of checking for inconsistencies due to poor model fit. In this case it shows that indeed the observed 
 data are plausible under the posterior predictive distribution implied by the model. 
 
@@ -252,9 +252,9 @@ data are plausible under the posterior predictive distribution implied by the mo
 
 
 Figure~\ref{fig:ck_pp_test_statistics} (p. \pageref{fig:ck_pp_test_statistics}) shows the distributions 
-of the mean and standard deviation over all replications. These test statistics, denoted $T(y^{\it rep})$, 
-are compared the observed values of the statistic $T(y)$ computed from the data. 
-In this case the observed values are consistent with the posterior predictive simulations.
+of the mean and standard deviation over all replications. The test statistics, denoted $T(y^{\it rep})$, 
+are compared the observed values $T(y)$ computed from the data. 
+In this case the observed values are nicely centered in the distributions of $T(y^{\it rep})$. 
 
 \begin{figure}[h]
 \centering
@@ -265,7 +265,8 @@ In this case the observed values are consistent with the posterior predictive si
 \end{figure}
 
 
-We should also look at the posterior predictive replications at the level of individual Congresses. 
+We should also look at the posterior predictive replications at the level of individual Congresses,
+as this is the natural grouping in the data.  
 Figure~\ref{fig:ck_pp_nWins_hists} (p. \pageref{fig:ck_pp_nWins_hists}) shows 
 the distribution of $y^{\it rep}$ for each of the Congresses (i.e., time periods) in the data. 
 Again, it is evident that the observations are consistent with the posterior predictive distribution.

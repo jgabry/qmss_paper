@@ -25,7 +25,7 @@ issues with Cox and Katz's second design that can be overcome by following the r
 Let $C$ denote the number of unique Congresses (time periods) in the data. The analysis 
 conducted by Cox and Katz centers on estimating the parameters  
 $\lambda = (\lambda_t : t = 1, \dots, C)$ representing bias (on the logit scale) toward the majority 
-party in each Congress $t$. They do this using maximum likelihood estimation of grouped logit 
+party in each Congress $t$. They do this by maximum likelihood estimation of grouped logit 
 models with linear predictor $ \lambda_t + \rho_t \log{\left(v_t^{Ratio} \right)}$. 
 
 The estimation of $\lambda$ and $\rho$ by grouped logit models follows naturally from 
@@ -88,12 +88,10 @@ as
 %
 \noindent of the parameter vectors $\lambda \in \mathbb{R}^C$ and $\rho \in \mathbb{R}^C$ 
 premultiplied by the $N \times C$ design matrices  $\mathbf{M}_\lambda$ and  $\mathbf{M}_\rho$ 
-($N$ is the number of observations). 
-
-\indent The matrices $\mathbf{M}_\lambda$ and $\mathbf{M}_\rho$ are identical in structure but 
-not content. The elements of $\mathbf{M}_\lambda$ are zeros and ones indicating the Congress 
-to which each observation pertains. For $\mathbf{M}_\rho$ each element is either a zero or the 
-appropriate value of $\log{(v^{Ratio})}$. 
+($N$ is the number of observations). The matrices $\mathbf{M}_\lambda$ and $\mathbf{M}_\rho$ 
+are identical in structure but not content. The elements of $\mathbf{M}_\lambda$ are zeros and ones 
+indicating the Congress to which each observation pertains. For $\mathbf{M}_\rho$ each element is 
+either a zero or the appropriate value of $\log{(v^{Ratio})}$. 
 
 % Discuss challenges with sparse matrices? Either here or in the lit review section
 
@@ -107,12 +105,7 @@ p(\lambda | \tau_\lambda^2, \bar{\lambda}) \propto \exp{\left\{-\frac{1}{2\tau_\
 p(\rho | \tau_\rho^2, \bar{\rho}) \propto \exp{\left\{-\frac{1}{2\tau_\rho^2} \: \left(\rho - \bar{\rho}\right)^\intercal  \mtrx{P} \left(\rho-\bar{\rho}\right) \right\}} \propto \mathcal{N} (\bar{\rho}, \mtrx{Q}_\rho^{-1}), 
 \end{equation*}
 
-\noindent where the penalty matrix $\mathbf{P}$ encodes assumptions about the temporal 
-dependence between Congresses.\footnote{As mentioned in \ref{hyperpriors}, several priors 
-for $\tau^2_\lambda$ and $\tau^2_\rho$ were considered including inverse-gamma
-\shortcite{fahrmeir_bayesian_2001} and half-Cauchy \shortcite{gelman_prior_2006}, as well 
-as half-normal. Parameter estimates were not sensitive to the choice of prior. For computational 
-reasons (nicer tail behavior) half-normal priors are used for the final model presented below.}
+\noindent where $\mathbf{P}$ is the penalty matrix.
 
 To model temporal dependence such that the neighbors of Congress $t$ also provide information
 about the values of the parameters of interest at time $t$, the undirected random walk (RW) 
@@ -128,7 +121,13 @@ $t = 1, \dots, C$
 with nodes $V = \{\nu_1, \dots, \nu_C\}$ and the edges implied by $\partial^\mathbf{G}$ 
 (see Figure~\ref{fig:rw_undirected_graphs}). The results presented in section~\ref{results} use 
 the $RW_1$ GMRF prior for $f_\lambda$ and $f_\rho$, which applies smoothing while allowing 
-for slightly more abrupt shifts in $\lambda$ and $\rho$ between Congresses than a $RW_2$ prior. 
+for slightly more abrupt shifts in $\lambda$ and $\rho$ between Congresses than a 
+$RW_2$ prior.\footnote{As mentioned in \ref{hyperpriors}, several priors for $\tau^2_\lambda$ 
+and $\tau^2_\rho$ were considered including inverse-gamma \shortcite{fahrmeir_bayesian_2001} 
+and half-Cauchy \shortcite{gelman_prior_2006}, as well as half-normal. Parameter estimates were 
+not sensitive to the choice of prior. For computational reasons (nicer tail behavior) half-normal priors 
+are used for the final model presented below.}
+ 
 
 
 \begin{figure}[htb]
@@ -138,12 +137,12 @@ for slightly more abrupt shifts in $\lambda$ and $\rho$ between Congresses than 
 
 \begin{tikzpicture}
 \node[const] (name) {$\mathbf{G}_1$} ;
-\node[obs, right=of name,  color=BlueGreen, text=black] (r1) {$\nu_{1}$};
-\node[obs, right=of r1,  color=BlueGreen, text=black] (r2) {$\nu_{2}$};
-\node[obs, right=of r2,  color=BlueGreen, text=black] (r3) {$\nu_{3}$};
-\node[obs, right=of r3,  color=BlueGreen, text=black] (r4) {$\nu_{4}$};
-\node[obs, right=of r4,  color=BlueGreen, text=black] (r5) {$\nu_{5}$};
-\node[obs, right=of r5,  color=BlueGreen, text=black] (r6) {$\nu_{6}$};
+\node[obs, right=of name,  color=BlueGreen,  fill=white, text=black] (r1) {$\nu_{1}$};
+\node[obs, right=of r1, color=BlueGreen,  fill=white, text=black] (r2) {$\nu_{2}$};
+\node[obs, right=of r2, color=BlueGreen,  fill=white, text=black] (r3) {$\nu_{3}$};
+\node[obs, right=of r3, color=BlueGreen,  fill=white, text=black] (r4) {$\nu_{4}$};
+\node[obs, right=of r4, color=BlueGreen,  fill=white, text=black] (r5) {$\nu_{5}$};
+\node[obs, right=of r5, color=BlueGreen,  fill=white, text=black] (r6) {$\nu_{6}$};
 \node[const, right=of r6] (dots1) {$\hspace{.33cm}$};
 \node[const, right=of dots1] (dots2) {$\hspace{.33cm}$};
 \node[const, right=of dots2] (dots3) {$$};
@@ -159,12 +158,12 @@ for slightly more abrupt shifts in $\lambda$ and $\rho$ between Congresses than 
  %
 \begin{tikzpicture}
 \node[const] (name) {$\mathbf{G}_2$} ;
-\node[obs, right=of name,  color=BlueGreen, fill = LightYellow, text=black] (r1) {$\nu_{1}$};
-\node[obs, right=of r1, color=BlueGreen, fill = LightYellow, text=black] (r2) {$\nu_{2}$};
-\node[obs, right=of r2, color=BlueGreen, fill = LightYellow, text=black] (r3) {$\nu_{3}$};
-\node[obs, right=of r3, color=BlueGreen, fill = LightYellow, text=black] (r4) {$\nu_{4}$};
-\node[obs, right=of r4, color=BlueGreen, fill = LightYellow, text=black] (r5) {$\nu_{5}$};
-\node[obs, right=of r5, color=BlueGreen, fill = LightYellow, text=black] (r6) {$\nu_{6}$};
+\node[obs, right=of name,  color=BlueGreen,  fill=white, text=black] (r1) {$\nu_{1}$};
+\node[obs, right=of r1, color=BlueGreen,  fill=white, text=black] (r2) {$\nu_{2}$};
+\node[obs, right=of r2, color=BlueGreen,  fill=white, text=black] (r3) {$\nu_{3}$};
+\node[obs, right=of r3, color=BlueGreen,  fill=white, text=black] (r4) {$\nu_{4}$};
+\node[obs, right=of r4, color=BlueGreen,  fill=white, text=black] (r5) {$\nu_{5}$};
+\node[obs, right=of r5, color=BlueGreen,  fill=white, text=black] (r6) {$\nu_{6}$};
 \node[const, right=of r6] (dots1) {$\hspace{.33cm}$};
 \node[const, right=of dots1] (dots2) {$\hspace{.33cm}$};
 \node[const, right=of dots2] (dots3) {$$};

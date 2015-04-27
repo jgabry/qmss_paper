@@ -27,7 +27,7 @@ Katznelson and Wawro suggest  semi-parametric mixed models -- in particular,  Ba
 structured additive regression (STAR) models -- and the flexible family of Gaussian Markov 
 random fields priors for modeling interesting temporal and spatial relationships.
 
-Accounting for variation over time (and potentially space) commonly involves estimating 
+Accounting for variation over time (and potentially space) involves estimating 
 a large number of parameters relevant to the size of the available data, which can lead 
 to a number of statistical challenges (e.g. under-identification). While Bayesian methods 
 bring their own unique set of burdens, many of which are highlighted throughout this 
@@ -37,68 +37,6 @@ by maximum likelihood methods.
 
 \section{Hierarchical Bayesian models}
 \label{hierarchical}
-
-%\begin{figure}
-%\begin{align*}
-%y_n &\sim \mathcal{N}(\theta_{j[n]}, \sigma^2_{j[n]}), \quad \text{for } n = 1, \dots, N \\
-%\theta_j &\sim \mathcal{N}(\mu, \tau^2), \quad \text{for } j = 1, \dots, J \\
-%(\mu, \tau^2) &\sim p(\mu, \tau^2)
-%\end{align*}
-%\caption{Example of a simple hierarchical model.}
-%\end{figure}
-%
-%\begin{figure}
-%%\begin{tikzpicture}
-%%\node[const] (y1) {$y_1, y_2, y_3$};
-%%\node[const, below=of y1] (theta1) {$\theta_1$};
-%%\node[const, right=of y1] (y2) {$y_4, y_5, y_6$};
-%%\node[const, below=of y2] (theta2) {$\theta_2$};
-%%\node[const, right=of y2] (ydots) {$\dots$};
-%%\node[const, below=of ydots] (thetadots) {$\dots$};
-%%\node[latent, right=of ydots] (yN1) {$y_{N-5}, y_{N-4}, y_{N-3}$};
-%%\node[const, below=of yN1] (thetaJ1) {$\theta_{J-1}$};
-%%\node[const, right=of yN1] (yN) {$y_{N-2}, y_{N-1}, y_N$};
-%%\node[const, below=of yN] (thetaJ) {$\theta_J$};
-%%\node[const, below=of thetadots] (mu) {$\mu, \tau^2$};
-%%%\node[const, right =of mu] (tau) {$\tau^2$};
-%%\factoredge [->, color=black] {theta1} {y1} ;
-%%\edge [->, color=black]  {thetaJ} {yN};
-%%\edge [->, color=black] {theta2} {y2} ;
-%%\edge [->, color=black]  {thetaJ1} {yN1};
-%%\edge [->, color=black] {thetadots} {ydots} ;
-%%\edge [->, color=black] {mu} {theta1} ;
-%%\edge [->, color=black] {mu} {theta2} ;
-%%\edge [->, color=black] {mu} {thetaJ1} ;
-%%\edge [->, color=black] {mu} {thetaJ} ;
-%%\edge [->, color=black] {mu} {thetadots} ;
-%%\end{tikzpicture}
-%\begin{forest}
-%for tree={
-%  edge={->,>=latex},
-%  parent anchor=south,
-%  child anchor=north,
-%  content format={\ensuremath{\forestoption{content}}},
-%  }
-%[{\mu,\tau^{2}},name=level0
-%  [\theta_{1},name=level1
-%    [\{y_{i} : {j[i] = 1}\},name=level2]
-%  ]
-%  [\theta_{2}
-%    [\{y_{i} : {j[i] = 2}\}]
-%  ]
-%  [\cdots
-%    [\cdots]
-%  ]
-%  [\theta_{J}
-%    [\{y_{i} : {j[i] = J}\}]
-%  ]
-%]
-%%\foreach \Name/\Label in {level2/parameters,level1/observations,level0/model}
-%%  \node[anchor=east] at ([xshift=-30pt]\Name) {\Label};   
-%\end{forest}
-%\end{figure}
-
-%CREATE FIGURE SHOWING HIERARCHY with ys on top with each connected below to a theta, and then all thetas connected to mu and tau below%
 
 One of the many challenges of fitting models to data comprising multiple groupings is 
 confronting the tradeoff between bias and variance. An analysis that disregards between-group 
@@ -153,7 +91,7 @@ for tree={
 %\foreach \Name/\Label in {level2/$p(y_{n}|\theta_{j[n]})$,level1/$p(\theta_j|\phi)$,level0/$p(\phi)$}
 %  \node[anchor=west] at ([xshift=60pt]\Name) {\Label};   
 \end{forest}
-\caption{A simple hierarchical structure with $N$ observations $y_1, \dots, y_N$ organized in to $J$ groups, with group-level parameters $\theta_1, \dots, \theta_J$ and global parameter (hyperparameter)  $\phi$.}
+\caption{A simple hierarchical structure with $N$ observations $y_1, \dots, y_N$ organized in to $J$ groups, with group-level parameters $\theta_1, \dots, \theta_J$ and global hyperparameter(s) $\phi$. The set $\{y_{n} : {j[n] = j}\}$ represents the collection of observations belonging to group $j$.}
 \label{fig:hierarchical_model} 
 \end{figure}
 
@@ -190,7 +128,10 @@ p_n &= {\rm logit}^{-1}\left(\alpha_{r[n]} + \beta_{r[n]} x_n\right), \quad \tex
 \end{align*}
 
 \noindent is what \citeA{gelman_arm_2007} refer to as a {\it varying-intercept}, 
-{\it varying-slope} model. That is, both the intercepts and the slopes -- the effects associated with the variable $x$-- vary by group (region, in this example) and are given probability models conditional on a further level of parameters called hyperparameters. 
+{\it varying-slope} model. That is, both the intercepts and the slopes -- the effects 
+associated with the variable $x$-- vary by group (region, in this example) and 
+are given probability models conditional on a further level of parameters 
+(the hyperparameters). 
 
 The model above estimates $R$ intercepts ($\alpha_1, \dots, \alpha_R$) and $R$ slopes 
 ($\beta_1, \dots, \beta_R$). The hyperparameters
@@ -204,19 +145,21 @@ structures present in the data as well as computational considerations \shortcit
 
 Perhaps the most important feature of hierarchical models is that inference for each group-level 
 parameter is informed not only by the group-specific information contained in the data but also 
-by the data for other groups as well. This is commonly referred to as borrowing strength or shrinkage. 
+by the data for other groups as well. This is commonly referred to as {\it borrowing strength} 
+or {\it shrinkage}. 
 
-In the first example above, inference for $\theta_j$ is directly informed by the observations in
-group $j$ but also indirectly by the observations from all other groups due to the common dependence
-on the global parameter $\phi$. In the survey example, the 
-estimates for each $\alpha_r$, for instance, are informed not only by the data from region $r$ but 
-also by the observations from all other regions through the common hyperparameters. This describes
-the general way in which the levels in a hierarchical model are connected in the data. The unit (individual) level 
-observations are the points from which the higher-level group distributions are estimated. That is, {\it strength} is 
-{\it borrowed} from all groups when estimating the parameter(s) corresponding to each individual group. As a 
-consequence the estimates for the group-level parameters {\it shrink} toward their common mean, 
-with the amount of shrinkage a function of the distance from that mean 
-\shortcite{jackman_bayesian_2009, lipsky_shrinkage_2010}.
+In the example in Figure~\ref{fig:hierarchical_model}, 
+inference for $\theta_j$ is directly informed by the observations 
+in group $j$ but also indirectly by the observations from all other groups due to the common 
+dependence on the global parameter $\phi$. In the survey example, the estimates for each 
+$\alpha_r$, for instance, are informed not only by the data from region $r$ but also by the 
+observations from all other regions through the shared hyperparameters. This describes
+the general way in which the levels in a hierarchical model are connected in the data. 
+The unit (individual) level observations are the points from which the higher-level group 
+distributions are estimated. That is, {\it strength} is {\it borrowed} from all groups when estimating 
+the parameter(s) corresponding to each individual group. As a consequence the estimates for the 
+group-level parameters {\it shrink} toward their common mean, with the amount of shrinkage a 
+function of the distance from that mean \shortcite{jackman_bayesian_2009, lipsky_shrinkage_2010}.
 
 See \citeA{gelman_arm_2007} and \citeA{jackman_bayesian_2009} for more 
 thorough and formal treatments of hierarchical modeling. Also see \citeA{lipsky_shrinkage_2010} 
@@ -269,12 +212,12 @@ For a more comprehensive treatment of undirected graphs in the context of GMRFs 
 \vspace{.5cm}
 
 \begin{tikzpicture}
-\node[obs, color=Sepia, text=Thistle] (r1) {$\nu_1$};
-\node[obs, below left=of r1, color=Sepia, text=Thistle] (r2) {$\nu_2$};
-\node[obs, below=of r2, color=Sepia, text=Thistle] (r3) {$\nu_3$};
-\node[obs, below right=of r3, color=Sepia, text=Thistle] (r4) {$\nu_4$};
-\node[obs, above right=of r4, color=Sepia, text=Thistle] (r5) {$\nu_5$};
-\node[obs, above=of r5, color=Sepia, text=Thistle] (r6) {$\nu_6$};
+\node[obs, color=PineGreen, text=white] (r1) {$\nu_1$};
+\node[obs, below left=of r1, color=PineGreen, text=white] (r2) {$\nu_2$};
+\node[obs, below=of r2, color=PineGreen, text=white] (r3) {$\nu_3$};
+\node[obs, below right=of r3, color=PineGreen, text=white] (r4) {$\nu_4$};
+\node[obs, above right=of r4, color=PineGreen, text=white] (r5) {$\nu_5$};
+\node[obs, above=of r5, color=PineGreen, text=white] (r6) {$\nu_6$};
 \edge [-, color=Thistle, bend right=30] {r1} {r2} ;
 \edge [-, color=Thistle, bend left=30] {r1} {r6} ;
 \edge [-, color=Thistle] {r2} {r3} ;
@@ -286,10 +229,10 @@ For a more comprehensive treatment of undirected graphs in the context of GMRFs 
  \hspace{1cm} 
  %
 \begin{tikzpicture}
-\node[obs, color=ProcessBlue, text = black] (r1) {$\nu_1$};
-\node[obs, below right=of r1, color=ProcessBlue, text = black] (r2) {$\nu_2$};
-\node[obs, below right=of r2,  color=ProcessBlue, text = black] (r3) {$\nu_3$};
-\node[obs, below right=of r3,  color=ProcessBlue, text = black] (r4) {$\nu_4$};
+\node[obs, color=PineGreen, text=white] (r1) {$\nu_1$};
+\node[obs, below right=of r1, color=PineGreen, text=white] (r2) {$\nu_2$};
+\node[obs, below right=of r2,  color=PineGreen, text=white] (r3) {$\nu_3$};
+\node[obs, below right=of r3,  color=PineGreen, text=white] (r4) {$\nu_4$};
 \edge [-, color=Melon] {r1} {r2} ;
 \edge [-, color=Melon, bend right=30] {r1} {r3} ;
 \edge [-, color=Melon] {r2} {r3} ;
@@ -392,7 +335,7 @@ be specified. For an unknown function $f_j(x_j)$ let $\mtrx{f}_j^{eval}$ denote 
 evaluations of $f_j$ at each of the $N$ observed values of $x_j$ 
 
 \begin{equation*}
-\mtrx{f}_j^{eval} = \left(f_j(x_{1j}), \dots, f_j(x_{nj}), \dots f_j(x_{Nj})\right)^\intercal.  
+\mtrx{f}_j^{eval} = \left(f_j(x_{1j}), \dots, f_j(x_{nj}), \dots, f_j(x_{Nj})\right)^\intercal.  
  \end{equation*}
  
 \noindent Then $\mathbf{f}_j^{eval}$ is treated as a random vector, which, following 

@@ -5,7 +5,7 @@
 \usepackage{etoolbox}
 
 %\usepackage[nottoc]{tocbibind}
-\usepackage[toc,page]{appendix} % for appendices %
+\usepackage[toc,title]{appendix} % for appendices %
 
 \BeforeBeginEnvironment{equation*}{\begin{singlespace}}
 \AfterEndEnvironment{equation*}{\end{singlespace}\noindent\ignorespaces}
@@ -79,7 +79,7 @@
 \usepackage{titlesec}
 \definecolor{gray75}{gray}{0.75}
 \newcommand{\hsp}{\hspace{20pt}}
-\titleformat{\chapter}[hang]{\Huge\bfseries}{\thechapter\hsp\textcolor{gray75}{|}\hsp}{0pt}{\Huge\bfseries}
+
 
 \usepackage{lstBUGS} % for pretty source code (https://github.com/jrnold/lstBUGS)
 \lstset{
@@ -197,6 +197,7 @@ I am thankful for essential guidance from
 {\singlespacing
 Greg Wawro, \\
 Ben Goodrich, \\
+Sung-Woo Cho, \\
 Greg Eirich, \\
 Rob Trangucci, \\
 Martina Ghusson, \\
@@ -229,6 +230,9 @@ Raya, Amelia and Silvia. \\
 
 \mainmatter
 
+\begingroup
+\titleformat{\chapter}[hang]{\Huge\bfseries}{\thechapter\hsp\textcolor{gray75}{|}\hsp}{0pt}{\Huge\bfseries}
+
 \input{sections/introduction}
 \input{sections/lit_review}
 \input{sections/ck_intro}
@@ -237,25 +241,22 @@ Raya, Amelia and Silvia. \\
 \input{sections/ck_stan}
 \input{sections/ck_results}
 \input{sections/discussion}
-%\include{sections/farhang_katznelson}
+\endgroup
 
+\begin{appendices}
+\input{sections/appendices}
+\end{appendices}
 
+\backmatter
 \nocite{r_software}
 \nocite{breslow_approximate_1993}
-
-
 
 \begingroup
     \setstretch{1}
     \setlength\bibitemsep{1\baselineskip}
     \bibliography{bibliography.bib}
-%     \addcontentsline{toc}{chapter}{References}
 \endgroup
 
-\backmatter
-\begin{appendices}
-\input{sections/appendices}
-\end{appendices}
 
 
 \end{document}
