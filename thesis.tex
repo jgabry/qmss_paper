@@ -1,23 +1,31 @@
 \documentclass[oneside,12pt] {book}
-\usepackage[margin=1in]{geometry} %one inch margins
-\renewcommand{\baselinestretch}{2} %double space, safe for fancy headers
+
+% MARGINS: one inch
+\usepackage[margin=1in]{geometry} 
+
+% DOUBLE SPACING
+\renewcommand{\baselinestretch}{2} 
 \usepackage{setspace}
 \usepackage{etoolbox}
 
-%\usepackage[nottoc]{tocbibind}
-\usepackage[toc,title]{appendix} % for appendices %
-
+% SINGLE SPACING for certain environments
 \BeforeBeginEnvironment{equation*}{\begin{singlespace}}
 \AfterEndEnvironment{equation*}{\end{singlespace}\noindent\ignorespaces}
 \BeforeBeginEnvironment{align*}{\begin{singlespace}}
 \AfterEndEnvironment{align*}{\end{singlespace}\noindent\ignorespaces}
-%\BeforeBeginEnvironment{figure}{\begin{singlespace}}
-%\AfterEndEnvironment{figure}{\end{singlespace}\noindent\ignorespaces}
 \BeforeBeginEnvironment{quote}{\begin{singlespace}}
 \AfterEndEnvironment{quote}{\end{singlespace}\noindent\ignorespaces}
 
+% FOOTNOTE FORMATTING ('multiple' to allow multiple footnotes separated by comma, 'flushmargin' to remove indentation of footnotes)
+\usepackage[bottom, multiple, flushmargin]{footmisc} 
+\renewcommand\footnotelayout{\small}
 
+% APPENDICES
+\usepackage[toc,title]{appendix} 
+
+% HYPERLINKS 
 \usepackage[]{hyperref}
+%\usepackage[pdfborder={0 0 0}]{hyperref}%for hyperlinks without ugly boxes
 \hypersetup{
     pdftitle={Bayesian Structured Additive Regression Models for 
     		Quantitative Historical Social Scientific Inquiry},    % title
@@ -30,74 +38,62 @@
 }
 
 
-
-%\usepackage{pslatex} %Times font
-%\usepackage[T1]{fontenc}
-%\usepackage[utf8]{inputenc}
-\usepackage[]{mathptmx} % can use option [slantedGreek] for slanted capital greek letters
+% APA CITATIONS
 \usepackage[bibnewpage, nosectionbib]{apacite} %apa citation style
 \bibliographystyle{apacite}
-%\usepackage[pdfborder={0 0 0}]{hyperref}%for hyperlinks without ugly boxes
-\usepackage{graphicx} %for figures
-\usepackage{enumerate} %for lists
-\usepackage{booktabs}
-%\usepackage{verbatim}
-\usepackage[bottom, multiple, flushmargin]{footmisc} % 'multiple' to allow multiple footnotes separated by comma, 'flushmargin' to remove indentation of footnotes
-%\raggedbottom
-\renewcommand\footnotelayout{\small}
 
-
-
-%\raggedbottom 
-%\addtolength{\topskip}{0pt plus 10pt}
-
+% FONTS
+\usepackage[]{mathptmx} 
 \usepackage{amsmath,amsfonts,amssymb}
-\newcommand{\mtrx}[1]{\mathbf{#1}}
-\usepackage{bm} % for bold-italic math font
+\usepackage{bm} % Bold-italic math font
 
-%\usepackage[svgnames]{xcolor} 
-\usepackage[usenames,dvipsnames,svgnames,table]{xcolor} % Required to specify font color
-
-%\definecolor{mygray}{HTML}{222222}
-%\definecolor{myblue}{HTML}{6699CC}
-
-%\definecolor{myblue1}{HTML}{'011f4b} 
-\definecolor{myblue2}{HTML}{03396c}
-\definecolor{myblue3}{HTML}{005b96}
-\definecolor{myblue4}{HTML}{6497b1}
-\definecolor{myblue5}{HTML}{b3cde0}
-\definecolor{myorange}{HTML}{e0c6b3}
-\definecolor{mypurple}{HTML}{b3b7e0}
-\definecolor{mygreen}{HTML}{64b1a5}
-
+% ALIGNMENT & INDENTATION
 \usepackage[document]{ragged2e} % left alignment (ragged right) instead of justified
 \setlength{\RaggedRightParindent}{.5in} % 1/2 inch paragraph indentation
 \usepackage{indentfirst} % indent first paragraphs after \section{} and friends
 
+% COLORS
+\usepackage[usenames,dvipsnames,svgnames,table]{xcolor} 
+
+% FOR FIGURES 
+\usepackage{graphicx}
+
+% FOR LISTS
+\usepackage{enumerate} 
+
+% FOR NICER TABLES
+\usepackage{booktabs}
+
+% ABSTRACT & ACKNOWLEDGEMENTS
+\usepackage[english, american]{babel}
+\usepackage{bookabstract} 
+\usepackage{acknowledgments}
+\addto\captionsamerican{%
+  \renewcommand{\bibname}{References}% use 'References' instead of 'Bibliography'
+}
+
+% HEADER, FOOTER, PAGE NUMBERS
 \usepackage{fancyhdr} %header
 \pagestyle{fancy}
 \fancyhf{}
 \renewcommand{\headrulewidth}{0pt} % remove line at top of each page
 \fancyfoot[R]{\thepage} % Set the right side of the footer to be the page number
 
-% Redefine plain style, which is used for titlepage and chapter beginnings
-% From http://tex.stackexchange.com/a/30230/828
-\fancypagestyle{plain}{%
-    \renewcommand{\headrulewidth}{0pt}%
+\fancypagestyle{plain}{% Redefine plain style, which is used for titlepage and chapter beginnings
+    \renewcommand{\headrulewidth}{0pt}% From http://tex.stackexchange.com/a/30230/828
     \fancyhf{}%
     \fancyfoot[R]{\thepage}%
 }
 
-% figure captions
+% FIGURE CAPTIONS
 \usepackage[font={small, it},format=hang,justification=justified,labelsep=space,labelfont={small,bf,up}]{caption}
 
-
-% chapter title styles
+% CHAPTER TITLE STYLES
 \usepackage{titlesec}
 \definecolor{gray75}{gray}{0.75}
 \newcommand{\hsp}{\hspace{20pt}}
 
-
+% PRETTY FORMATTING OF SOURCE CODE 
 \usepackage{lstBUGS} % for pretty source code (https://github.com/jrnold/lstBUGS)
 \lstset{
 basicstyle=\scriptsize\singlespacing,
@@ -110,18 +106,13 @@ xleftmargin=2em,
 xrightmargin=2em
 }
 
-
+% TIKZ GRAPHICS
 \usepackage{tikz}
 \usetikzlibrary{positioning}
 \usetikzlibrary{bayesnet}
 \usepackage{forest}
 
-
-\DeclareMathOperator*{\argmax}{arg\,max}
-
-%\setcounter{secnumdepth}{3} % numbers through \subsubsection
-%\setcounter{tocdepth}{3} % show numbers through \subsubsection in table of contents
-
+% TITLE PAGE 
 \newcommand*{\titleGM}{\begingroup % Create the command for including the title page in the document
 \hbox{ % Horizontal box
 \hspace*{0.2\textwidth} % Whitespace to the left of the title page
@@ -129,10 +120,7 @@ xrightmargin=2em
 \hspace*{0.05\textwidth} % Whitespace between the vertical line and title page text
 \parbox[b]{0.75\textwidth}{ % Paragraph box which restricts text to less than the width of the page
 
-
 \singlespacing
-%{\noindent\Huge\bfseries Quantitative Methods \\ \noindent \LARGE for Historical Social Scientific Inquiry}\\[2\baselineskip] % Title
-%{\large \textit{with Bayesian Semiparametric \\ Structured Additive Regression Models}}\\[4\baselineskip] % Tagline or further description
 {\noindent\Huge\bfseries Bayesian Structured Additive Regression Models}\\[2\baselineskip] % Title
 {\large \textit{for Quantitative Historical Social Scientific Inquiry }}\\[4\baselineskip] % Tagline or further description
 
@@ -153,16 +141,12 @@ xrightmargin=2em
 {\noindent Columbia University $\vert$ New York, New York}
 \end{center}
 }}
-
 \endgroup}
+% end TITLE PAGE
 
-% abstract and acknowledgements
-\usepackage[english, american]{babel}
-\usepackage{bookabstract} 
-\usepackage{acknowledgments}
-\addto\captionsamerican{%
-  \renewcommand{\bibname}{References}%
-}% use 'References' instead of 'Bibliography'
+
+
+% NEW ENVIRONMENTS & COMMANDS
 
 % environment for temporarily shrinking margins
 \newenvironment{changemargin}[2]{%
@@ -176,10 +160,16 @@ xrightmargin=2em
 }%
 \item[]}{\end{list}}
 
+% \mtrx for bold math
+\newcommand{\mtrx}[1]{\mathbf{#1}}
 
+% \argmax operator
+\DeclareMathOperator*{\argmax}{arg\,max}
+
+
+% BEGIN DOCUMENT
 \begin{document}
 %\pagenumbering{roman} 
-
 
 \titleGM % This command includes the title page
 
@@ -188,8 +178,8 @@ xrightmargin=2em
 
 \frontmatter
 
+% ABSTRACT
 \begin{abstract}
-%\singlespacing
 \begin{quote}
 \begin{changemargin}{.5cm}{.5cm}
 \justify
@@ -207,8 +197,8 @@ as a discussion of computational implementations and challenges thereof.
 \end{quote}
 \end{abstract}
 
+% ACKNOWLEDGEMENTS
 \begin{acknowledgments}	
-
 I am thankful for essential guidance from
  
 {\singlespacing
@@ -223,7 +213,6 @@ Shelley Katsh, \\
 Mark Gabry, \\
 Raya, Amelia and Silvia. \\   
 }
-
 \end{acknowledgments}
 
 \clearpage

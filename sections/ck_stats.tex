@@ -20,13 +20,14 @@ required for Cox and Katz's first method is not that they are implausible, but r
 periodization schemes per se are convenient abstractions that, in the context of quantitative 
 historical analysis, can enforce a theoretically motivated but not empirically justified structure 
 that should be learned rather than imposed. However, as demonstrated below, there are also 
-issues with Cox and Katz's second design that can be overcome by following the recommendations in \citeA{wawro_designing_2014}. 
+issues with Cox and Katz's second design that can be overcome by following the recommendations 
+in \citeA{wawro_designing_2014}. 
 
-Let $C$ denote the number of unique Congresses (time periods) in the data. The analysis 
-conducted by Cox and Katz centers on estimating the parameters  
-$\lambda = (\lambda_t : t = 1, \dots, C)$ representing bias (on the logit scale) toward the majority 
-party in each Congress $t$. They do this by maximum likelihood estimation of grouped logit 
-models with linear predictor $ \lambda_t + \rho_t \log{\left(v_t^{Ratio} \right)}$. 
+Let $C$ denote the number of unique Congresses (time periods) in the data. 
+The analysis conducted by Cox and Katz centers on estimating the parameters  
+$\lambda = (\lambda_t : t = 1, \dots, C)$ representing bias (on the logit scale) toward 
+the majority party in each Congress $t$. They do this by maximum likelihood estimation 
+of grouped logit models with linear predictor $ \lambda_t + \rho_t \log{\left(v_t^{Ratio} \right)}$. 
 
 The estimation of $\lambda$ and $\rho$ by grouped logit models follows naturally from 
 solving the seats-votes equation for the average seat share. In the legislative context of 
@@ -65,9 +66,9 @@ The ${\rm Beta\text{-}Binomial}(n,\alpha,\beta)$ distribution can be thought of 
 distribution resulting from a ${\rm Binomial}(n,p)$ distribution where $p \sim {\rm Beta}(\alpha,\beta)$. 
 Rather than assuming a fixed probability of a majority party roll-call victory -- in which case a simple 
 binomial model would suffice -- the beta-binomial distribution treats the underlying probability $p$ 
-as a random variable. The parameters $\alpha > 0$ and $\beta > 0$ govern the shape of the beta distribution, 
-however it is both more intuitive and computationally attractive to reparameterize in terms of the 
-mean $\theta = \alpha / (\alpha + \beta)$, which requires introducing an auxiliary parameter 
+as a random variable. The parameters $\alpha > 0$ and $\beta > 0$ govern the shape of the beta 
+distribution, however it is both more intuitive and computationally attractive to reparameterize in terms 
+of the mean $\theta = \alpha / (\alpha + \beta)$, which requires introducing an auxiliary parameter 
 $\phi = \alpha + \beta$. 
 
 This parameterization allows for modeling ${\rm logit}(\theta)$ by the semi-parametric structured 
@@ -78,7 +79,8 @@ as
  \eta = f_\lambda(\lambda) +  f_\rho(\log{(v^{Ratio})}). 
 \end{equation*}
 
-\noindent As discussed in \ref{star}, the vectors of function evaluations are expressed as the products 
+\noindent As discussed in \ref{star}, the vectors of function evaluations are 
+expressed as the products 
 
 \begin{equation*}
 \mathbf{f}^{eval}_\lambda = \mtrx{M}_\lambda \lambda, 
@@ -99,19 +101,29 @@ Priors for $f_{\lambda}$ and $f_{\rho}$ are expressed as distributions over the 
 vectors $\lambda$ and $\rho$ as 
 
 \begin{equation*}
-p(\lambda | \tau_\lambda^2, \bar{\lambda}) \propto \exp{\left\{-\frac{1}{2\tau_\lambda^2} \: \left(\lambda - \bar{\lambda}\right)^\intercal  \mtrx{P}   \left(\lambda - \bar{\lambda}\right) \right\}} \propto \mathcal{N} (\lambda | \bar{\lambda}, \mtrx{Q}_\lambda^{-1}), 
+p(\lambda | \tau_\lambda^2, \bar{\lambda}) 
+\propto 
+\exp{\left\{-\frac{1}{2\tau_\lambda^2} \: \left(\lambda - \bar{\lambda}\right)^\intercal  \mtrx{P}   
+\left(\lambda - \bar{\lambda}\right) \right\}} 
+\propto 
+\mathcal{N} (\lambda | \bar{\lambda}, \mtrx{Q}_\lambda^{-1}), 
 \end{equation*}
 \begin{equation*}
-p(\rho | \tau_\rho^2, \bar{\rho}) \propto \exp{\left\{-\frac{1}{2\tau_\rho^2} \: \left(\rho - \bar{\rho}\right)^\intercal  \mtrx{P} \left(\rho-\bar{\rho}\right) \right\}} \propto \mathcal{N} (\rho | \bar{\rho}, \mtrx{Q}_\rho^{-1}), 
+p(\rho | \tau_\rho^2, \bar{\rho}) 
+\propto 
+\exp{\left\{-\frac{1}{2\tau_\rho^2} \: \left(\rho - \bar{\rho}\right)^\intercal  \mtrx{P} 
+\left(\rho-\bar{\rho}\right) \right\}} 
+\propto 
+\mathcal{N} (\rho | \bar{\rho}, \mtrx{Q}_\rho^{-1}), 
 \end{equation*}
 
 \noindent where $\mathbf{P}$ is the penalty matrix.
 
-To model temporal dependence such that the neighbors of Congress $t$ also provide information
-about the values of the parameters of interest at time $t$, the undirected random walk (RW) 
-prior discussed in \ref{penalty_matrix} is used. Using the notation introduced in \ref{undirected_graphs} 
-we can define adjacency by specifying the neighborhoods for all Congresses (time periods) 
-$t = 1, \dots, C$
+To model temporal dependence such that the neighbors of Congress $t$ also provide 
+information about the values of the parameters of interest at time $t$, the undirected 
+random walk (RW) prior discussed in \ref{penalty_matrix} is used. Using the notation 
+introduced in \ref{undirected_graphs} we can define adjacency by specifying the 
+neighborhoods for all Congresses (time periods) $t = 1, \dots, C$
 
 \begin{equation*}
 \partial^\mathbf{G}_t = \left\{C_s : \left| s - t \right| \leq \kappa \right\},
@@ -215,7 +227,9 @@ are used for the final model presented below.}
 \end{tikzpicture}
 \vspace{.25cm}
 
-\caption{The undirected graphs corresponding to $\kappa = 1$, $\kappa = 2$ and $\kappa = 3$. Each node represents a Congress. The dashed lines indicate that only part of the graph is shown due to space constraints.}
+\caption{The undirected graphs corresponding to $\kappa = 1$, $\kappa = 2$ and $\kappa = 3$. 
+Each node represents a Congress. The dashed lines indicate that only part of the graph is shown 
+due to space constraints.}
 \label{fig:rw_undirected_graphs}
 \end{figure}
 

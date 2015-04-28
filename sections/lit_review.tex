@@ -47,19 +47,22 @@ or overfit the data \shortcite{gelman_bayesian_2013}. Hierarchical modeling prov
 compromise by allowing parameters to vary by group at lower levels of the hierarchy while 
 estimating population-level parameters at higher levels. 
 
-A simple hierarchical model for data $y = (y_1, \dots, y_N)$ organizes the observations into $J \leq N$ groups, 
-with group-level parameters $\theta = (\theta_1, \dots, \theta_J)$ and global parameter(s) $\xi$ 
+A simple hierarchical model for data $y = (y_1, \dots, y_N)$ organizes the observations into $J \leq N$ 
+groups, with group-level parameters $\theta = (\theta_1, \dots, \theta_J)$ and global parameter(s) $\xi$ 
 (see Figure~\ref{fig:hierarchical_model}) and can be written
 
 \begin{align*}
 y_n &\sim p(y_n | \theta_{j[n]}) \\
 \theta_j &\sim p(\theta_j | \xi) \\
-\xi &\sim p(\xi).
+\xi &\sim p(\xi),
 \end{align*}
 
-\noindent Observations are assumed to be conditionally independent given the group-level parameters, and the group-level parameters conditionally independent given the global parameters.\footnote{
-The assumption of exchangeability is also important here, but a sufficient discussion of this subtle topic 
-is beyond the scope of this thesis. See \citeA{gelman_bayesian_2013}.} The joint posterior distribution for all parameters then factors nicely as
+\noindent where $j[n]$ is the group pertaining to the $n$th data point. Observations are assumed 
+to be conditionally independent given the group-level parameters, and the group-level parameters 
+conditionally independent given the global parameters.\footnote{
+The assumption of exchangeability is also important here, but a sufficient discussion of this subtle 
+topic is beyond the scope of this thesis. See \citeA{gelman_bayesian_2013}.} The joint posterior 
+distribution for all parameters then factors nicely as
 
 \begin{equation*}
  p(\theta, \xi | y) \propto p(\xi) \prod_{j=1}^J p(\theta_j | \xi) \prod_{n=1}^N p(y_n | \theta_{j[n]}). 
@@ -94,7 +97,9 @@ for tree={
 %\foreach \Name/\Label in {level2/$p(y_{n}|\theta_{j[n]})$,level1/$p(\theta_j|\phi)$,level0/$p(\phi)$}
 %  \node[anchor=west] at ([xshift=60pt]\Name) {\Label};   
 \end{forest}
-\caption{A simple hierarchical structure with $N$ observations $y_1, \dots, y_N$ organized in to $J$ groups, with group-level parameters $\theta_1, \dots, \theta_J$, and global hyperparameter(s) $\xi$. The notation $\{y_{n : j[n] = j}\}$ is used for the set of observations belonging to the $j$th group.}
+\caption{A simple hierarchical structure with $N$ observations $y_1, \dots, y_N$ organized in 
+to $J$ groups, with group-level parameters $\theta_1, \dots, \theta_J$, and global hyperparameter(s) 
+$\xi$. The notation $\{y_{n : j[n] = j}\}$ is used for the set of observations belonging to the $j$th group.}
 \label{fig:hierarchical_model} 
 \end{figure}
 
@@ -104,17 +109,18 @@ for tree={
 %Hierarchical models [1] are defined by the organization of a model?s parameters into exchangeable groups, and the resulting conditional independencies between those groups. simple hierarchical model 
 
 The term {\it hierarchical} is a suitable designation for a diverse family of 
-models. When parameters are grouped into multiple different hierarchical structures it is common to 
-refer to the resulting models as {\it multilevel models} \shortcite{gelman_arm_2007}.  For example, 
-consider a scenario in which survey respondents from many different
-geographical regions are asked if they are in favor of a particular policy $P$. One approach for estimating
-the level of underlying support for the policy in each region $r = 1, 2, \dots, R$ would be to estimate separate
-models for the $R$ regions. However, such an approach would ignore the relationship between
-support for $P$ across regions, which should be incorporated into the joint probability model. In 
-the United States, for example, estimating separate models would impose the assumption that
-support for $P$ in, say, New England is entirely uninformative about support for $P$ in all 
-other regions of the country. A hierarchical framework allows for a more realistic model in which 
-support for $P$ can vary across regions without disregarding interregional dependence.      
+models. When parameters are grouped into multiple different hierarchical structures 
+it is common to refer to the resulting models as {\it multilevel models} \shortcite{gelman_arm_2007}.  
+For example, consider a scenario in which survey respondents from many different
+geographical regions are asked if they are in favor of a particular policy $P$. One 
+approach for estimating the level of underlying support for the policy in each region 
+$r = 1, 2, \dots, R$ would be to estimate separate models for the $R$ regions. However, 
+such an approach would ignore the relationship between support for $P$ across regions, 
+which should be incorporated into the joint probability model. In the United States, for example, 
+estimating separate models would impose the assumption that support for $P$ in, say, New 
+England is entirely uninformative about support for $P$ in all other regions of the country. A 
+hierarchical framework allows for a more realistic model in which support for $P$ can vary 
+across regions without disregarding interregional dependence.      
 
 For the $n$th observation, let $r[n]$ denote the respondent's region and $p_n = {\rm Pr}(y_n = 1)$ 
 be the probability the respondent expresses support for policy $P$. For simplicity, assume that there 
@@ -140,7 +146,8 @@ These so-called hyperparameters
 %The model above estimates an $R$-vector of intercepts $\alpha = (\alpha_1, \dots, \alpha_R)$ 
 %as well as an $R$-vector of slopes $\beta = (\beta_1, \dots, \beta_R)$. The hyperparameters
 %$(\gamma^\alpha_0, \gamma^\alpha_1 \gamma^\beta_0, \gamma^\beta_1, \tau^2_\alpha, \tau^2_\beta)$ 
-are also estimated from the data and thus require prior distributions (hyperpriors) to be specified. In theory there is no limit to the number 
+are also estimated from the data and thus require prior distributions (hyperpriors) to be specified. 
+In theory there is no limit to the number 
 of levels in the hierarchy -- if the parameters of the hyperpriors are not fixed then they too are modeled. 
 In practice, the appropriate depth of the hierarchy depends on both the hierarchical 
 structures present in the data and computational considerations \shortcite{gelman_bayesian_2013}. 
@@ -181,7 +188,8 @@ social scientific inquiry.\footnote{This is actually only somewhat true. Many sp
 (e.g. autoregressive processes) are commonly used by researchers applying statistics in many different 
 fields including all of the social sciences. This is because GMRFs are  multivariate normal distributions. 
 It is the particular use advocated by Wawro and Katznelson that is unfamiliar in the social sciences.} 
-Before defining GMRFs it is first necessary to introduce some concepts from graph theory, particularly undirected graphs. 
+Before defining GMRFs it is first necessary to introduce some concepts from graph theory, particularly 
+undirected graphs. 
 
 \subsection{Preliminaries (undirected graphs)}
 \label{undirected_graphs}
@@ -308,7 +316,7 @@ For a simple proof see \citeA{rue_gaussian_2005}.\footnote{For intuition, the fo
 the elements of a precision matrix may also be helpful to keep in mind. For $i = j$ (the diagonal),  
 $q_{ij} = Var(\theta_i | \theta_{-i})$, the variance of $\theta_i$ conditional all the variables except 
 $\theta_i$. For $i \neq j$ (the off-diagonal), $q_{ij}  = -Cov(\theta_i, \theta_j | \theta_{-ij}) $, the negative 
-(flipped sign) covariance between $\theta_i$ and $\theta_j$ conditional on all $\theta$s except $i$ and $j$.  }
+(flipped sign) covariance between $\theta_i$ and $\theta_j$ conditional on all $\theta$s except $i$ and $j$.}
 
 
 
@@ -329,8 +337,13 @@ model (GLM) with a semiparametric structured additive predictor
 
 \noindent which can include linear components, nonlinear unknown functions of covariates, 
 and is flexible enough to include the assorted mixed effects models familiar to social scientists as 
-special cases \shortcite{fahrmeir_bayesian_2001}.\footnote{\citeA{brezger_star_2005} provide a detailed
-list of the various possible roles for the functions $f_j$: ``\dots usual nonlinear effects of continuous covariates, time trends and seasonal effects, two-dimensional surfaces, varying coefficient terms, i.i.d. random intercepts and slopes, spatially correlated effects, and geographically weighted regression" (p. 2). }\footnote{The varying-intercept, varying-slope models described in \ref{hierarchical} are examples of mixed effects models and are also special cases of the STAR model. Other familiar special cases include generalized additive mixed models.} 
+special cases \shortcite{fahrmeir_bayesian_2001}.\footnote{\citeA{brezger_star_2005} provide a 
+detailed list of the various possible roles for the functions $f_j$: ``\dots usual nonlinear effects of 
+continuous covariates, time trends and seasonal effects, two-dimensional surfaces, varying coefficient 
+terms, i.i.d. random intercepts and slopes, spatially correlated effects, and geographically weighted 
+regression" (p. 2). }\footnote{The varying-intercept, varying-slope models described in \ref{hierarchical} 
+are examples of mixed effects models and are also special cases of the STAR model. Other familiar 
+special cases include generalized additive mixed models.} 
 
 From the Bayesian perspective, the non-varying parameters $\gamma$ as well as the unknown 
 functions $f_1, \dots, f_J$ are treated as random variables distributed according to priors that must 
@@ -350,7 +363,7 @@ unknown parameter vector $\theta_j$. The prior for each $\theta_j$  takes the ge
 p(\theta_j | \tau^2_j) 
 \propto 
 \frac{1}{\left(\tau^2_j\right)^{{\rm rank}(\mtrx{P})/2} }
-\exp{\left\{-\frac{1}{2\tau^2_j} \theta_j^\intercal \mtrx{P} \theta_j\right\}}
+\exp{\left\{-\frac{1}{2\tau^2_j} \theta_j^\intercal \mtrx{P} \theta_j\right\}},
 \end{equation*}
 
 \noindent where $\mtrx{P}$ is a penalty matrix whereby we operationalize our prior assumptions 
@@ -360,9 +373,9 @@ for a discussion of ways to deal with the impropriety of this prior under certai
 
 To provide some intuition, suppose we are interested in learning about an effect with assumed 
 variation over geographic regions.  A simple map with $R$ distinct regions $r_1, r_2, \dots r_R$ can 
-be represented as an undirected graph $\mtrx{G}$ with vertices $V = \{\nu_1, \nu_2, \dots, \nu_R\}$ and 
-edges $E$ connecting vertices corresponding to neighboring (or proximate) regions. A prior on a 
-parameter vector $\theta = (\theta_1, \dots, \theta_R)$ can be constructed such that the matrix 
+be represented as an undirected graph $\mtrx{G}$ with vertices $V = \{\nu_1, \nu_2, \dots, \nu_R\}$
+and edges $E$ connecting vertices corresponding to neighboring (or proximate) regions. A prior on 
+a parameter vector $\theta = (\theta_1, \dots, \theta_R)$ can be constructed such that the matrix 
 $\mtrx{P}$ has a zero in the $ij$th cell if and only if $\theta_i$ and $\theta_j$ (the parameters 
 corresponding to regions $r_i$ and $r_j$) are assumed to be independent conditional on 
 $\theta_{-ij}$. Then $\theta$ is a GMRF with respect to $\mtrx{G}$ with 
@@ -399,9 +412,9 @@ the neighbors of time $t$ are both $t-1$ and $t+1$.\footnote{Unless otherwise
 noted, the notation $RW$ will refer to an {\it undirected} random walk throughout 
 the remainder of this thesis.} The associated graph $\mtrx{G}$ therefore has vertices 
 $V=\{\nu_t : t=1,\dots,T\}$, each of which has two neighbors, with the exception of 
-$\nu_1$ and $\nu_T$, which have one neighbor.\footnote{$\partial_t = \{\nu_{s} : t - 1 \leq s \leq t + 1\}.$}  
-The penalty matrix $\mtrx{P}$ corresponding to the $RW_1$ prior with equally 
-spaced observations is the tridiagonal matrix
+$\nu_1$ and $\nu_T$, which have one neighbor.\footnote{$\partial_t = \{\nu_{s} : 
+t - 1 \leq s \leq t + 1\}.$}  The penalty matrix $\mtrx{P}$ corresponding to the $RW_1$ 
+prior with equally spaced observations is the tridiagonal matrix
 
 \begin{equation*}
 \mtrx{P} = 
@@ -411,7 +424,7 @@ spaced observations is the tridiagonal matrix
   	& -1 & \ddots 	& \ddots	& \\
   	&  	& \ddots 	& 2 	& -1\\
   	&  	& 		& -1 	& 1\\
-\end{bmatrix}
+\end{bmatrix},
 \end{equation*}
 
 \noindent which can be derived by computing the difference of the appropriate degree 
@@ -435,11 +448,11 @@ times $t-2$ and $t+2$ as neighbors of $t$.
 \label{hyperpriors}
 
 To complete the hierarchical model requires also specifying hyperpriors $p(\tau_j^2)$.  
-By estimating -- rather than fixing -- the variance hyperparameter $\tau_j^2$, the smoothing function $f_j$ 
-and the amount of smoothness are estimated simultaneously. 
- \citeA{fahrmeir_bayesian_2001} and \citeA{brezger_star_2005} recommend  
- inverse-gamma priors for the $\tau_j^2$. However, in light of concerns about this type 
- of inverse-gamma prior raised by \citeA{gelman_prior_2006}, in this thesis several priors 
- for $\tau^2_j$ are used and compared to check the degree to which the results are 
- sensitive to the choice of prior.
+By estimating -- rather than fixing -- the variance hyperparameter $\tau_j^2$, the smoothing 
+function $f_j$ and the amount of smoothness are estimated simultaneously. 
+\citeA{fahrmeir_bayesian_2001} and \citeA{brezger_star_2005} recommend  
+inverse-gamma priors for the $\tau_j^2$. However, in light of concerns about this type 
+of inverse-gamma prior raised by \citeA{gelman_prior_2006}, in this thesis several priors 
+for $\tau^2_j$ are used and compared to check the degree to which the results are 
+sensitive to the choice of prior.
 
