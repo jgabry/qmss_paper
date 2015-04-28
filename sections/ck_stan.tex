@@ -180,12 +180,12 @@ In fact, the variance of a Cauchy distribution is infinite.}
 The vectors ${\tt lambda\_noise}$ and ${\tt rho\_noise}$ represent variables to be given iid standard normal
 priors, which allows for the non-centered parameterization of the multivariate normal to be used for
 ${\tt lambda}$ and ${\tt rho}$.\footnote{The non-centered parameterization works as follows. If
-$z$ is a $K$-vector of iid $\mathcal{N}(0,1)$ variables and $\theta = \mu + L z$, 
-where $LL' = \boldsymbol{\Sigma}$, 
-then $\theta \sim \mathcal{N}_K (\mu, \boldsymbol{\Sigma})$. This is analogous to the familiar univariate case 
-where $\theta = \mu + \sigma z$ and $z \sim \mathcal{N}(0,1)$ implies that 
+$\zeta \in \mathbb{R}^D$ is a vector of i.i.d $\mathcal{N}(0,1)$ variables and $\theta = \mu + L \zeta$, 
+where $LL' = \boldsymbol{\Sigma} \in R^{D \times D}$, 
+then $\theta \sim \mathcal{N}_D (\mu, \boldsymbol{\Sigma})$. This is analogous to the familiar univariate case 
+where $\theta = \mu + \sigma \zeta$ and $\zeta \sim \mathcal{N}(0,1)$ implies that 
 $\theta \sim \mathcal{N}(\mu, \sigma^2)$.} Unlike the elements of ${\tt lambda}$ and ${\tt rho}$, 
-the elements of ${\tt lambda\_noise}$ and ${\tt rho\_noise}$ are independent by definition, 
+the elements of ${\tt lambda\_noise}$ and ${\tt rho\_noise}$ are independent by construction, 
 which can lead to large gains in efficiency for MCMC algorithms in terms of effective sample 
 size \shortcite{stan_development_team_stan_2015, betancourt_hamiltonian_2013}. 
 
