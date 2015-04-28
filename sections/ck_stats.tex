@@ -76,7 +76,7 @@ additive predictor $\eta$ of the STAR model, which can be written in vector/matr
 as 
 
 \begin{equation*}
- \eta = f_\lambda(\lambda) +  f_\rho(\log{(v^{Ratio})}). 
+ \eta = f_\lambda(t) +  f_\rho(\log{(v^{Ratio})}). 
 \end{equation*}
 
 \noindent As discussed in \ref{star}, the vectors of function evaluations are 
@@ -121,7 +121,7 @@ p(\rho | \tau_\rho^2, \bar{\rho})
 
 To model temporal dependence such that the neighbors of Congress $t$ also provide 
 information about the values of the parameters of interest at time $t$, the undirected 
-random walk (RW) prior discussed in \ref{penalty_matrix} is used. Using the notation 
+random walk prior discussed in \ref{penalty_matrix} is used. Using the notation 
 introduced in \ref{undirected_graphs} we can define adjacency by specifying the 
 neighborhoods for all Congresses (time periods) $t = 1, \dots, C$
 
@@ -132,8 +132,8 @@ neighborhoods for all Congresses (time periods) $t = 1, \dots, C$
 \noindent where $\kappa \leq C$ is a positive integer and $\mathbf{G}$ is the undirected graph 
 with nodes $V = \{\nu_1, \dots, \nu_C\}$ and the edges implied by $\partial^\mathbf{G}$ 
 (see Figure~\ref{fig:rw_undirected_graphs}). The results presented in section~\ref{results} use 
-the $RW_1$ GMRF prior for $f_\lambda$ and $f_\rho$, which applies smoothing while allowing 
-for slightly more abrupt shifts in $\lambda$ and $\rho$ between Congresses than a 
+the first order undirected random walk prior for $f_\lambda$ and $f_\rho$, which applies smoothing 
+while allowing for slightly more abrupt shifts in parameter values between Congresses than the 
 $RW_2$ prior.\footnote{As mentioned in \ref{hyperpriors}, several priors for $\tau^2_\lambda$ 
 and $\tau^2_\rho$ were considered including inverse-gamma \shortcite{fahrmeir_bayesian_2001} 
 and half-Cauchy \shortcite{gelman_prior_2006}, as well as half-normal. Parameter estimates were 
