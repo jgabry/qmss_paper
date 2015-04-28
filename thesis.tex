@@ -140,7 +140,7 @@ xrightmargin=2em
 \vspace{0.3\textheight} % Whitespace between the title block and the publisher
 \begin{center}
 %{\noindent \bf }\\[\baselineskip] 
-{\noindent Columbia University $\vert$ New York, New York}
+{\noindent Columbia University $\vert$ New York}
 \end{center}
 }}
 \endgroup}
@@ -229,7 +229,7 @@ Raya, Amelia and Silvia. \\
 \end{quote}
 
 {\singlespacing
-\bigskip
+%\bigskip
 \tableofcontents
 }
 \clearpage
@@ -252,14 +252,15 @@ Raya, Amelia and Silvia. \\
 \endgroup
 
 \begin{appendices}
-\input{sections/appendices}
+\setcounter{subsection}{0}
+\input{sections/appendices.tex}
 \end{appendices}
 
 \backmatter
 \nocite{r_software}
 \nocite{breslow_approximate_1993}
 \nocite{papaspiliopoulos_general_2007}
-\nocite{fahrmeir_regression_2013}
+\nocite{shinystan}
 
 \begingroup
     \setstretch{1}

@@ -79,8 +79,8 @@ performance of the algorithm. See \citeA{stan_development_team_stan_2015} for ex
 Finally, there is no advantage to conjugacy in Stan. 
 Users are free to specify prior distributions that more accurately reflect current knowledge. 
 For a more thorough introduction to Stan and NUTS see \citeA{stan_development_team_stan_2015} 
-and \citeA{hoffman_2012}, respectively.\footnote{See also Appendix~\ref{AppendixD} for a simplified 
-version of the HMC algorithm used by Stan.}
+and \citeA{hoffman_2012}, respectively.\footnote{See also Appendix D %Appendix~\ref{AppendixD} 
+for a simplified version of the HMC algorithm used by Stan.}
 
 \subsubsection{Stan program: data and transformed data}
 
@@ -307,7 +307,8 @@ original variable.}
 The {\tt generated quantities} block (Figure~\ref{stan_generated_quantities}) allows for the computation 
 of distributions of quantities of interest without affecting the log posterior specified in the model block. 
 In this case the estimated bias towards the majority party in each congress is computed. For model 
-checking (section~\ref{subsection_model_checking}), simulations from the posterior predictive distribution 
+checking (Appendix F %Appendix~\ref{AppendixF}
+), simulations from the posterior predictive distribution 
 are also generated.\footnote{The call to ${\tt beta\_binomial\_rng}$ is inside the loop in the 
 {\tt generated quantities} block unlike the call to ${\tt beta\_binomial\_log}$ in the {\tt model} block because 
 random number generating functions are not currently vectorized in Stan.} 
