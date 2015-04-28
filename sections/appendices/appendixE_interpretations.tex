@@ -2,26 +2,27 @@
 \vspace{-1.75cm}
 \subsection{Different Interpretations}
 
-Although Figure~\ref{fig:ck_bias} (p.~\pageref{fig:ck_bias}) appears to show two versions of the same plot with
-slightly different estimates, Cox and Katz's results -- obtained by maximum likelihood estimation --
+Cox and Katz's results obtained by maximum likelihood estimation 
 and the results from the Bayesian model must be interpreted differently. The former are point estimates 
 and confidence intervals, whereas the full Bayesian model provides an estimate of the marginal posterior 
-{\it distribution} for each parameter. That is, the estimates obtained from the Bayesian model are the 
-distributions themselves, which are representations of our uncertainty about the parameters 
-given the data. 
+{\it distribution} for each parameter. The estimates obtained from the Bayesian model are the 
+distributions themselves, each of which represents an approximation of our a posteriori
+uncertainty about a certain parameter. 
 
 The methods used by Cox and Katz come from the classical approach where a single point 
-estimate is obtained for each parameter and assessed in relation to infinitely many intervals 
-constructed from datasets obtained from hypothetical, endless repeated sampling. While in many 
-situations it is natural to imagine repeating an experiment (e.g. coin flipping) or resampling from 
-a population, such an interpretation is more difficult to justify in the context of the historical 
-events of interest to this analysis. For each confidence interval obtained from Cox and Katz's analysis, 
-what can be said is that it either contains the (theoretical) true parameter value or it does not. This is 
+estimate is computed for each parameter and assessed in relation to infinitely many potential 
+intervals computed from infinitely many potential samples. %
+%While in many 
+%situations it is natural to imagine repeating an experiment (e.g. coin flipping) or resampling from 
+%a population, such an interpretation is more difficult to reconcile with the context of the historical 
+%events of interest to this analysis. 
+But for an individual interval,
+what can be said is that it either contains the (abstract) true parameter value or it does not. This is 
 a consequence of accepting (explicitly or implicitly) the classical position that the parameter is fixed 
-while the data and confidence interval bounds are random variables. 
+but the data and interval bounds are random variables. 
 
 On the contrary, from the Bayesian perspective the parameter is treated as a random variable while 
-the data and interval bounds are fixed. As a result, any so-called credible intervals computed from the 
+the data and intervals are fixed. As a result, any so-called credible intervals computed from the 
 posterior distribution have a more intuitive interpretation: the probability that the true parameter value lies 
 in the $p\%$ interval  -- conditional on the model and data -- is $p$. 
 
