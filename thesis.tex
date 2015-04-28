@@ -16,9 +16,7 @@
 \BeforeBeginEnvironment{quote}{\begin{singlespace}}
 \AfterEndEnvironment{quote}{\end{singlespace}\noindent\ignorespaces}
 
-% FOOTNOTE FORMATTING ('multiple' to allow multiple footnotes separated by comma, 'flushmargin' to remove indentation of footnotes)
-\usepackage[bottom, multiple, flushmargin]{footmisc} 
-\renewcommand\footnotelayout{\small}
+
 
 % APPENDICES
 \usepackage[toc,title]{appendix} 
@@ -36,6 +34,10 @@
     filecolor=black,      % color of file links
     urlcolor=black           % color of external links
 }
+
+% FOOTNOTE FORMATTING ('multiple' to allow multiple footnotes separated by comma, 'flushmargin' to remove indentation of footnotes)
+\usepackage[bottom, multiple, flushmargin]{footmisc} 
+\renewcommand\footnotelayout{\small}
 
 
 % APA CITATIONS
@@ -257,6 +259,7 @@ Raya, Amelia and Silvia. \\
 \nocite{r_software}
 \nocite{breslow_approximate_1993}
 \nocite{papaspiliopoulos_general_2007}
+\nocite{fahrmeir_regression_2013}
 
 \begingroup
     \setstretch{1}

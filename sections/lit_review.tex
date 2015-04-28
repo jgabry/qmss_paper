@@ -328,8 +328,21 @@ $\theta_i$. For $i \neq j$ (the off-diagonal), $q_{ij}  = -Cov(\theta_i, \theta_
 
 \subsection{Definition}
 
-The structured additive regression (STAR) model replaces the linear predictor of the generalized linear 
-model (GLM) with a semiparametric structured additive predictor
+Given observations $y$ and covariates $w_{1}, \dots, w_{K}$, the generalized linear model (GLM) 
+relates the linear predictor 
+
+\begin{equation*}
+\zeta_n = \beta_0 + \beta_1 w_{n1} + \ldots + \beta_K w_{nK}, \quad n = 1, \dots, N
+\end{equation*}
+
+\noindent to the conditional mean of the outcome $\mu_n = E(y_n | w_{n1}, \dots, w_{nK})$ via a link 
+function $g$ such that $\mu_n = g^{-1}(\zeta_n)$.\footnote{The observations $y_1, \dots, y_n$ are
+assumed to be conditionally independent and from an exponential family.} 
+For instance, the vary-intercept, varying-slope model in section~\ref{hierarchical} uses the logit link 
+function to map between the real numbers and the $[0,1]$ interval on which probabilities are defined.  
+
+The structured additive regression (STAR) model replaces the linear predictor $\zeta$ of the 
+GLM with a semiparametric structured additive predictor
 
 \begin{equation*}
   \eta_n =  w_n^\intercal\gamma + f_1(x_{n1}) + \ldots + f_j(x_{nj}) + \ldots + f_J(x_{nJ}), \quad n = 1, \dots, N 
@@ -341,7 +354,7 @@ special cases \shortcite{fahrmeir_bayesian_2001}.\footnote{\citeA{brezger_star_2
 detailed list of the various possible roles for the functions $f_j$: ``\dots usual nonlinear effects of 
 continuous covariates, time trends and seasonal effects, two-dimensional surfaces, varying coefficient 
 terms, i.i.d. random intercepts and slopes, spatially correlated effects, and geographically weighted 
-regression" (p. 2). }\footnote{The varying-intercept, varying-slope models described in \ref{hierarchical} 
+regression" (p. 2). The varying-intercept, varying-slope models described in \ref{hierarchical} 
 are examples of mixed effects models and are also special cases of the STAR model. Other familiar 
 special cases include generalized additive mixed models.} 
 
@@ -362,8 +375,8 @@ unknown parameter vector $\theta_j$. The prior for each $\theta_j$  takes the ge
 \begin{equation*}
 p(\theta_j | \tau^2_j) 
 \propto 
-\frac{1}{\left(\tau^2_j\right)^{{\rm rank}(\mtrx{P})/2} }
-\exp{\left\{-\frac{1}{2\tau^2_j} \theta_j^\intercal \mtrx{P} \theta_j\right\}},
+\left(\frac{1}{\tau_j^2} \right)^{{\rm rank}(\mtrx{P})/2}
+\exp{\left\{-\frac{1}{2\tau^2_j} \theta_j^\intercal \mtrx{P}_j \theta_j\right\}},
 \end{equation*}
 
 \noindent where $\mtrx{P}$ is a penalty matrix whereby we operationalize our prior assumptions 
