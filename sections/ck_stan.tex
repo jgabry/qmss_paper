@@ -39,34 +39,34 @@ using Stan, which can fit a more diverse range of models than is currently possi
 and other software packages, and allows for analyses in the spirit of \citeA{wawro_designing_2014} 
 to be extended beyond the confines of their particular examples.  
 
-Stan is a probabilistic modeling language, MCMC sampler, and optimizer. The particular MCMC 
+Stan is a probabilistic modeling language, optimizer, and MCMC sampler. The particular MCMC 
 algorithm implemented in Stan is a variant of Hamiltonian Monte Carlo (HMC) called the No-U-Turn 
-Sampler (NUTS) \shortcite{hoffman_2012}. Borrowing from physics the concepts and mathematics 
-behind Hamiltonian dynamics, HMC treats the vector of unknown parameters as the position of a 
-particle. In Hamiltonian dynamics, momentum and position change continuously over time, with the 
-gradient of the particle's potential energy function --  which corresponds to the negative log posterior 
--- responsible for changes in momentum, and momentum governing changes in position. Stan works 
-by simulating a discretization of this process, making necessary corrections to satisfy the detailed 
-balance equations (that is, to ensure the resulting Markov chains are reversible).\footnote{Reversibility 
-of the Markov chain is important because every reversible Markov chain has a stationary distribution 
-(i.e. reversibility is a sufficient, but not necessary condition). Intuitively, reversibility means that for 
-$x$ and $x^\prime$ generated from the target density, the probability of the Markov chain 
-transitioning from state $x$ to $x^\prime$ is the same as from $x'$ to $x$.}  
+Sampler (NUTS) \shortcite{hoffman_2012}, designed for fitting rich Bayesian statistical models. 
+Borrowing from physics the concepts and mathematics behind Hamiltonian dynamics, HMC treats 
+the vector of unknown parameters as the position of a particle. In Hamiltonian dynamics, momentum 
+and position change continuously over time, with the gradient of the particle's potential energy function 
+--  which corresponds to the negative log posterior -- responsible for changes in momentum, 
+and momentum governing changes in position. Stan works by simulating a discretization of this 
+process, making necessary corrections to satisfy the detailed balance equations (that is, to ensure 
+the resulting Markov chains are reversible).\footnote{Reversibility of the Markov chain is important 
+because every reversible Markov chain has a stationary distribution (reversibility is sufficient 
+but not necessary). Intuitively, reversibility means that for $x$ and $x^\prime$ generated 
+from the target density, the probability of a transition from state $x$ to $x^\prime$ 
+is the same as for $x'$ to $x$.}  
 
 Several characteristics of HMC, and in particular Stan's implementation of HMC, make it a more 
-appealing choice than traditional Metropolis-Hastings (M-H) and Gibbs samplers, especially for 
-complex models with a large number of parameters to estimate \shortcite{hoffman_2012, stan_development_team_stan_2015}. Both M-H and Gibbs samplers suffer from random walk 
-behavior that leads to inefficient exploration of the parameter space. This problem is exacerbated 
-for hierarchical models with complex structures \shortcite{betancourt_hamiltonian_2013}.
-
-M-H algorithms in particular also place the 
+appealing choice than traditional Metropolis (and variants) and Gibbs samplers, especially for
+high-dimension complex models \shortcite{hoffman_2012, stan_development_team_stan_2015}. 
+Metropolis algorithms require considerable customization and place the 
 burden of tuning the sampler on the user. Gibbs samplers typically involve less tuning, but require 
 specifying full conditional distributions for all parameters. Except in a limited number of cases, full 
 conditionals are difficult or impossible to derive, which results in conjugate priors being used when 
-other priors might be more believable or preferable for other reasons. 
+other priors might be more believable or preferable for other reasons. Both suffer from random walk 
+behavior that leads to inefficient exploration of the parameter space, a problem exacerbated 
+by hierarchical models with complex structures \shortcite{betancourt_hamiltonian_2013}.
 
 Stan is designed to overcome each of these concerns. The random walk behavior that plagues both 
-Gibbs and M-H is largely avoided because HMC uses gradient information to find posterior modes 
+Gibbs and Metropolis is largely avoided because HMC uses gradient information to find posterior modes 
 much more efficiently, thus greatly reducing the number of iterations required to obtain a sufficient 
 effective posterior sample size \shortcite{hoffman_2012}.\footnote{Stan computes gradients using 
 reverse-mode automatic differentiation. A paper on the details of Stan's especially efficient 
