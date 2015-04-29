@@ -13,17 +13,19 @@ normal distribution. This strategy amounts to  constraining the relevant linear 
 to have zero variance, from which a proper prior on a lower dimensional subspace is 
 obtained \shortcite{paciorek_2009, rue_gaussian_2005}. 
 
-Another possibility is to estimate the autoregressive parameter $\omega$ mentioned 
+Another option is to estimate the autoregressive parameter $\omega$ mentioned 
 in \ref{penalty_matrix} (see footnote~\ref{footnote_car}), which results in a proper prior.
 \citeA<See>{paciorek_2009} \citeA<and>{banerjee_hierarchical_2004} for potential
 drawbacks to this approach.
 
-An entirely different tactic would be to estimate an arbitrary tridiagonal precision matrix 
-rather than specifying the penalty matrix and estimating the hierarchical variance/precision 
-parameter. One way to do this would be to decompose the precision matrix into conditional 
-correlations and standard deviations. This is possible to do in Stan and should be explored 
-in future work to sidestep the matrix singularity problems. 
+An entirely different tactic for sidestepping the matrix singularity problems would be 
+to estimate an arbitrary tridiagonal precision matrix rather than specifying the penalty 
+matrix and estimating the hierarchical variance/precision parameter. One way to do this 
+would be to decompose the precision matrix into conditional correlations and 
+standard deviations. 
 
+All of these possibilities are feasible to implement in Stan and are currently 
+being explored in ongoing research.  
 
 
 

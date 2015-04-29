@@ -2,16 +2,8 @@
 \chapter{Review of Statistical Methods}
 \label{lit_review}
 
-Part~\ref{lit_review} begins with a summary of the ideas presented in 
-\citeA{wawro_designing_2014} and then draws on the relevant literature 
-to review the statistical theory underlying the model developed for the empirical 
-example in Part~\ref{cox_katz}. Section \ref{hierarchical} is a brief review of 
-hierarchical models. Gaussian Markov random fields (GMRF) are defined and 
-discussed in \ref{gmrf}. Finally, \ref{star} discusses Bayesian structured additive 
-regression (STAR) models. 
-
-\section{Designing historical social scientific inquiry}
-\label{wawro}
+%\section{Designing historical social scientific inquiry}
+%\label{wawro}
 
 The recommendations of \citeA{wawro_designing_2014} are many, but the central 
 theme is that the epistemological concerns of historians are not antithetical to a 
@@ -23,16 +15,23 @@ approach.  Bayesian hierarchical models have the flexibility to accommodate para
 variation, account for unobserved heterogeneity, and, through prior probability distributions, 
 can be further tailored to incorporate existing knowledge from previous studies and 
 historically motivated hypotheses  \cite{wawro_designing_2014, goodrich_designing_2012}. 
-Katznelson and Wawro suggest  semi-parametric mixed models -- in particular,  Bayesian 
+Katznelson and Wawro suggest semi-parametric mixed models -- in particular,  Bayesian 
 structured additive regression (STAR) models -- and the flexible family of Gaussian Markov 
 random fields priors for modeling interesting temporal and spatial relationships.
 
 Accounting for variation over time (and potentially space) involves estimating 
 a large number of parameters relevant to the size of the available data, which can lead 
-to a number of statistical challenges (e.g. under-identification). While Bayesian methods 
-bring their own unique set of burdens, many of which are highlighted throughout this 
-thesis, they provide a more promising way forward than classical approaches estimated 
-by maximum likelihood methods. 
+to a number of statistical challenges (e.g. under-identification). Bayesian methods 
+require confronting a unique set of computational burdens, many of which are highlighted 
+throughout this thesis, but they provide a more promising way forward than classical 
+approaches estimated by maximum likelihood methods. 
+
+The following sections draw on pertinent literature to review the statistical theory underlying 
+the model developed for the empirical example in Part~\ref{cox_katz}, which is an example of 
+the STAR models endorsed by Wawro and Katznelson. Section \ref{hierarchical} is a brief review 
+of hierarchical models. Gaussian Markov random fields (GMRF) are defined and discussed 
+in \ref{gmrf}. Finally, \ref{star} introduces the STAR model from a Bayesian perspective. 
+
 
 
 \section{Hierarchical Bayesian models}
@@ -327,6 +326,10 @@ $\theta_i$. For $i \neq j$ (the off-diagonal), $q_{ij}  = -Cov(\theta_i, \theta_
 \section{Hierarchical Bayesian STAR models}
 \label{star}
 
+\shortciteA{fahrmeir_regression_2013} present structured additive regression (STAR) 
+as a unified framework for formulating regression models when simple functional forms are 
+insufficient for describing the relationship between response variables and predictors. 
+
 \subsection{Definition}
 
 %Given observations $y$ and covariates, the generalized linear model (GLM) 
@@ -343,20 +346,21 @@ $\theta_i$. For $i \neq j$ (the off-diagonal), $q_{ij}  = -Cov(\theta_i, \theta_
 %uses the logit link function to map between the real numbers and the $[0,1]$ interval on which 
 %probabilities are defined.  
 
-The structured additive regression (STAR) model replaces the linear predictor of the 
-GLM with a semiparametric structured additive predictor
+The STAR model replaces the linear predictor of the 
+generalized linear model with a semiparametric structured additive predictor
 
 \begin{equation*}
-  \eta_n =  w_n^\intercal\gamma + f_1(x_{n1}) + \ldots + f_j(x_{nj}) + \ldots + f_J(x_{nJ}), \quad n = 1, \dots, N 
+  \eta_n =  w_n^\intercal\gamma + f_1(x_{n1}) + \ldots + f_j(x_{nj}) + \ldots + f_J(x_{nJ}), \quad n = 1, \dots, N, 
 \end{equation*}
 
-\noindent which can include linear components, nonlinear unknown functions of covariates, 
-and is flexible enough to include the assorted mixed effects models familiar to social scientists as 
-special cases \shortcite{fahrmeir_bayesian_2001}.\footnote{\citeA{brezger_star_2005} provide a 
-detailed list of the various possible roles for the functions $f_j$: ``\dots usual nonlinear effects of 
-continuous covariates, time trends and seasonal effects, two-dimensional surfaces, varying coefficient 
-terms, i.i.d. random intercepts and slopes, spatially correlated effects, and geographically weighted 
-regression" (p. 2). The varying-intercept, varying-slope models described in \ref{hierarchical} 
+\noindent which can incorporate linear components, nonlinear unknown functions of covariates, 
+and is flexible enough to encompass a broad collection of models as special cases, among them the 
+assorted mixed effects models familiar to social scientists 
+\shortcite{fahrmeir_bayesian_2001, fahrmeir_regression_2013}.\footnote{\citeA{brezger_star_2005} 
+provide a detailed list of the various possible roles for the functions $f_j$, which includes ``\dots usual 
+nonlinear effects of continuous covariates, time trends and seasonal effects, two-dimensional surfaces, 
+varying coefficient terms, i.i.d. random intercepts and slopes, spatially correlated effects, and geographically 
+weighted regression" (p. 2). The varying-intercept, varying-slope models described in \ref{hierarchical} 
 are examples of mixed effects models and are also special cases of the STAR model. Other familiar 
 special cases include generalized additive mixed models.} 
 
@@ -369,7 +373,7 @@ evaluations of $f_j$ at each of the $N$ observed values of $x_j$
 \mtrx{f}_j^{eval} = \left(f_j(x_{1j}), \dots, f_j(x_{nj}), \dots, f_j(x_{Nj})\right)^\intercal.  
  \end{equation*}
  
-\noindent Then $\mathbf{f}_j^{eval}$ is treated as a random vector, which, following 
+\noindent Then $\mathbf{f}_j^{eval}$ is a random vector, which, following 
 \citeA{brezger_generalized_2006}, can conveniently be expressed as a linear model 
 $\mathbf{f}_j^{eval} = \mtrx{M}_j \theta_j$, where $\mtrx{M}_j$ is a design matrix and 
 $\theta_j$ a vector of coefficients \shortcite{fahrmeir_regression_2013}. 
@@ -401,10 +405,10 @@ $\alpha_{-ij}$.
 \subsection{The penalty matrix} 
 \label{penalty_matrix}
 
-The penalty matrices of interest in this thesis 
-can be constructed as $\mtrx{P} = \mtrx{D} - \mtrx{A}$, where $\mtrx{A}$ is a symmetric 
-matrix with $a_{ij} = 1$ if temporal or spatial units $i$ and $j$ are considered neighbors and 
-0 otherwise, and $\mtrx{D}$ is a diagonal matrix such that 
+The form of the penalty matrix differentiates between many of the models in the STAR family. 
+For the GMRF priors, the penalty matrix can be constructed as $\mtrx{P} = \mtrx{D} - \mtrx{A}$, 
+where $\mtrx{A}$ is a symmetric matrix with $a_{ij} = 1$ if temporal or spatial units $i$ and $j$ 
+are considered neighbors and 0 otherwise, and $\mtrx{D}$ is a diagonal matrix such that 
 $\forall i = j, \: d_{ij} = \sum_j a_{ij}$. The matrices $\mtrx{A}$ and $\mtrx{D}$ are 
 commonly referred to as the adjacency and degree matrices because encoded in 
 $\mtrx{A}$ are all (temporal and/or spatial) neighbor relationships -- the information 

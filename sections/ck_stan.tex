@@ -68,9 +68,11 @@ by hierarchical models with complex structures \shortcite{betancourt_hamiltonian
 Stan is designed to overcome each of these concerns. The random walk behavior that plagues both 
 Gibbs and Metropolis is largely avoided because HMC uses gradient information to find posterior modes 
 much more efficiently, thus greatly reducing the number of iterations required to obtain a sufficient 
-effective posterior sample size \shortcite{hoffman_2012}.\footnote{Stan computes gradients using 
-reverse-mode automatic differentiation. A paper on the details of Stan's especially efficient 
-implementation of automatic differentiation is forthcoming.}  Although the theory behind HMC does 
+effective posterior sample size \shortcite{hoffman_2012}. %
+%\footnote{Stan computes gradients using 
+%reverse-mode automatic differentiation. A paper on the details of Stan's especially efficient 
+%implementation of automatic differentiation is forthcoming.}  
+Although the theory behind HMC does 
 not obviate the need for the user to specify tuning parameters, Stan's NUTS-based adaptation algorithm 
 attempts to learn appropriate values of all such parameters (without user input) during a warmup 
 period before sampling.\footnote{While the default settings are typically fine, for particularly complicated 

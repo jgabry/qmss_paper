@@ -112,8 +112,8 @@ using the Bayesian STAR model.
 Cox and Katz's analysis (top) and the Bayesian reanalysis (bottom). 
 The thin and thick vertical segments represent 95\%  and 50\%
 intervals, respectively.  The black line connects medians.
-To produce the graph on top Cox and Katz's original analysis was 
-replicated (see Figure 3 in Cox and Katz (2007)).}
+Cox and Katz's original analysis was replicated to produce the graph on top 
+(compare to Figure 3 in Cox and Katz (2007)).}
 \label{fig:ck_bias}
 \end{figure}
 
@@ -141,7 +141,7 @@ Cox and Katz proceed with inference by comparing the statistical significance of
 estimates. For example, they write ``In the pre-Reed era, the running average 
 bias is statistically insignificant in four out of five Congresses \dots", and ``In the czar-rule era, 
 the running average bias is statistically significant in nine out of ten Congresses \dots" 
-\shortcite[p. 116]{cox_gerrymandering_2007}. This is problematic for several reasons.
+\shortcite[p. 116]{cox_gerrymandering_2007}. This is complicated for several reasons.
 First, if the reported standard errors understate the uncertainty in their estimates 
 -- and this is presumably the case, as emphasized above and in \ref{subsection_methods} 
 -- then they will be more likely to find statistical significance than is justified from the data, 
@@ -161,7 +161,7 @@ The general point is counter-intuitive: nonsignificant changes can correspond to
 in significance levels.\footnote{A more detailed explanation of this issue -- which is not unique to this 
 example -- and its potential consequences can be found in Chapter 2 of 
 \citeA{gelman_arm_2007}.} When viewed from this perspective it is clear that comparisons of 
-time periods based on the proportion of statistically significant estimates is not appropriate. 
+time periods based on the proportion of statistically significant estimates is problematic. 
 
 \begin{figure}
 \centering
@@ -198,10 +198,10 @@ As discussed in \ref{subsection_methods}, Cox and Katz's results comprise estima
 from 61 separate models (one for each Congress). This results in the data for each Congress 
 $t$ being reused in up to six of the 60 models besides the model for Congress $t$ itself. It also 
 entails the exclusion of all data from Congresses outside each window. Furthermore, the decision
-to use rolling windows of seven Congresses ($t \pm 3$) is arbitrary and difficult to subject to validity 
-checks -- the assumptions of standard model comparison techniques are violated when each 
-model to be compared is already itself an ad-hoc summary of many individual models (each
-of which is estimated from a different subset of the data). 
+to use rolling periods of seven Congresses ($t \pm 3$) is arbitrary and difficult to subject to formal
+validity checks. The assumptions of standard model comparison techniques are violated when the 
+models to be compared are not actually models but rather summaries of many individual 
+models estimated from different subsets of the data. 
 
 \begin{figure}
 \centering
