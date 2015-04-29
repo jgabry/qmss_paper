@@ -3,7 +3,7 @@
 \vspace{-1.75cm}
 \subsection{Hamiltonian Monte Carlo}
 
-The following is a simplified version of the HMC algorithm employed by Stan. 
+\noindent The following is a simplified version of the HMC algorithm employed by Stan. 
 
 {\singlespacing
 \subsubsection{Notation}
@@ -26,7 +26,7 @@ $L$ & Number of ``leapfrog" steps (to run the simulated Hamiltonian system) per 
 $\epsilon$ & Size of the leapfrog steps
 \end{tabular}
 }
-\vskip.5cm
+
 
 \subsubsection{Leapfrog function}
 
@@ -77,20 +77,24 @@ $ \qquad p^\star = \min{\left\{1, \exp{\left( q^{\it new} - q^{\it old} \right)}
 
 \end{tabular}
 
-\noindent $\}$d
+\noindent $\}$
 
-Technically in {\bf (iv)} the proposal for $m$ is accepted or rejected along with the proposal for 
-$\theta$, but in practice we only care about $\theta$. The momentum variables are introduced out of necessity 
-in order to simulate Hamiltonian dynamics, but they are not themselves quantities of interest.
+In {\bf (iv)} the proposal for $m$ is accepted or rejected along with the proposal for 
+$\theta$, but in practice we only care about $\theta$. The momentum variables are 
+introduced out of necessity in order to simulate Hamiltonian dynamics, but they are 
+not themselves quantities of interest.
 
 Note that the above procedure requires $\epsilon$ (step-size) and $L$ (number of steps) to be specified in 
 advance. Very roughly speaking, if $L$ and/or $\epsilon$ is too small proposals for $\theta^{[n]}$ will be too 
 close to $\theta^{[n-1]}$ and the chain will mix slowly, whereas if they are too large the proposals will stray 
-too far and will be unlikely to be accepted. Larger values for $\epsilon$ will also lead to cruder discrete
-approximations of the continuous-time Hamiltonian system. The NUTS algorithm \shortcite{hoffman_2012} 
-used by Stan is designed to automatically tune $L$ and $\epsilon$ for each chain during a warmup period. 
-See \citeA{hoffman_2012} for the technical details and \citeA{stan_development_team_stan_2015} for more 
-on Stan's implementation. 
+too far and will be unlikely to be accepted. Specifically, too small values for $L$ lead to unwanted random 
+walk behavior and overly large values result in superfluous computations. Larger values for $\epsilon$ will 
+also lead to cruder discrete approximations of the continuous-time Hamiltonian system \shortcite{hoffman_2012}.
+
+Stan's adaptation algorithm based on the No-U-Turn sampler (NUTS) \shortcite{hoffman_2012} 
+is designed to automatically tune $L$ and $\epsilon$ for each chain during a warmup period. 
+See \citeA{hoffman_2012} for the technical details and \citeA{stan_development_team_stan_2015} 
+for more on Stan's implementation. 
 
 
 
