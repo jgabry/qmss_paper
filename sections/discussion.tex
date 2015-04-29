@@ -1,5 +1,17 @@
-\chapter{Conclusion}
+\chapter{Discussion}
 \label{discussion}
+
+\section{Future directions}
+
+For the reanalysis of \citeA{cox_gerrymandering_2007}, the hierarchical Bayesian model with first order 
+undirected random walk priors is a promising start. In other work, we are exploring the sensitivity of the 
+results to different possible smoothness priors including second order random walks (see \ref{reanalysis}), 
+Gaussian process priors, and others. This will enable model comparisons that can illuminate the unique 
+properties of the different approaches. We are also studying how the principles 
+espoused by \citeA{wawro_designing_2014} are relevant in diverse contexts, from 
+duration models to the detection of path dependence. 
+ 
+\section{Conclusion}
 
 A statistical model is simpler than the reality it seeks to describe. The process of 
 distilling the features of some phenomena into relationships concisely described by  
@@ -22,9 +34,12 @@ researchers who otherwise share common aims.
 The reanalysis of \citeA{cox_gerrymandering_2007} in Part~\ref{cox_katz} of this thesis 
 provides another case study -- in addition to the analyses conducted by Katznelson and 
 Wawro -- showing how hierarchical models with smoothness priors can better incorporate 
-context and temporality into a quantitative historical analysis. The Stan language and 
-engine provide a flexible language for expressing these models and enables full Bayesian 
-inference to be carried out more efficiently than previously possible.  
+context and temporality into a quantitative historical analysis. These hierarchical models are 
+natural to construct in a Bayesian framework and have built-in mechanisms for getting the most
+out of sparse data and for accommodating parameter variation (over time or other dimensions) 
+without enforcing rather arbitrary periodization schemes. The Stan language and engine provide 
+a flexible language for expressing these models and enables full Bayesian inference to be carried 
+out more efficiently than previously possible.  
 
 While successful quantitative analysis has a qualitative backbone, the converse
 is often not true. The historical social scientific literature is rife with 
