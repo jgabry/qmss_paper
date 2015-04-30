@@ -159,8 +159,8 @@ $t$ and nonsignificant bias in Congress $t + 1$ (or vice-versa) is not itself st
 Three such examples are given in Figure~\ref{fig:ck_signif}. The plot on the left, for instance, 
 shows Cox and Katz's point estimates and 95\% intervals for bias in the 100th and 101st 
 Congresses. The estimates (plus or minus one standard error) are $b_{100} = 0.0065 \pm 0.029$ 
-and $b_{101} = 0.071 \pm 0.034$. Assuming the 95\% threshold for statistical significance 
-standard in the social sciences and used by Cox and Katz, $b_{101}$ is statistically significant 
+and $b_{101} = 0.071 \pm 0.034$. Assuming the standard 95\% threshold for statistical significance 
+used in the social sciences and used by Cox and Katz, $b_{101}$ is statistically significant 
 but $b_{100}$ is not. Though it is then tempting to conclude that one is signal while the other 
 is indistinguishable from noise, note that the difference between the two is 
 $0.0645$ with a standard error of $0.045$ and thus not close to statistically significant. 
@@ -183,22 +183,26 @@ Cox and Katz's point estimates and confidence intervals obtained by maximum like
 are difficult to interpret for other reasons as well. The classical approach assesses each point estimate 
 in relation to infinitely many potential intervals computed from infinitely many potential samples. But for 
 an individual interval, what can be said is that it either contains the (abstract) true parameter value or it 
-does not. This is a consequence of accepting (explicitly or implicitly) the classical position that the parameter 
-is fixed but the data and interval bounds are random variables. 
+does not. This is a consequence of accepting (explicitly or implicitly) the classical position that the 
+parameter is fixed but the data and interval bounds are random variables. 
 
 On the contrary, from the Bayesian perspective the parameter is treated as a random 
-variable while the data and intervals are fixed. As a consequence, results have a natural 
+variable while the data and intervals are fixed. Results then have a natural 
 interpretation in terms of probabilities about the values of unknown parameters. 
-The full Bayesian model provides an estimate of the marginal posterior {\it distribution} 
-for each parameter. That is, the estimates are the distributions themselves, each of which 
-represents an approximation of our a posteriori uncertainty about a certain parameter. 
-Any so-called credible intervals computed from the posterior distribution have a more 
-intuitive interpretation: the probability that the true parameter value lies in the $p\%$ interval  
--- conditional on the model and data -- is $p$. 
+So-called credible intervals calculated from the posterior distribution have the 
+desirable, intuitive interpretation that the probability the true parameter value 
+lies in the $p\%$ interval  -- conditional on the model and data -- is $p$.\footnote{
+Although this interpretation is sometimes given to classical confidence intervals it is not justified.
+} 
+From the full Bayesian model an estimate of the marginal posterior {\it distribution} 
+for each parameter is obtained. Point estimates can be computed if desired, but the actual 
+estimates are the distributions themselves, each of which represents an approximation of 
+our a posteriori uncertainty about a certain parameter. In general, the Bayesian framework 
+is intuitive for describing the way in which our uncertainty changes in response to data and 
+offers a more natural language for making inferences and communicating results to others
+with quantitative or qualitative orientations.
 
  
-
-
 \subsubsection{Moving beyond Cox and Katz's rolling average approach}
 
 As discussed in \ref{subsection_methods}, Cox and Katz's results comprise estimates taken 
@@ -233,5 +237,5 @@ estimating a common bias parameter for all Congresses (that is, assuming no vari
 bias over time). Conversely, the single Bayesian model -- via the smoothness priors and  
 hierarchical structure -- allows for bias in each Congress to depend on neighboring 
 Congresses while using the entire dataset only once, obviating the need to dubiously subset 
-the data. It also allows for comparing the fit of the model to other possible models (e.g., 
-the $RW_2$ or other smoothness priors), something that will be explored in future work. 
+the data. It also allows for comparing the fit of the model to other possible models (e.g., using
+the $RW_2$ or other smoothness priors), which will be explored in future work. 

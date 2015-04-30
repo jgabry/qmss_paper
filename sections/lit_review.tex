@@ -337,28 +337,13 @@ $\theta_i$. For $i \neq j$ (the off-diagonal), $q_{ij}  = -Cov(\theta_i, \theta_
 \section{Hierarchical Bayesian STAR models}
 \label{star}
 
-\shortciteA{fahrmeir_regression_2013} present structured additive regression (STAR) 
-as a unified framework for formulating regression models when simple functional forms are 
-insufficient for describing the relationship between response variables and predictors. 
-
 \subsection{Definition}
 
-%Given observations $y$ and covariates, the generalized linear model (GLM) 
-%relates the linear predictor 
-%
-%\begin{equation*}
-%\zeta_n = \beta_0 + \beta_1 w_{n1} + \ldots + \beta_K w_{nK}, \quad n = 1, \dots, N
-%\end{equation*}
-%
-%\noindent to the conditional expectation of the outcome $\mu_n = E(y_n | w_{n1}, \dots, w_{nK})$ via a link 
-%function $g$ such that $\mu_n = g^{-1}(\zeta_n)$.\footnote{The observations $y_1, \dots, y_n$ are
-%assumed to be conditionally independent and from an exponential family.} 
-%For instance, the varying-intercept, varying-slope model for binary data in section~\ref{hierarchical} 
-%uses the logit link function to map between the real numbers and the $[0,1]$ interval on which 
-%probabilities are defined.  
-
+\shortciteA{fahrmeir_regression_2013} describe structured additive regression (STAR) 
+as a unified framework for formulating regression models when simple functional forms are 
+insufficient for describing the relationship between response variables and predictors. 
 The STAR model replaces the linear predictor of the 
-generalized linear model with a semiparametric structured additive predictor
+generalized linear model with a structured additive predictor
 
 \begin{equation*}
   \eta_n =  w_n^\intercal\gamma + f_1(x_{n1}) + \ldots + f_j(x_{nj}) + \ldots + f_J(x_{nJ}), \quad n = 1, \dots, N, 
@@ -377,8 +362,8 @@ special cases include generalized additive mixed models.}
 
 From the Bayesian perspective, the non-varying parameters $\gamma$ as well as the 
 functions $f_1, \dots, f_J$ are treated as random variables distributed according to priors that must 
-be specified. For an unknown function $f_j(x_j)$ let $\mtrx{f}_j^{eval}$ denote the vector of function 
-evaluations of $f_j$ at each of the $N$ observed values of $x_j$ 
+be specified. For an unknown function $f_j$ let $\mtrx{f}_j^{eval}$ denote the vector of function 
+evaluations of $f_j$ at each of the $N$ observed values of the variable $x_j$, 
 
 \begin{equation*}
 \mtrx{f}_j^{eval} = \left(f_j(x_{1j}), \dots, f_j(x_{nj}), \dots, f_j(x_{Nj})\right)^\intercal.  
