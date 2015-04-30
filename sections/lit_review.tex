@@ -58,10 +58,8 @@ y_n &\sim p(y_n | \theta_{j[n]}) \\
 
 \noindent where $j[n]$ is the group pertaining to the $n$th data point. Observations are assumed 
 to be conditionally independent given the group-level parameters, and the group-level parameters 
-conditionally independent given the global parameters.\footnote{
-The assumption of exchangeability is also important here, but a sufficient discussion of this subtle 
-topic is beyond the scope of this thesis. See \citeA{gelman_bayesian_2013}.} The joint posterior 
-distribution for all parameters then factors nicely as
+conditionally independent given the global parameters. The joint posterior distribution for the 
+parameters and hyperparameters then factors nicely as
 
 \begin{equation*}
  p(\theta, \xi | y) \propto p(\xi)p(\theta | \xi)p(y|\theta) = p(\xi) \prod_{j=1}^J p(\theta_j | \xi) \prod_{n=1}^N p(y_n | \theta_{j[n]}). 

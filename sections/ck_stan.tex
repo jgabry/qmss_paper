@@ -27,7 +27,9 @@ OpenBugs can sometimes be used to fit similar models by MCMC, each has important
 that Stan overcomes. Several of the many advantages to using Stan are discussed in the next section. 
 Since there are few published examples of fitting similar models in Stan, the next section is 
 written in the style of a technical vignette, introducing Stan and describing how the model is coded 
-and estimated. 
+and estimated.\footnote{Also, because the performance of the sampler can be highly sensitive to the 
+parameterization of the model, it is the hope that the explanations in the next section can be of use 
+to other people interested in working with these models.} 
 
 \subsubsection{Brief introduction to Stan}
 
@@ -47,7 +49,7 @@ Borrowing from physics the concepts and mathematics behind Hamiltonian dynamics,
 the vector of unknown parameters as the position of a particle. In Hamiltonian dynamics, momentum 
 and position change continuously over time, with the gradient of the particle's potential energy function 
 --  which corresponds to the negative log posterior -- responsible for changes in momentum, 
-and momentum governing changes in position. Stan works by simulating a discretization of this 
+and momentum guiding changes in position. Stan works by simulating a discretization of this 
 process, making necessary corrections to satisfy the detailed balance equations (that is, to ensure 
 the resulting Markov chains are reversible).\footnote{Reversibility of the Markov chain is important 
 because every reversible Markov chain has a stationary distribution (reversibility is sufficient 
