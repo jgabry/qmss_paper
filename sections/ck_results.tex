@@ -127,15 +127,19 @@ do provide some support for the hypothesis of bias during the post-czar and post
 periods; the evidence is much weaker than that found by Cox and Katz, but the finding 
 of bias toward the Republican majority in the latter half of the post-czar period holds up. 
 
+Although both sets of results agree on the direction of bias in the post-czar period, 
+while the Cox and Katz estimates show signs of overfitting, the new estimates are less volatile. 
 When compared to Cox and Katz's results, the hierarchical Bayesian STAR model estimates 
 a more believable trend in bias over time. This can be seen clearly by comparing the curves 
 in Figure~\ref{fig:ck_bias}. The smoothing prior shrinks each individual estimate slightly 
 towards its neighbors -- the amount of smoothing is related to the hierarchical variance 
 hyperparameter -- and all estimates are shrunk to the common prior mean, which helps 
 avoid overfitting but still allows for substantial movement between Congresses 
-if strongly supported by the data. Although both sets of results agree on the direction of 
-bias in the post-czar period, while the Cox and Katz estimates show signs of overfitting 
-the new estimates are less volatile. 
+if strongly supported by the data. That is, parameters are smoothed such that the effects 
+they represent are more similar for adjacent time periods, with the precise nature of the 
+similarity depending on the observed data 
+\shortcite{breslow_approximate_1993, wawro_designing_2014}. 
+
 
 
 \subsubsection{Different interpretations}

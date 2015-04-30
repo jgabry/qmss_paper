@@ -5,30 +5,42 @@
 %\section{Designing historical social scientific inquiry}
 %\label{wawro}
 
+%This orientation to how particular surrounding circum- stances affect the play of causal relations implies close at- tention to the particularity of locations and moments, for interaction of factors is shaped by noteworthy elements at distinct times and places.
+
 The recommendations of \citeA{wawro_designing_2014} are many, but the central 
 theme is that the epistemological concerns of historians are not antithetical to a 
 quantitative treatment but rather offer an opportunity to reflect on the shortcomings 
 of traditional quantitative approaches and embrace different techniques that ``bridge 
-the methodological divide" (p. 526). Indeed, greater sensitivity to these issues motivates 
-the use of more interesting quantitative methods and naturally leads to a fully Bayesian 
-approach.  Bayesian hierarchical models have the flexibility to accommodate parameter 
-variation, account for unobserved heterogeneity, and, through prior probability distributions, 
-can be further tailored to incorporate existing knowledge from previous studies and 
-historically motivated hypotheses  \cite{wawro_designing_2014, goodrich_designing_2012}. 
-Katznelson and Wawro suggest semi-parametric mixed models -- in particular,  Bayesian 
-structured additive regression (STAR) models -- and the flexible family of Gaussian Markov 
-random fields priors for modeling interesting temporal and spatial relationships.
+the methodological divide" (p. 526). Indeed, greater sensitivity to periodicity, temporality, 
+context and specificity motivates the use of more interesting quantitative methods and 
+naturally leads to a fully Bayesian approach.%
+\footnote{ 
+{\it Periodicity} is not used here in the mathematical sense, but rather to refer to how relationships 
+between variables are influenced differently by break points in history at particular locations and times. 
+{\it Temporality} refers to how the sequential nature of events in time affects structure and agency, 
+{\it specificity} refers to the uniqueness of conditions, and
+{\it context} is the broader environment -- the surrounding circumstances -- within which events occur.
+} %
 
-Accounting for variation over time (and potentially space) involves estimating 
+Accounting for variation over time (and potentially other dimensions) often entails estimating 
 a large number of parameters relevant to the size of the available data, which can lead 
-to a number of statistical challenges (e.g. under-identification). Bayesian methods 
-require confronting a unique set of computational burdens, many of which are highlighted 
-throughout this thesis, but they provide a more promising way forward than classical 
-approaches estimated by maximum likelihood methods. 
+to a number of statistical challenges (e.g. under-identification). In this regard, although Bayesian 
+methods often require confronting a unique set of computational burdens -- many of which are 
+highlighted throughout this thesis -- they provide a more promising way forward than 
+classical approaches estimated by maximum likelihood methods. 
+
+Bayesian hierarchical models have the flexibility to accommodate parameter 
+variation over multiple dimensions, account for unobserved heterogeneity, and, 
+through prior probability distributions, can be further tailored to incorporate existing 
+knowledge from previous studies and historically motivated hypotheses 
+\cite{wawro_designing_2014, goodrich_designing_2012}. 
+Katznelson and Wawro suggest semi-parametric mixed models -- in particular,  Bayesian 
+structured additive regression (STAR) -- and the flexible family of Gaussian Markov 
+random fields priors for modeling interesting temporal and spatial relationships. 
 
 The following sections draw on pertinent literature to review the statistical theory underlying 
-the model developed for the empirical example in Part~\ref{cox_katz}, which is an example of 
-the STAR models endorsed by Wawro and Katznelson. Section \ref{hierarchical} is a brief review 
+the model developed for the empirical example in Part~\ref{cox_katz}, which is a special case 
+of the STAR model endorsed by Wawro and Katznelson. Section \ref{hierarchical} is a brief review 
 of hierarchical models. Gaussian Markov random fields (GMRF) are defined and discussed 
 in \ref{gmrf}. Finally, \ref{star} introduces the STAR model from a Bayesian perspective. 
 
