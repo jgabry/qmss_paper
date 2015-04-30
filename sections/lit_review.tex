@@ -64,8 +64,9 @@ topic is beyond the scope of this thesis. See \citeA{gelman_bayesian_2013}.} The
 distribution for all parameters then factors nicely as
 
 \begin{equation*}
- p(\theta, \xi | y) \propto p(\xi) \prod_{j=1}^J p(\theta_j | \xi) \prod_{n=1}^N p(y_n | \theta_{j[n]}). 
+ p(\theta, \xi | y) \propto p(\xi)p(\theta | \xi)p(y|\theta) = p(\xi) \prod_{j=1}^J p(\theta_j | \xi) \prod_{n=1}^N p(y_n | \theta_{j[n]}). 
 \end{equation*} 
+
 
 \begin{figure}
 \centering
@@ -119,7 +120,7 @@ which should be incorporated into the joint probability model. In the United Sta
 estimating separate models would impose the assumption that support for $P$ in, say, New 
 England is entirely uninformative about support for $P$ in all other regions of the country. A 
 hierarchical framework allows for a more realistic model in which support for $P$ can vary 
-across regions without disregarding interregional dependence.      
+across regions while accounting for interregional dependence.      
 
 For the $n$th observation, let $r[n]$ denote the respondent's region and $p_n = {\rm Pr}(y_n = 1)$ 
 be the probability the respondent expresses support for policy $P$. For simplicity, assume that there 
@@ -389,7 +390,7 @@ p(\theta_j | \tau^2_j)
 
 \noindent where $\mtrx{P}$ is a penalty matrix which operationalizes prior assumptions 
 about the smoothness of the function $f_j$, and the hyperparameter $\tau^2_j$
-informs the amount of smoothing.\footnote{See Appendix A% Appendix~\ref{AppendixA} 
+informs the amount of smoothing.\footnote{See Appendix A % Appendix~\ref{AppendixA} 
 for a discussion of ways to deal with the impropriety of this prior under certain conditions.}
 
 To provide some intuition, consider a model where the intercept varies by geographic region. 
