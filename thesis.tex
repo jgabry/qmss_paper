@@ -17,6 +17,7 @@
 \usepackage{setspace}
 \usepackage{etoolbox}
 
+
 % SINGLE SPACING for certain environments
 \BeforeBeginEnvironment{equation*}{\begin{singlespace}}
 \AfterEndEnvironment{equation*}{\end{singlespace}\noindent\ignorespaces}
@@ -28,7 +29,7 @@
 
 
 % APPENDICES
-\usepackage[toc,title]{appendix} 
+\usepackage[toc,title,page]{appendix} 
 
 % HYPERLINKS 
 \usepackage[]{hyperref}
@@ -287,11 +288,13 @@ Raya, Amelia and Silvia. \\
 \input{sections/discussion}
 \endgroup
 
+
 \begin{appendices}
 \setcounter{subsection}{0}
 \renewcommand\thefigure{\thesubsection.\arabic{figure}}    
 \input{sections/appendices.tex}
 \end{appendices}
+
 
 \backmatter
 \nocite{r_software}
