@@ -86,4 +86,6 @@ make_plot <- function(df, title = NULL) {
 load("ck_data.RData")
 df <- prep_data(fit = stanfit, ck_data = ck_data)
 make_plot(df)
+library(shinyStan)
+launch_shinystan(stanfit)
 

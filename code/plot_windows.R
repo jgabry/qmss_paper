@@ -19,21 +19,21 @@ ests <- function(data, t, N = 1e4) {
     return(betas)
   })
   
-  meds <- rep(NA, length(congresses))
-  for(i in seq_along(out)) meds[i] <- median(out[[i]][,"(Intercept)"])
+  quants <- mat.or.vec(length(congresses), 3)
+  for(i in seq_along(out)) quants[i,] <- quantile(out[[i]][,"(Intercept)"], probs = c(0.025, 0.5, 0.975))
   
-  meds
+  quants
 }
 
 windows <- 0:5
 results <- lapply(windows, function(t) ests(ck_data, t))
-bias <- do.call(c, results)
+bias <- do.call(rbind, results)
+colnames(bias) <- c("LB", "Bias", "UB")
 
 congresses <- sort(unique(ck_data$congress))
 nCong <- length(congresses)
 window <- rep(c("t %+-% 0", "t %+-% 1", "t %+-% 2", "t %+-% 3", "t %+-% 4", "t %+-% 5"), each = nCong)
-dfm <- melt(data.frame(Congress = congresses, Bias = bias, Window = window), 
-            id.vars = c("Congress","Window"))
+df <- data.frame(Congress = congresses, bias, Window = window)
 
 axis_line_color <- "#222222"
 theme_set(theme_classic())
@@ -46,15 +46,14 @@ theme_update(
   legend.position = "none"
 )
 
-base <- ggplot(dfm, aes(x = Congress, y = value, group = Window))
-graph <- base + 
+
+base <- ggplot(df, aes(x = Congress, y = Bias, ymin = LB, ymax = UB, group = Window))
+graph <- base +
   stat_smooth(method = "lm", formula = y ~ x, se = FALSE, color = "gray", size = .25, alpha = 0.5) + 
   geom_line(aes(color = Window), size = 1, show_guide = FALSE) + 
+  geom_linerange(color = "gray", show_guide = FALSE) +
   geom_point(color = "gray35", size = 1.5) +
   facet_grid(Window~., labeller = label_parsed) + 
   ylab("Bias toward majority") 
 
 graph
-
-
-
