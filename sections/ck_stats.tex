@@ -60,8 +60,8 @@ $t > C- 3$, but the idea is the same regardless of the exact number.}
 
 The alternative analysis presented below overcomes both of these concerns by employing 
 a hierarchical Bayesian framework which takes advantage of partial pooling. Following Cox 
-and Katz, a BetaBinomial likelihood is used, however the linear predictor is replaced by the 
-structured additive predictor $\eta$. 
+and Katz, a beta-binomial data model is used, however the linear predictor is replaced by the 
+structured additive predictor. 
 
 The ${\rm Beta\text{-}Binomial}(n,\alpha,\beta)$ distribution can be thought of as a compound 
 distribution resulting from a ${\rm Binomial}(n,p)$ distribution where $p \sim {\rm Beta}(\alpha,\beta)$. 
@@ -93,7 +93,7 @@ expressed as the products
 premultiplied by the $N \times C$ design matrices  $\mathbf{M}_\lambda$ and  $\mathbf{M}_\rho$ 
 ($N$ is the number of observations). The matrices $\mathbf{M}_\lambda$ and $\mathbf{M}_\rho$ 
 are identical in structure but not content. The elements of $\mathbf{M}_\lambda$ are zeros and ones 
-indicating the Congress to which each observation pertains. For $\mathbf{M}_\rho$ each element is 
+indicating the Congress to which each observation pertains. For $\mathbf{M}_\rho$, each element is 
 either a zero or the appropriate value of $\log{(v^{Ratio})}$. 
 
 % Discuss challenges with sparse matrices? Either here or in the lit review section
