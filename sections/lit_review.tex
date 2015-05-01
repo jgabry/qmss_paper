@@ -19,11 +19,12 @@ naturally leads to a fully Bayesian approach.%
 between variables are influenced differently by break points in history at particular locations and times. 
 {\it Temporality} refers to how the sequential nature of events in time affects structure and agency, 
 {\it specificity} refers to the uniqueness of conditions, and
-{\it context} is the broader environment -- the surrounding circumstances -- within which events occur.
+{\it context} is the broader environment -- the surrounding circumstances -- within which events occur
+\shortcite{wawro_designing_2014}.
 } %
 
-Accounting for variation over time (and potentially other dimensions) often entails estimating 
-a large number of parameters relevant to the size of the available data, which can lead 
+Accounting for variation over time (and possibly other dimensions of interest) often entails 
+estimating a large number of parameters relative to the size of the available data, which can lead 
 to a number of statistical challenges (e.g. under-identification). In this regard, although Bayesian 
 methods often require confronting a unique set of computational burdens -- many of which are 
 highlighted throughout this thesis -- they provide a more promising way forward than 
@@ -34,13 +35,13 @@ variation over multiple dimensions, account for unobserved heterogeneity, and,
 through prior probability distributions, can be further tailored to incorporate existing 
 knowledge from previous studies and historically motivated hypotheses 
 \cite{wawro_designing_2014, goodrich_designing_2012}. 
-Katznelson and Wawro suggest semi-parametric mixed models -- in particular,  Bayesian 
-structured additive regression (STAR) -- and the flexible family of Gaussian Markov 
+Katznelson and Wawro suggest Bayesian structured additive regression (STAR) 
+and the flexible family of Gaussian Markov 
 random fields priors for modeling interesting temporal and spatial relationships. 
 
 The following sections draw on pertinent literature to review the statistical theory underlying 
 the model developed for the empirical example in Part~\ref{cox_katz}, which is a special case 
-of the STAR model endorsed by Wawro and Katznelson. Section \ref{hierarchical} is a brief review 
+of the STAR family of models endorsed by Wawro and Katznelson. Section \ref{hierarchical} is a brief review 
 of hierarchical models. Gaussian Markov random fields (GMRF) are defined and discussed 
 in \ref{gmrf}. Finally, \ref{star} introduces the STAR model from a Bayesian perspective. 
 

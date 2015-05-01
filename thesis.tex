@@ -136,7 +136,7 @@ xrightmargin=2em
 \parbox[b]{0.75\textwidth}{ % Paragraph box which restricts text to less than the width of the page
 
 \singlespacing
-{\noindent\Huge\bfseries Bayesian Structured Additive Regression Models}\\[2\baselineskip] % Title
+{\noindent\Huge\bfseries Bayesian Structured Additive Regression}\\[2\baselineskip] % Title
 {\large \textit{for Quantitative Historical Social Scientific Inquiry }}\\[4\baselineskip] % Tagline or further description
 
 \vspace{2cm}
@@ -182,6 +182,10 @@ xrightmargin=2em
 \DeclareMathOperator*{\argmax}{arg\,max}
 
 
+
+\usepackage{quotchap}
+
+
 % BEGIN DOCUMENT
 \begin{document}
 %\pagenumbering{roman} 
@@ -195,6 +199,7 @@ xrightmargin=2em
 
 % ABSTRACT
 \begin{abstract}
+\setcounter{page}{1}
 \begin{quote}
 \begin{changemargin}{.5cm}{.5cm}
 \justify
@@ -216,34 +221,35 @@ language, and the Stan {\tt C++} library for probability and sampling.
 
 % ACKNOWLEDGEMENTS
 \begin{acknowledgments}	
-%I am thankful for essential guidance from
-%
-%{\singlespacing
-%Greg Wawro, \\
-%Ben Goodrich, \\
-%Greg Eirich, \\
-%Sung-Woo Cho, \\
-%Andrew Gelman, \\
-%Rob Trangucci, \\
-%Martina Ghusson, \\
-%Kay Kastner, \\
-%Shelley Katsh, \\
-%Mark Gabry, \\
-%Raya, Amelia and Silvia. \\   
-%}
-
+\setcounter{page}{2}
 I am thankful for essential guidance from
-Greg Wawro, 
-Ben Goodrich, 
-Greg Eirich, 
-Sung-Woo Cho, 
-Andrew Gelman, 
-Rob Trangucci, 
-Martina Ghusson, 
-Kay Kastner, 
-Shelley Katsh, 
-Mark Gabry, 
-Raya, Amelia and Silvia. 
+
+{\singlespacing
+Greg Wawro, \\
+Ben Goodrich, \\
+Greg Eirich, \\
+Sung-Woo Cho, \\
+Andrew Gelman, \\
+Rob Trangucci, \\
+Martina Ghusson, \\
+Kay Kastner, \\
+Shelley Katsh, \\
+Mark Gabry, \\
+Raya, Amelia and Silvia. \\   
+}
+
+%I am thankful for essential guidance from
+%Greg Wawro, 
+%Ben Goodrich, 
+%Greg Eirich, 
+%Sung-Woo Cho, 
+%Andrew Gelman, 
+%Rob Trangucci, 
+%Martina Ghusson, 
+%Kay Kastner, 
+%Shelley Katsh, 
+%Mark Gabry, 
+%Raya, Amelia and Silvia. 
 
 \end{acknowledgments}
 
