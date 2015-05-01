@@ -42,9 +42,9 @@ using Stan, which can fit a more diverse range of models than is currently possi
 and other software packages, and allows for analyses in the spirit of \citeA{wawro_designing_2014} 
 to be extended beyond the confines of their particular examples.  
 
-Stan is a probabilistic modeling language, optimizer, and MCMC sampler. The particular MCMC 
-algorithm implemented in Stan is a variant of Hamiltonian Monte Carlo (HMC) called the No-U-Turn 
-Sampler (NUTS) \shortcite{hoffman_2012}, designed for fitting rich Bayesian statistical models. 
+Stan is a probabilistic modeling language, optimizer, and MCMC sampler for fitting rich 
+Bayesian statistical models. The particular MCMC algorithm implemented in Stan is a variant of 
+Hamiltonian Monte Carlo (HMC) called the No-U-Turn Sampler (NUTS) \shortcite{hoffman_2012}. 
 Borrowing from physics the concepts and mathematics behind Hamiltonian dynamics, HMC treats 
 the vector of unknown parameters as the position of a particle. In Hamiltonian dynamics, momentum 
 and position change continuously over time, with the gradient of the particle's potential energy function 
@@ -59,7 +59,7 @@ is the same as for $x'$ to $x$.}
 
 Several characteristics of HMC, and in particular Stan's implementation of HMC, make it a more 
 appealing choice than traditional Metropolis (and variants) and Gibbs samplers, especially for
-high-dimension complex models \shortcite{hoffman_2012, stan_development_team_stan_2015}. 
+complex models in high dimensions \shortcite{hoffman_2012, stan_development_team_stan_2015}. 
 Metropolis algorithms require considerable customization and place the 
 burden of tuning the sampler on the user. Gibbs samplers typically involve less tuning, but require 
 specifying full conditional distributions for all parameters. Except in a limited number of cases, full 
@@ -71,10 +71,7 @@ by hierarchical models with complex structures \shortcite{betancourt_hamiltonian
 Stan is designed to overcome each of these concerns. The random walk behavior that plagues both 
 Gibbs and Metropolis is largely avoided because HMC uses gradient information to find posterior modes 
 much more efficiently, thus greatly reducing the number of iterations required to obtain a sufficient 
-effective posterior sample size \shortcite{hoffman_2012}. %
-%\footnote{Stan computes gradients using 
-%reverse-mode automatic differentiation. A paper on the details of Stan's especially efficient 
-%implementation of automatic differentiation is forthcoming.}  
+effective posterior sample size \shortcite{hoffman_2012}. 
 Although the theory behind HMC does 
 not obviate the need for the user to specify tuning parameters, Stan's NUTS-based adaptation algorithm 
 attempts to learn appropriate values of all such parameters (without user input) during a warmup 
@@ -91,32 +88,31 @@ for a simplified version of the HMC algorithm used by Stan.}
 
 In the {\tt data} block of a Stan program (Figure~\ref{stan_data}) we declare the data that will 
 be passed to Stan. In this case, the declarations are all straightforward, defining the dimensions 
-and variables discussed in section~\ref{ckdata}. The exception is {\tt Pinverse}, the inverse of 
-the penalty matrix, which is precomputed and passed in as data.\footnote{All R and Stan code 
-will be made publicly available on GitHub.}
+and variables discussed in section~\ref{ckdata}. Here {\tt Pinverse} is the inverse of 
+the penalty matrix, which can be precomputed and passed in as data.
 
 \begin{figure}[h]
 \begin{lstlisting}[language=Stan, frame=trBL]
 data {
   // dimensions 
-  int<lower=1>          N ; # number of observations 
-  int<lower=1>          C ; # number of congresses (time periods)
+  int<lower=1> N ; # number of observations 
+  int<lower=1> C ; # number of congresses (time periods)
   
   // arrays of variables 
-  int<lower=1,upper=C>  cong[N] ;     # maps between obs & congress
-  int<lower=1,upper=56> nVotes[N] ;   # number of votes
-  int<lower=0,upper=55> nWins[N] ;    # number of maj party victories
-  real                  lvRatio[N] ;  # log(vRatio)
+  int<lower=1,upper=C> cong[N] ;  # map between observations & congresses
+  int<lower=1,upper=56> nVotes[N] ;  # total votes
+  int<lower=0,upper=55> nWins[N] ;  # majority party victories
+  real lvRatio[N] ;  # log(ratio of avg vote-shares)
   
   // inverse of penalty matrix 
-  matrix[C,C]           Pinverse ; # for GMRF prior
+  matrix[C,C] Pinverse ;  # for GMRF prior
 }
 transformed data {
-  real<lower=0> phi_scale ;     # scale for prior on phi
-  real<lower=0> phi_loc ;       # location for prior on phi
-  real<lower=0> tau_scale ;     # scale for priors on taus
-  real<lower=0> tau_loc ;       # location for priors on taus
-  matrix[C,C]   cholPinverse ;  # Cholesky decomposition 
+  real<lower=0> phi_scale ;  # scale for prior on phi
+  real<lower=0> phi_loc ;  # location for prior on phi
+  real<lower=0> tau_scale ;  # scale for priors on taus
+  real<lower=0> tau_loc ;  # location for priors on taus
+  matrix[C,C] cholPinverse ;  # Cholesky decomposition 
   
   phi_loc <- 0 ;
   phi_scale <- 10 ;
@@ -155,10 +151,10 @@ See \citeA{stan_development_team_stan_2015}.}
 \begin{lstlisting}[language=Stan, frame=trBL]
 parameters {
   real<lower=0> phi_noise ;    
-  real          lambda_bar ;  # prior mean 
-  real<lower=0> rho_bar ;     # prior mean 
-  vector[C]     lambda_noise ;      
-  vector[C]     rho_noise ;
+  real lambda_bar ;  
+  real<lower=0> rho_bar ; 
+  vector[C] lambda_noise ;      
+  vector[C] rho_noise ;
   real<lower=0> tau_sq_lambda ;  
   real<lower=0> tau_sq_rho ;
 }
@@ -180,11 +176,11 @@ near the median, the tails are fat enough to allow for considerable variation. I
 Cauchy distribution is infinite.} The vectors ${\tt lambda\_noise}$ and ${\tt rho\_noise}$ represent variables 
 to be given iid standard normal priors, which allows for the non-centered parameterization of the 
 multivariate normal to be used for ${\tt lambda}$ and ${\tt rho}$.\footnote{
-The non-centered parameterization works as follows. If $\zeta \in \mathbb{R}^D$ is a vector of i.i.d 
-$\mathcal{N}(0,1)$ variables and $\theta = \mu + L \zeta$, where 
+The non-centered parameterization works as follows. If $\xi \in \mathbb{R}^D$ is a vector of i.i.d 
+$\mathcal{N}(0,1)$ variables and $\theta = \mu + L \xi$, where 
 $LL' = \boldsymbol{\Sigma} \in R^{D \times D}$, then $\theta \sim \mathcal{N}_D (\mu, \boldsymbol{\Sigma})$.
-This is analogous to the familiar univariate case where $\theta = \mu + \sigma \zeta$ and 
-$\zeta \sim \mathcal{N}(0,1)$ implies that $\theta \sim \mathcal{N}(\mu, \sigma^2)$.} Unlike the elements 
+This is analogous to the familiar univariate case where $\theta = \mu + \sigma \xi$ and 
+$\xi \sim \mathcal{N}(0,1)$ implies that $\theta \sim \mathcal{N}(\mu, \sigma^2)$.} Unlike the elements 
 of ${\tt lambda}$ and ${\tt rho}$, the elements of ${\tt lambda\_noise}$ and ${\tt rho\_noise}$ are 
 independent by construction, which can lead to large gains in efficiency for MCMC algorithms in 
 terms of effective sample size \shortcite{betancourt_hamiltonian_2013,stan_development_team_stan_2015}. 
@@ -193,8 +189,8 @@ terms of effective sample size \shortcite{betancourt_hamiltonian_2013,stan_devel
 \begin{lstlisting}[language=Stan, frame=trBL]
 transformed parameters {
   real<lower=0> phi ;
-  vector[C]     lambda ;
-  vector[C]     rho ;
+  vector[C] lambda ;
+  vector[C] rho ;
   
   // inverse CDF method, standard normal --> half-Cauchy
   phi <- phi_loc + phi_scale * tan(pi() * (Phi_approx(phi_noise) - 0.5)) ;
@@ -213,12 +209,12 @@ transformed parameters {
 \begin{lstlisting}[language=Stan, frame=trBL]
 model {
   // local/temporary variables
-  real                logLik ;    # log likelihood
-  real                logPrior ;  # log prior
-  vector<lower=0>[N]  alphas ;    # shape1 for beta_binomial 
-  vector<lower=0>[N]  betas ;     # shape2 for beta_binomial
+  real logLik ;  # log likelihood
+  real logPrior ;  # log prior
+  vector<lower=0>[N]  alpha ;  # shape1 for beta-binomial 
+  vector<lower=0>[N]  beta ;  # shape2 for beta-binomial
   
-  // priors
+  // log priors
   logPrior <- (
     normal_log(lambda_bar, 0, 1) + 
     normal_log(rho_bar, 4, 2) + 
@@ -229,20 +225,20 @@ model {
     normal_log(rho_noise, 0, 1)       # vectorized
   ) ;
   
-  // likelihood
+  // log likelihood
   for (n in 1:N) {
-    real eta_n ;
+    // declare two temporary/local variables to be reassigned each time through loop
+    real eta_n ; 
     real theta_n ;
+    
     eta_n <- lambda[cong[n]] + rho[cong[n]] * lvRatio[n] ;
     theta_n   <- inv_logit(eta_n) ;    
-    alphas[n] <- theta_n * phi ;
-    betas[n]  <- (1 - theta_n) * phi ;
+    alpha[n] <- theta_n * phi ;
+    beta[n]  <- (1 - theta_n) * phi ;
   }
+  logLik <- beta_binomial_log(nWins, nVotes, alpha, beta) ; # vectorized
   
-  // vectorized BetaBinomial
-  logLik <- beta_binomial_log(nWins, nVotes, alphas, betas) ; 
-  
-  // logPrior + logLik = logPosterior (up to normalizing constant)
+  // log posterior (up to proportion)
   increment_log_prob(logPrior + logLik) ; 
 }
 \end{lstlisting}
@@ -260,7 +256,8 @@ up to proportion.\footnote{Stan works on the log scale for the same reason as mo
 other statistical software. Logarithms help avoid the loss of the numerical precision in addition to 
 greatly simplifying expressions for complicated probability distributions.}
 The priors include the standard normals on ${\tt phi\_noise}$, ${\tt lambda\_noise}$ and ${\tt rho\_noise}$ 
-discussed above, and normal priors for ${\tt lambda\_bar}$, ${\tt rho\_bar}$, ${\tt tau\_sq\_lambda}$, 
+discussed above, and weakly informative normal priors for 
+${\tt lambda\_bar}$, ${\tt rho\_bar}$, ${\tt tau\_sq\_lambda}$, 
 and ${\tt tau\_sq\_rho}$.\footnote{The function names in {\tt model} 
 ending in ${\tt\_log}$ return the logarithm of the density function (e.g. ${\tt normal\_log(theta,0,1)}$ 
 returns the logarithm of the normal density of ${\tt theta}$  with location 0 and scale 1). While Stan  
@@ -275,7 +272,7 @@ incrementing the log probability is that the former drops the unneeded constant 
 explanation see \citeA{stan_development_team_stan_2015}.}  
 
 At the top of the {\tt model} block two vectors, {\tt alpha} and {\tt beta}, are also declared 
-and will be filled in while looping over observations. This allows for the BetaBinomial likelihood 
+and will be filled in while looping over observations. This allows for the beta-binomial likelihood 
 to be vectorized for faster computation. Expressing the likelihood in this way is perhaps less 
 intuitive than incrementing the likelihood within the loop (and without creating the temporary 
 {\tt alpha} and {\tt beta} variables), for example
@@ -291,7 +288,7 @@ intuitive than incrementing the likelihood within the loop (and without creating
 \end{lstlisting}
 %
 \noindent but filling in the elements of {\tt alpha} and {\tt beta} inside the loop and then using the 
-vectorized version of the BetaBinomial is much more computationally effective. 
+vectorized version of the beta-binomial is much more computationally effective. 
 
 Note also that in the {\tt model} block prior distributions are placed only on variables declared 
 in {\tt parameters}  and not those defined in {\tt transformed parameters}. This is not a requirement, 
@@ -311,19 +308,20 @@ original variable.}
 
 The {\tt generated quantities} block (Figure~\ref{stan_generated_quantities}) allows for the computation 
 of distributions of quantities of interest without affecting the log posterior specified in the model block. 
-In this case the estimated bias towards the majority party in each congress is computed. For model 
-checking (Appendix E), %Appendix~\ref{AppendixF})
-simulations from the posterior predictive distribution 
+In this case the estimated bias towards the majority party in each congress is computed. 
+Simulations from the posterior predictive distribution 
 are also generated.\footnote{The call to ${\tt beta\_binomial\_rng}$ is inside the loop in the 
 {\tt generated quantities} block unlike the call to ${\tt beta\_binomial\_log}$ in the {\tt model} block because 
-random number generating functions are not currently vectorized in Stan.} 
+random number generating functions are not currently vectorized in Stan.} These
+posterior predictive simulations are used in Appendix E to graphically assess the fit of the 
+model to the data. 
 
 
 \begin{figure}[h]
 \begin{lstlisting}[language=Stan, frame=trBL]
 generated quantities {
-  real        bias[C] ;  # bias toward majority party
-  int         y_rep[N] ; # draws from posterior predictive distribution
+  real bias[C] ;  # bias toward majority party
+  int y_rep[N] ; # draws from posterior predictive distribution
   
   for (c in 1:C) 
     bias[c] <- inv_logit(lambda[c]) - 0.5 ;

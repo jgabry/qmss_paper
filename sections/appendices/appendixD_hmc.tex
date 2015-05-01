@@ -9,9 +9,9 @@
 \subsubsection{Notation}
 
 \begin{tabular}{ll}
-$\theta$ & D-dimensional position vector (model parameters to be estimated) \\
+$\theta$ & $D$-dimensional position vector (model parameters to be estimated) \\
 
- $ \rho$ & D-dimensional vector of auxiliary momentum variables \\
+ $ \rho$ & $D$-dimensional vector of auxiliary momentum variables \\
 
 $\mathcal{L}$ & Natural logarithm of joint probability density for $\theta$ (up to normalizing constant) \\
 
@@ -30,7 +30,7 @@ $\epsilon$ & Size of the leapfrog steps
 
 \subsubsection{Leapfrog function}
 
-A single leapfrog update consists of executing the following function once:
+\noindent A single leapfrog update consists of executing the following function once:
 
 {\singlespacing
 
@@ -58,9 +58,9 @@ $\}$
 \noindent For $n = 1, \dots, N \quad \{$ 
 
 \begin{tabular}{ll}
-{\bf (i)} $\rho^{[0]} \sim \mathcal{N}_D(0, \mtrx{I})$ & ({\it Sample iid standard normal inits for $\rho$}) \\
+{\bf (i)} $\rho^{[0]} \sim \mathcal{N}_D(0, \mtrx{I})$ & ({\it Generate random momentum}) \\
 
-{\bf (ii)} $\tilde{\rho} \leftarrow \rho^{[0]}$, $\tilde{\theta} \leftarrow \theta^{[n-1]}$ &  ({\it Initialize $\tilde{\rho}, \tilde{\theta}$})\\
+{\bf (ii)} $\tilde{\rho} \leftarrow \rho^{[0]}$, $\tilde{\theta} \leftarrow \theta^{[n-1]}$ &  ({\it Initialize temporary $\tilde{\rho}, \tilde{\theta}$})\\
 
 {\bf (iii)} For $\ell = 1, \dots, L \quad \{$  & ({\it Do $L$ leapfrog updates to generate proposal }) \\[-8pt]
 

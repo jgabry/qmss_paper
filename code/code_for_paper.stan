@@ -17,7 +17,7 @@ transformed data {
   real<lower=0> phi_loc ;  # location for prior on phi
   real<lower=0> tau_scale ;  # scale for priors on taus
   real<lower=0> tau_loc ;  # location for priors on taus
-  matrix[C,C]   cholPinverse ;  # Cholesky decomposition 
+  matrix[C,C] cholPinverse ;  # Cholesky decomposition 
   
   phi_loc <- 0 ;
   phi_scale <- 10 ;
@@ -26,9 +26,9 @@ transformed data {
   cholPinverse <- cholesky_decompose(Pinverse) ;
 }
 parameters {
-  vector[C]     lambda ;      
-  vector[C]     rho ;
-  real          lambda_bar ;  
+  vector[C] lambda ;      
+  vector[C] rho ;
+  real lambda_bar ;  
   real<lower=0> rho_bar ; 
   real<lower=0> phi_noise ;    
   real<lower=0> tau_sq_lambda ;  

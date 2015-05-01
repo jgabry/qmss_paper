@@ -196,16 +196,27 @@ xrightmargin=2em
 \begin{changemargin}{.5cm}{.5cm}
 \justify
 
-With reanalyses of two well-known studies in American political development, 
-\citeA{wawro_designing_2014} provide empirical support for their position that 
-traditional applications of probabilistic modeling to historical social scientific 
-inquiry are insufficient for describing and making inferences about characteristics 
-central to successful qualitative historical analyses. In this thesis, an empirical 
-analysis is conducted demonstrating the merits of Katznelson and Wawro's 
-recommendations for bridging the quantitative vs. qualitative divide. Considerable 
-space is given to a formal description of the proposed statistical models, as well 
-as a discussion of estimation using Hamiltonian Monte Carlo, the Stan modeling 
-language, and the Stan {\tt C++} library for probability and sampling. 
+%With reanalyses of two well-known studies in American political development, 
+%\citeA{wawro_designing_2014} provide empirical support for their position that 
+%traditional applications of probabilistic modeling to historical social scientific 
+%inquiry are insufficient for describing and making inferences about characteristics 
+%central to successful qualitative historical analyses. In this thesis, an empirical 
+%analysis is conducted demonstrating the merits of Katznelson and Wawro's 
+%recommendations for bridging the quantitative vs. qualitative divide. Considerable 
+%space is given to a formal description of the proposed statistical models, as well 
+%as a discussion of estimation using Hamiltonian Monte Carlo, the Stan modeling 
+%language, and the Stan {\tt C++} library for probability and sampling. 
+
+Following \citeA{wawro_designing_2014}, this thesis describes and demonstrates  
+an alternative to the standard statistical methods adopted for historical social scientific 
+inquiry. This new perspective is motivated by the criticism from historians that traditional 
+applications of probabilistic modeling are unsuited for capturing essential qualitative features 
+of history. It is argued here that structured additive regression within a Bayesian framework 
+is well-suited for the effort promoted by Wawro and Katznelson and that the Stan modeling 
+language and {\tt C++} library for probability and sampling can significantly contribute to this 
+project by enabling full Bayesian inference for a richer collection of statistical models than 
+previously possible. 
+
 
 \end{changemargin}
 \end{quote}
@@ -256,6 +267,11 @@ Raya, Amelia and Silvia. \\
 %\hfill \citeA<-->[p.~302]{jackman_bayesian_2009}
 %\end{quote}
 
+
+
+\begingroup
+\titleformat{\chapter}[hang]{\Huge\bfseries}{\thechapter\hsp\textcolor{gray75}{|}\hsp}{0pt}{\Huge\bfseries}
+
 {\singlespacing
 %\bigskip
 \tableofcontents
@@ -266,8 +282,6 @@ Raya, Amelia and Silvia. \\
 
 \mainmatter
 
-\begingroup
-\titleformat{\chapter}[hang]{\Huge\bfseries}{\thechapter\hsp\textcolor{gray75}{|}\hsp}{0pt}{\Huge\bfseries}
 
 \input{sections/introduction}
 \input{sections/lit_review}
@@ -294,6 +308,7 @@ Raya, Amelia and Silvia. \\
 \nocite{shinystan}
 
 \begingroup
+\titleformat{\chapter}[hang]{\Huge\bfseries}{\thechapter\hsp\textcolor{gray75}{|}\hsp}{0pt}{\Huge\bfseries}
     \setstretch{1}
     \setlength\bibitemsep{1\baselineskip}
     \raggedright
