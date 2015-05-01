@@ -155,81 +155,81 @@ are used for the final model presented below.}
 
 \begin{tikzpicture}
 \node[const] (name) {$\mathbf{G}_1$} ;
-\node[obs, right=of name,  color=BlueGreen,  fill=white, text=black] (r1) {$\nu_{1}$};
-\node[obs, right=of r1, color=BlueGreen,  fill=white, text=black] (r2) {$\nu_{2}$};
-\node[obs, right=of r2, color=BlueGreen,  fill=white, text=black] (r3) {$\nu_{3}$};
-\node[obs, right=of r3, color=BlueGreen,  fill=white, text=black] (r4) {$\nu_{4}$};
-\node[obs, right=of r4, color=BlueGreen,  fill=white, text=black] (r5) {$\nu_{5}$};
-\node[obs, right=of r5, color=BlueGreen,  fill=white, text=black] (r6) {$\nu_{6}$};
+\node[obs, right=of name,  color=black,  fill=BlueGreen!30, text=black] (r1) {$\nu_{1}$};
+\node[obs, right=of r1, color=black,  fill=BlueGreen!30, text=black] (r2) {$\nu_{2}$};
+\node[obs, right=of r2, color=black,  fill=BlueGreen!30, text=black] (r3) {$\nu_{3}$};
+\node[obs, right=of r3, color=black,  fill=BlueGreen!30, text=black] (r4) {$\nu_{4}$};
+\node[obs, right=of r4, color=black,  fill=BlueGreen!30, text=black] (r5) {$\nu_{5}$};
+\node[obs, right=of r5, color=black,  fill=BlueGreen!30, text=black] (r6) {$\nu_{6}$};
 \node[const, right=of r6] (dots1) {$\hspace{.33cm}$};
 \node[const, right=of dots1] (dots2) {$\hspace{.33cm}$};
 \node[const, right=of dots2] (dots3) {$$};
-\edge [-, color=DarkSlateGray, bend left = 5] {r1} {r2} ;
-\edge [-, color=MidnightBlue, bend right = 5] {r2} {r3} ;
-\edge [-, color=MidnightBlue, bend left = 5] {r3} {r4} ;
-\edge [-, color=MidnightBlue, bend right = 5] {r4} {r5} ;
-\edge [-, color=MidnightBlue, bend left = 5] {r5} {r6} ;
-\edge [dashed, -, color=MidnightBlue, bend right = 5] {r6} {dots1} ;
+\edge [-, color=black, bend left = 5] {r1} {r2} ;
+\edge [-, color=black, bend right = 5] {r2} {r3} ;
+\edge [-, color=black, bend left = 5] {r3} {r4} ;
+\edge [-, color=black, bend right = 5] {r4} {r5} ;
+\edge [-, color=black, bend left = 5] {r5} {r6} ;
+\edge [dashed, -, color=black, bend right = 5] {r6} {dots1} ;
 \end{tikzpicture}
 %
  \hspace{4cm} 
  %
 \begin{tikzpicture}
 \node[const] (name) {$\mathbf{G}_2$} ;
-\node[obs, right=of name,  color=BlueGreen,  fill=white, text=black] (r1) {$\nu_{1}$};
-\node[obs, right=of r1, color=BlueGreen,  fill=white, text=black] (r2) {$\nu_{2}$};
-\node[obs, right=of r2, color=BlueGreen,  fill=white, text=black] (r3) {$\nu_{3}$};
-\node[obs, right=of r3, color=BlueGreen,  fill=white, text=black] (r4) {$\nu_{4}$};
-\node[obs, right=of r4, color=BlueGreen,  fill=white, text=black] (r5) {$\nu_{5}$};
-\node[obs, right=of r5, color=BlueGreen,  fill=white, text=black] (r6) {$\nu_{6}$};
+\node[obs, right=of name,  color=black,  fill=BlueGreen!30, text=black] (r1) {$\nu_{1}$};
+\node[obs, right=of r1, color=black,  fill=BlueGreen!30, text=black] (r2) {$\nu_{2}$};
+\node[obs, right=of r2, color=black,  fill=BlueGreen!30, text=black] (r3) {$\nu_{3}$};
+\node[obs, right=of r3, color=black,  fill=BlueGreen!30, text=black] (r4) {$\nu_{4}$};
+\node[obs, right=of r4, color=black,  fill=BlueGreen!30, text=black] (r5) {$\nu_{5}$};
+\node[obs, right=of r5, color=black,  fill=BlueGreen!30, text=black] (r6) {$\nu_{6}$};
 \node[const, right=of r6] (dots1) {$\hspace{.33cm}$};
 \node[const, right=of dots1] (dots2) {$\hspace{.33cm}$};
 \node[const, right=of dots2] (dots3) {$$};
-\edge [-, color=MidnightBlue, bend left = 5] {r1} {r2} ;
-\edge [-, color=SlateBlue, bend left=30] {r1} {r3} ;
-\edge [-, color=MidnightBlue, bend right = 5] {r2} {r3} ;
-\edge [-, color=SlateBlue, bend right=30] {r2} {r4} ;
-\edge [-, color=MidnightBlue, bend left = 5] {r3} {r4} ;
-\edge [-, color=SlateBlue, bend left=30] {r3} {r5} ;
-\edge [-, color=MidnightBlue, bend right = 5] {r4} {r5} ;
-\edge [-, color=SlateBlue, bend right=30] {r4} {r6} ;
-\edge [-, color=MidnightBlue, bend left = 5] {r5} {r6} ;
-\edge [dashed, -, color=SlateBlue, bend left=30] {r5} {dots1} ;
-\edge [dashed, -, color=MidnightBlue, bend right = 5] {r6} {dots1} ;
-\edge [dashed, -, color=SlateBlue, bend right=30] {r6} {dots2} 
+\edge [-, color=black, bend left = 5] {r1} {r2} ;
+\edge [-, color=gray, bend left=30] {r1} {r3} ;
+\edge [-, color=black, bend right = 5] {r2} {r3} ;
+\edge [-, color=gray, bend right=30] {r2} {r4} ;
+\edge [-, color=black, bend left = 5] {r3} {r4} ;
+\edge [-, color=gray, bend left=30] {r3} {r5} ;
+\edge [-, color=black, bend right = 5] {r4} {r5} ;
+\edge [-, color=gray, bend right=30] {r4} {r6} ;
+\edge [-, color=black, bend left = 5] {r5} {r6} ;
+\edge [dashed, -, color=gray, bend left=30] {r5} {dots1} ;
+\edge [dashed, -, color=black, bend right = 5] {r6} {dots1} ;
+\edge [dashed, -, color=gray, bend right=30] {r6} {dots2} 
 \end{tikzpicture}
 %
  \hspace{4cm} 
  %
 \begin{tikzpicture}
 \node[const] (name) {$\mathbf{G}_3$} ;
-\node[obs, right=of name,  color=BlueGreen,  fill=white, text=black] (r1) {$\nu_{1}$};
-\node[obs, right=of r1, color=BlueGreen,  fill=white, text=black] (r2) {$\nu_{2}$};
-\node[obs, right=of r2, color=BlueGreen,  fill=white, text=black] (r3) {$\nu_{3}$};
-\node[obs, right=of r3, color=BlueGreen,  fill=white, text=black] (r4) {$\nu_{4}$};
-\node[obs, right=of r4, color=BlueGreen,  fill=white, text=black] (r5) {$\nu_{5}$};
-\node[obs, right=of r5, color=BlueGreen,  fill=white, text=black] (r6) {$\nu_{6}$};
+\node[obs, right=of name,  color=black,  fill=BlueGreen!30, text=black] (r1) {$\nu_{1}$};
+\node[obs, right=of r1, color=black,  fill=BlueGreen!30, text=black] (r2) {$\nu_{2}$};
+\node[obs, right=of r2, color=black,  fill=BlueGreen!30, text=black] (r3) {$\nu_{3}$};
+\node[obs, right=of r3, color=black,  fill=BlueGreen!30, text=black] (r4) {$\nu_{4}$};
+\node[obs, right=of r4, color=black,  fill=BlueGreen!30, text=black] (r5) {$\nu_{5}$};
+\node[obs, right=of r5, color=black,  fill=BlueGreen!30, text=black] (r6) {$\nu_{6}$};
 \node[const, right=of r6] (dots1) {$\hspace{.33cm}$};
 \node[const, right=of dots1] (dots2) {$\hspace{.33cm}$};
 \node[const, right=of dots2] (dots3) {$$};
-\edge [-, color=MidnightBlue, bend left = 5] {r1} {r2} ;
-\edge [-, color=SlateBlue, bend left=30] {r1} {r3} ;
-\edge [-, color=SkyBlue, bend left=45] {r1} {r4} ;
-\edge [-, color=MidnightBlue, bend right = 5] {r2} {r3} ;
-\edge [-, color=SlateBlue, bend right=30] {r2} {r4} ;
-\edge [-, color=SkyBlue, bend right=45] {r2} {r5} ;
-\edge [-, color=MidnightBlue, bend left = 5] {r3} {r4} ;
-\edge [-, color=SlateBlue, bend left=30] {r3} {r5} ;
-\edge [-, color=SkyBlue, bend left=45] {r3} {r6} ;
-\edge [-, color=MidnightBlue, bend right = 5] {r4} {r5} ;
-\edge [-, color=SlateBlue, bend right=30] {r4} {r6} ;
-\edge [dashed, -, color=SkyBlue, bend right=45] {r4} {dots1} ;
-\edge [-, color=MidnightBlue, bend left = 5] {r5} {r6} ;
-\edge [dashed, -, color=SlateBlue, bend left=30] {r5} {dots1} ;
-\edge [dashed, -, color=SkyBlue, bend left=45] {r5} {dots2} ;
-\edge [dashed, -, color=MidnightBlue, bend right = 5] {r6} {dots1} ;
-\edge [dashed, -, color=SlateBlue, bend right=30] {r6} {dots2} 
-\edge [dashed, -, color=SkyBlue, bend right=45] {r6} {dots3} 
+\edge [-, color=black, bend left = 5] {r1} {r2} ;
+\edge [-, color=gray, bend left=30] {r1} {r3} ;
+\edge [-, color=lightgray, bend left=45] {r1} {r4} ;
+\edge [-, color=black, bend right = 5] {r2} {r3} ;
+\edge [-, color=gray, bend right=30] {r2} {r4} ;
+\edge [-, color=lightgray, bend right=45] {r2} {r5} ;
+\edge [-, color=black, bend left = 5] {r3} {r4} ;
+\edge [-, color=gray, bend left=30] {r3} {r5} ;
+\edge [-, color=lightgray, bend left=45] {r3} {r6} ;
+\edge [-, color=black, bend right = 5] {r4} {r5} ;
+\edge [-, color=gray, bend right=30] {r4} {r6} ;
+\edge [dashed, -, color=lightgray, bend right=45] {r4} {dots1} ;
+\edge [-, color=black, bend left = 5] {r5} {r6} ;
+\edge [dashed, -, color=gray, bend left=30] {r5} {dots1} ;
+\edge [dashed, -, color=lightgray, bend left=45] {r5} {dots2} ;
+\edge [dashed, -, color=black, bend right = 5] {r6} {dots1} ;
+\edge [dashed, -, color=gray, bend right=30] {r6} {dots2} 
+\edge [dashed, -, color=lightgray, bend right=45] {r6} {dots3} 
 \end{tikzpicture}
 \vspace{.25cm}
 

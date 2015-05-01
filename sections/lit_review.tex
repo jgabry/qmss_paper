@@ -240,12 +240,12 @@ For a more comprehensive treatment of undirected graphs in the context of GMRFs 
 \node[obs, below right=of r3, color=PineGreen, text=white] (r4) {$\nu_4$};
 \node[obs, above right=of r4, color=PineGreen, text=white] (r5) {$\nu_5$};
 \node[obs, above=of r5, color=PineGreen, text=white] (r6) {$\nu_6$};
-\edge [-, color=Melon, bend right=30] {r1} {r2} ;
-\edge [-, color=Melon, bend left=30] {r1} {r6} ;
-\edge [-, color=Melon] {r2} {r3} ;
-\edge [-, color=Melon, bend right=30] {r3} {r4} ;
-\edge [-, color=Melon, bend right=30] {r4} {r5} ;
-\edge [-, color=Melon] {r5} {r6} ;
+\edge [-, color=black, bend right=30] {r1} {r2} ;
+\edge [-, color=black, bend left=30] {r1} {r6} ;
+\edge [-, color=black] {r2} {r3} ;
+\edge [-, color=black, bend right=30] {r3} {r4} ;
+\edge [-, color=black, bend right=30] {r4} {r5} ;
+\edge [-, color=black] {r5} {r6} ;
 \end{tikzpicture}
 %
  \hspace{1cm} 
@@ -255,41 +255,41 @@ For a more comprehensive treatment of undirected graphs in the context of GMRFs 
 \node[obs, below right=of r1, color=PineGreen, text=white] (r2) {$\nu_2$};
 \node[obs, below right=of r2,  color=PineGreen, text=white] (r3) {$\nu_3$};
 \node[obs, below right=of r3,  color=PineGreen, text=white] (r4) {$\nu_4$};
-\edge [-, color=Melon] {r1} {r2} ;
-\edge [-, color=Melon, bend right=30] {r1} {r3} ;
-\edge [-, color=Melon] {r2} {r3} ;
+\edge [-, color=black] {r1} {r2} ;
+\edge [-, color=black, bend right=30] {r1} {r3} ;
+\edge [-, color=black] {r2} {r3} ;
 %\edge [-, color=DarkRed, bend left=30] {r2} {r4} ;
-\edge [-, color=Melon] {r3} {r4} ;
+\edge [-, color=black] {r3} {r4} ;
 \end{tikzpicture}
 %
  \hspace{1cm} 
  %
 \begin{tikzpicture}
-\node[obs, color=PineGreen, fill = white, text=PineGreen] (r1) {$\nu_1$};
+\node[obs, color=black, fill = white, text=PineGreen] (r1) {$\nu_1$};
 \node[obs, right=of r1, color=gray, fill=white] (r2) {$\nu_2$};
 \node[obs, right=of r2,  color=gray, fill=white] (r3) {$\nu_3$};
 \node[obs, right=of r3,  color=gray, fill=white] (r4) {$\nu_4$};
 \node[obs, below=of r1, color=gray, fill=white] (r5) {$\nu_5$};
-\node[obs, below=of r2, color=PineGreen,  fill=white, text=PineGreen] (r6) {$\nu_6$};
-\node[obs, below=of r3,  color=PineGreen, fill=white, text=PineGreen] (r7) {$\nu_7$};
+\node[obs, below=of r2, color=black,  fill=white, text=PineGreen] (r6) {$\nu_6$};
+\node[obs, below=of r3,  color=black, fill=white, text=PineGreen] (r7) {$\nu_7$};
 \node[obs, below=of r4,  color=gray, fill=white] (r8) {$\nu_8$};
 \node[obs, below=of r5, color=gray, fill=white] (r9) {$\nu_9$};
-\node[obs, below=of r6,  color=PineGreen, fill=white, text=PineGreen] (r10) {$\nu_{10}$};
+\node[obs, below=of r6,  color=black, fill=white, text=PineGreen] (r10) {$\nu_{10}$};
 \node[obs, below=of r7,  color=PineGreen, text=white] (r11) {$\nu_{11}$};
-\node[obs, below=of r8,  color=PineGreen, fill=white, text=PineGreen] (r12) {$\nu_{12}$};
-\edge [-, color=gray] {r1} {r2} ; \edge [-, color=gray] {r1} {r5} ;
-\edge [-, color=gray] {r2} {r3} ; \edge [-, color=gray] {r2} {r6} ;
-\edge [-, color=gray] {r3} {r4} ; \edge [-, color=gray] {r3} {r7} ;
-\edge [-, color=gray] {r4} {r8} ; 
-\edge [-, color=gray] {r5} {r6} ; \edge [-, color=gray] {r5} {r9} ;
-\edge [-, color=gray] {r6} {r7} ; \edge [-, color=gray] {r6} {r10} ;
-\edge [-, color=gray] {r7} {r8} ; \edge [-, color=Melon] {r7} {r11} ;
-\edge [-, color=gray] {r8} {r12} ; 
-\edge [-, color=gray] {r9} {r10} ; \edge [-, color=Melon] {r10} {r11} ; \edge [-, color=Melon] {r11} {r12} ; 
+\node[obs, below=of r8,  color=black, fill=white, text=PineGreen] (r12) {$\nu_{12}$};
+\edge [-, color=lightgray] {r1} {r2} ; \edge [-, color=lightgray] {r1} {r5} ;
+\edge [-, color=lightgray] {r2} {r3} ; \edge [-, color=lightgray] {r2} {r6} ;
+\edge [-, color=lightgray] {r3} {r4} ; \edge [-, color=lightgray] {r3} {r7} ;
+\edge [-, color=lightgray] {r4} {r8} ; 
+\edge [-, color=lightgray] {r5} {r6} ; \edge [-, color=lightgray] {r5} {r9} ;
+\edge [-, color=lightgray] {r6} {r7} ; \edge [-, color=lightgray] {r6} {r10} ;
+\edge [-, color=lightgray] {r7} {r8} ; \edge [-, color=black] {r7} {r11} ;
+\edge [-, color=lightgray] {r8} {r12} ; 
+\edge [-, color=lightgray] {r9} {r10} ; \edge [-, color=black] {r10} {r11} ; \edge [-, color=black] {r11} {r12} ; 
 
-\edge [-, color=gray] {r4} {r7} ; \edge [-, color=gray] {r2} {r7} ; 
-\edge [-, color=gray] {r5} {r10} ; \edge [-, color=Melon] {r6} {r11} ; 
-\edge [-, color=gray, bend right=30] {r4} {r12} ; \edge [-, color=Melon, bend left=30] {r1} {r11} ;
+\edge [-, color=lightgray] {r4} {r7} ; \edge [-, color=lightgray] {r2} {r7} ; 
+\edge [-, color=lightgray] {r5} {r10} ; \edge [-, color=black] {r6} {r11} ; 
+\edge [-, color=lightgray, bend right=30] {r4} {r12} ; \edge [-, color=black, bend left=30] {r1} {r11} ;
 
 \end{tikzpicture}
 \vspace{.5cm}
