@@ -28,8 +28,6 @@ transformed data {
 parameters {
   vector[C]     lambda ;      
   vector[C]     rho ;
-  real          lambda_bar ;  
-  real<lower=0> rho_bar ; 
   real<lower=0> phi_noise ;    
   real<lower=0> tau_sq_lambda ;  
   real<lower=0> tau_sq_rho ;
@@ -55,12 +53,10 @@ model {
   // log priors
   logPrior <- (
     normal_log(phi_noise, 0, 1) +
-    normal_log(lambda_bar, 0, 1) + 
-    normal_log(rho_bar, 4, 2) + 
     normal_log(tau_sq_lambda, tau_loc, tau_scale) +
     normal_log(tau_sq_rho, tau_loc, tau_scale) +
-    multi_normal_cholesky_log(lambda, rep_vector(lambda_bar, C), L_lambda) +
-    multi_normal_cholesky_log(rho, rep_vector(rho_bar, C), L_rho) 
+    multi_normal_cholesky_log(lambda, rep_vector(0, C), L_lambda) +
+    multi_normal_cholesky_log(rho, rep_vector(0, C), L_rho) 
   ) ;
   
   // log likelihood

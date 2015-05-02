@@ -26,19 +26,23 @@ transformed data {
   cholPinverse <- cholesky_decompose(Pinverse) ;
 }
 parameters {
-  vector[C]     lambda ;      
-  vector[C]     rho ;
-  real          lambda_bar ;  
-  real<lower=0> rho_bar ; 
+  vector[C] lambda_noise ;      
+  vector[C] rho_noise ;
   real<lower=0> phi_noise ;    
   real<lower=0> tau_sq_lambda ;  
   real<lower=0> tau_sq_rho ;
 }
 transformed parameters {
   real<lower=0> phi ;
+  vector[C] lambda ;      
+  vector[C] rho ;
   
   // inverse CDF method, standard normal --> half-Cauchy
   phi <- phi_loc + phi_scale * tan(pi() * (Phi_approx(phi_noise) - 0.5)) ;
+  
+  // non-centered parameterization
+  lambda  <- (tau_sq_lambda * cholPinverse) * lambda_noise ;
+  rho  <- (tau_sq_rho * cholPinverse) * rho_noise ;
 }
 model {
   // local/temporary variables
@@ -46,21 +50,14 @@ model {
   real logPrior ;  # log prior
   vector<lower=0>[N] alpha ;  # shape1 for Beta-Binomial 
   vector<lower=0>[N] beta ;  # shape2 for Beta-Binomial
-  matrix[C,C] L_lambda ;  # cholesky of covariance 
-  matrix[C,C] L_rho ;  # cholesky of covariance
-  
-  L_lambda <- diag_pre_multiply(rep_vector(tau_sq_lambda, C), cholPinverse) ;
-  L_rho <- diag_pre_multiply(rep_vector(tau_sq_rho, C), cholPinverse) ;
-  
+
   // log priors
   logPrior <- (
     normal_log(phi_noise, 0, 1) +
-    normal_log(lambda_bar, 0, 1) + 
-    normal_log(rho_bar, 4, 2) + 
     normal_log(tau_sq_lambda, tau_loc, tau_scale) +
     normal_log(tau_sq_rho, tau_loc, tau_scale) +
-    multi_normal_cholesky_log(lambda, rep_vector(lambda_bar, C), L_lambda) +
-    multi_normal_cholesky_log(rho, rep_vector(rho_bar, C), L_rho) 
+    normal_log(lambda_noise, 0, 1) + 
+    normal_log(rho_noise, 0, 1) 
   ) ;
   
   // log likelihood
