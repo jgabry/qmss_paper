@@ -73,8 +73,8 @@
 
 % ABSTRACT & ACKNOWLEDGEMENTS
 \usepackage[english, american]{babel}
-\usepackage{bookabstract} 
-\usepackage{acknowledgments}
+\usepackage{styles/bookabstract} 
+\usepackage{styles/acknowledgments}
 \addto\captionsamerican{%
   \renewcommand{\bibname}{References}% use 'References' instead of 'Bibliography'
 }
@@ -101,7 +101,7 @@
 \newcommand{\hsp}{\hspace{20pt}}
 
 % PRETTY FORMATTING OF SOURCE CODE 
-\usepackage{lstBUGS} % for pretty source code (https://github.com/jrnold/lstBUGS)
+\usepackage{styles/lstBUGS} % for pretty source code (https://github.com/jrnold/lstBUGS)
 \lstset{
 basicstyle=\scriptsize\singlespacing,
 keywordstyle=\color{DarkSlateGray}\bfseries,
@@ -312,7 +312,7 @@ Raya, Amelia and Silvia. \\
     \setstretch{1}
     \setlength\bibitemsep{1\baselineskip}
     \raggedright
-    \bibliography{bibliography.bib}
+    \bibliography{references.bib}
 \endgroup
 
 
