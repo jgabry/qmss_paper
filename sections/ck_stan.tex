@@ -196,7 +196,7 @@ transformed parameters {
   phi <- phi_loc + phi_scale * tan(pi() * (Phi_approx(phi_noise) - 0.5)) ;
   // non-centered parameterization for lambda and rho
   lambda  <- lambda_bar + (tau_sq_lambda * cholPinverse) * lambda_noise ;
-  rho  <- rho_bar + (tau_sq_rho * cholPinverse) * lambda_noise ;
+  rho  <- rho_bar + (tau_sq_rho * cholPinverse) * rho_noise ;
 }
 \end{lstlisting}
 \caption{Stan code: {\tt transformed parameters} block}
@@ -205,7 +205,7 @@ transformed parameters {
 
 
 
-\begin{figure}[p]
+\begin{figure*}[p]
 \begin{lstlisting}[language=Stan, frame=trBL]
 model {
   // local/temporary variables
@@ -244,7 +244,7 @@ model {
 \end{lstlisting}
 \caption{Stan code: {\tt model} block}
 \label{stan_model}
-\end{figure}
+\end{figure*}
 %
 
 
