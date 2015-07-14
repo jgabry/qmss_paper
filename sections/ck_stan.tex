@@ -182,8 +182,7 @@ $LL' = \boldsymbol{\Sigma} \in R^{D \times D}$, then $\theta \sim \mathcal{N}_D 
 This is analogous to the familiar univariate case where $\theta = \mu + \sigma \xi$ and 
 $\xi \sim \mathcal{N}(0,1)$ implies that $\theta \sim \mathcal{N}(\mu, \sigma^2)$.} Unlike the elements 
 of ${\tt lambda}$ and ${\tt rho}$, the elements of ${\tt lambda\_noise}$ and ${\tt rho\_noise}$ are 
-independent by construction, which can lead to large gains in efficiency for MCMC algorithms in 
-terms of effective sample size \shortcite{betancourt_hamiltonian_2013,stan_development_team_stan_2015}. 
+independent of the prior means and variances by construction, which can lead to large gains in efficiency for MCMC algorithms in terms of effective sample size \shortcite{betancourt_hamiltonian_2013,stan_development_team_stan_2015}. 
 
 \begin{figure}
 \begin{lstlisting}[language=Stan, frame=trBL]
